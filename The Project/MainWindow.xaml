@@ -12,5 +12,7 @@
         <TextBox Name="txtinput_username" Text="Username" MouseLeftButtonDown="Txtinput_username_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,58,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
         <TextBox Name="txtinput_pswd" Text="Password" MouseLeftButtonDown="Txtinput_pswd_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,107,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
         <TextBox Name="txtinput_confpswd" Text="Confirm Password" MouseLeftButtonDown="Txtinput_confpswd_MouseLeftButtonDown"  TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,160,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
+        <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="79" Width="527"/>
+        <Rectangle Stroke="Black" Margin="6,0,0,10" Height="82" Width="530" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
     </Grid>
 </Window>
