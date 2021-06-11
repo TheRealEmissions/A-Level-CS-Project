@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +12,9 @@ namespace The_Project
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        public List<string> OutputLog = new();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -30,6 +34,12 @@ namespace The_Project
             txtinput_username.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
             txtinput_pswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
             txtinput_confpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
+        }
+
+        public void Output(string text)
+        {
+            OutputLog.Insert(0, text);
+            if (OutputLog.Count > 100) OutputLog.RemoveAt(OutputLog.Count - 1);
         }
 
         private void Txtinput_confpswd_LostFocus(object sender, RoutedEventArgs e)
