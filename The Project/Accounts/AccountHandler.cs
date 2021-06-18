@@ -18,7 +18,7 @@ namespace The_Project.Accounts
 
         public AccountHandler(string Username, string Password, string ConfPassword)
         {
-
+            SqlConnection = StartSQLConnection();
         }
 
         public SqlConnection StartSQLConnection()
