@@ -26,6 +26,7 @@ namespace The_Project.Accounts
             string ConnectionString = "";
             SqlConnection connection = new(ConnectionString);
             connection.Open();
+            return connection;
         }
     }
 }
