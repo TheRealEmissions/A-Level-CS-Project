@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using The_Project.Accounts;
 
+#nullable enable
 namespace The_Project
 {
 
@@ -15,8 +18,13 @@ namespace The_Project
 
         public List<string> OutputLog = new();
 
+        private MessagingHandler Handler = new();
+        public SqliteConnection? SQLConnection = null;
+
         public MainWindow()
         {
+            SQLConnection = Handler.Connection;
+
             InitializeComponent();
             SetAllButtonsToDisabled();
 
@@ -113,7 +121,8 @@ namespace The_Project
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            Account account = new(txtinput_username.Text, txtinput_pswd.Text, SQLConnection);
+            Handler.UserAccount = account;
         }
 
         public void SetAllButtonsToDisabled()
