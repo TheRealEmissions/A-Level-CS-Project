@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Data.Sqlite;
 
 #nullable enable
 namespace The_Project.Accounts
 {
     public class AccountHandler
     {
-        private SqlConnection? SqlConnection = null;
+        protected SqliteConnection? SQLConnection = null;
         public AccountHandler(string Username, string Password)
         {
-            SqlConnection = StartSQLConnection();
+            SQLConnection = StartSQLConnection();
+            
         }
 
         public AccountHandler(string Username, string Password, string ConfPassword)
         {
-            SqlConnection = StartSQLConnection();
+            SQLConnection = StartSQLConnection();
         }
 
-        public SqlConnection StartSQLConnection()
+        private SqliteConnection StartSQLConnection()
         {
-            string ConnectionString = "";
-            SqlConnection connection = new(ConnectionString);
-            connection.Open();
-            return connection;
+            SqliteConnection Connection = new("Data Source=account.db;Mode=ReadWriteCreate");
+            Connection.Open();
+            return Connection;
         }
     }
 }
