@@ -10,23 +10,14 @@ namespace The_Project.Accounts
 {
     public class AccountHandler
     {
-        protected SqliteConnection? SQLConnection = null;
-        public AccountHandler(string Username, string Password)
+        public AccountHandler(string Username, string Password, SqliteConnection? Connection)
         {
-            SQLConnection = StartSQLConnection();
-            
+            if (Connection is null) return;
         }
 
-        public AccountHandler(string Username, string Password, string ConfPassword)
+        public AccountHandler(string Username, string Password, string ConfPassword, SqliteConnection? Connection)
         {
-            SQLConnection = StartSQLConnection();
-        }
-
-        private SqliteConnection StartSQLConnection()
-        {
-            SqliteConnection Connection = new("Data Source=account.db;Mode=ReadWriteCreate");
-            Connection.Open();
-            return Connection;
+            if (Connection is null) return;   
         }
     }
 }
