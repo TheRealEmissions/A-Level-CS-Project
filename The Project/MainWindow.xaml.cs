@@ -48,6 +48,7 @@ namespace The_Project
         {
             OutputLog.Insert(0, text);
             if (OutputLog.Count > 100) OutputLog.RemoveAt(OutputLog.Count - 1);
+            txt_log.Text = string.Join("\n", OutputLog);
         }
 
         private void Txtinput_confpswd_LostFocus(object sender, RoutedEventArgs e)
@@ -121,8 +122,10 @@ namespace The_Project
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
         {
+            Output("Registered LOGIN CLICK - Finding account");
             Account account = new(txtinput_username.Text, txtinput_pswd.Text, SQLConnection);
             Handler.UserAccount = account;
+            Output("FOUND ACCOUNT!");
         }
 
         public void SetAllButtonsToDisabled()
