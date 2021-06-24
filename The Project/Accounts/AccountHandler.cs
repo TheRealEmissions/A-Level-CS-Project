@@ -13,6 +13,14 @@ namespace The_Project.Accounts
         public AccountHandler(string Username, string Password, SqliteConnection? Connection)
         {
             if (Connection is null) return;
+            SqliteCommand? Command = Connection.CreateCommand();
+            Command.CommandText = @"
+                SELECT *
+                FROM accounts
+                WHERE username = $USERNAME
+                AND password = $PASSWORD
+            ";
+
         }
 
         public AccountHandler(string Username, string Password, string ConfPassword, SqliteConnection? Connection)
