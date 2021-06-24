@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
+using The_Project.Encryption;
 
 #nullable enable
 namespace The_Project
@@ -123,6 +124,7 @@ namespace The_Project
         private void Btn_login_Click(object sender, RoutedEventArgs e)
         {
             Output("Registered LOGIN CLICK - Finding account");
+            Output($"Password hash: {Hashing.Hash(txtinput_pswd.Text)}");
             Account account = new(txtinput_username.Text, txtinput_pswd.Text, SQLConnection);
             Handler.UserAccount = account;
             Output("FOUND ACCOUNT!");
