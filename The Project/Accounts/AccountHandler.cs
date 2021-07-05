@@ -10,6 +10,9 @@ namespace The_Project.Accounts
 {
     public class AccountHandler
     {
+        public readonly bool hasAccount = false;
+        public readonly string AccountID = "NONE";
+
         public AccountHandler(string Username, string Password, SqliteConnection? Connection)
         {
             if (Connection is null) return;
@@ -20,6 +23,15 @@ namespace The_Project.Accounts
                 WHERE username = $USERNAME
                 AND password = $PASSWORD
             ";
+            Command.Parameters.AddWithValue("$USERNAME", Username);
+            Command.Parameters.AddWithValue("$PASSWORD", Password);
+
+            SqliteDataReader? Reader = Command.ExecuteReader();
+            if (Reader.Read())
+            {
+                hasAccount = true;
+            }
+            
 
         }
 
