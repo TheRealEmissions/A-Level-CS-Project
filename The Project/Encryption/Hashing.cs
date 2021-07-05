@@ -35,40 +35,62 @@ namespace The_Project.Encryption
         {
             // implementation of SHA256 hashing
 
-            BitArray arr = new(Encoding.UTF8.GetBytes(str));
-            Pad(arr);
-
-
             string s = "";
+
+            // turn string into bytes
+            BitArray arr = new(Encoding.UTF8.GetBytes(str));
+            // pad string
+            arr = Pad(arr);
+
+            s += $"PADDED ARR LENGTH: {arr.Length}";
+            // break into 512 bit chunks
+            List<BitArray> ChunkedArr = SplitIntoChunks(arr);
+
             int i = 0;
-            foreach (bool b in arr)
+            foreach (BitArray b in ChunkedArr)
             {
-                if (i % 8 == 0)
-                {
-                    s += " ";
-                    i = 0;
-                };
-                s += b ? "1" : "0";
-                i++;
-            };
+                s += "\n[\n";
+                foreach (bool B in b) { s += $"{(B ? "1" : "0")}, "; }
+                s += "\n],";
+            }
+
+            s += $"LIST LENGTH: {ChunkedArr.Count}\n";
+            foreach (BitArray b in ChunkedArr) s += $"ChunkedArr[] Length {b.Length}";
             return s;
+        }
+
+        private static List<BitArray> SplitIntoChunks(BitArray arr)
+        {
+            int originalLength = arr.Length / 8;
+
+            byte[] Bytes = new byte[arr.Length / 8];
+            arr.CopyTo(Bytes, 0);
+
+            List<BitArray> BitArrayList = new();
+            for (int i = 0; i < originalLength; i += 64)
+            {
+                BitArray bitArray = new(Bytes[i..(i + 64)]);
+                BitArrayList.Add(bitArray);
+            }
+            return BitArrayList;
         }
 
         private static BitArray Pad(BitArray arr)
         {
+            int originalLength = arr.Length;
 
             arr.Length += 1;
             arr.Set(arr.Length - 1, true);
 
             int i = 0;
-            while ((arr.Length + 1 + i + 64) % 512 != 0)
+            while ((originalLength + 1 + i + 64) % 512 != 0)
             {
                 arr.Length += 1;
-                arr.Set(arr.Length + i, false);
+                arr.Set(arr.Length - 1, false);
                 i++;
             }
 
-            byte[] Int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(arr.Length));
+            byte[] Int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(originalLength));
             if (BitConverter.IsLittleEndian) Array.Reverse(Int64Bytes);
             BitArray messageLengthArr = new(Int64Bytes);
 
