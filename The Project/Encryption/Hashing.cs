@@ -38,32 +38,44 @@ namespace The_Project.Encryption
             BitArray arr = new(Encoding.UTF8.GetBytes(str));
             Pad(arr);
 
-            Debug.WriteLine(arr.Length);
 
             string s = "";
-            foreach (bool b in arr) s += $"{b}, ";
+            int i = 0;
+            foreach (bool b in arr)
+            {
+                if (i % 8 == 0)
+                {
+                    s += " ";
+                    i = 0;
+                };
+                s += b ? "1" : "0";
+                i++;
+            };
             return s;
         }
 
         private static BitArray Pad(BitArray arr)
         {
-            if (arr.Length % 512 == 448) return arr;
+
+            arr.Length += 1;
+            arr.Set(arr.Length - 1, true);
 
             int i = 0;
-            while ((arr.Length + 1 + i + 64) % 512 == 0)
+            while ((arr.Length + 1 + i + 64) % 512 != 0)
             {
-                arr.Length += i + 1;
-                arr.Set(arr.Length + i, i == 0);
+                arr.Length += 1;
+                arr.Set(arr.Length + i, false);
                 i++;
             }
 
-            BitArray messageLengthArr = new(BitConverter.GetBytes(Convert.ToUInt64(arr.Length)));
-            arr.Length += messageLengthArr.Length;
+            byte[] Int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(arr.Length));
+            if (BitConverter.IsLittleEndian) Array.Reverse(Int64Bytes);
+            BitArray messageLengthArr = new(Int64Bytes);
 
-            int j = 0;
             foreach (bool b in messageLengthArr)
             {
-                arr.Set(arr.Length - messageLengthArr.Length + j, b);
+                arr.Length += 1;
+                arr.Set(arr.Length - 1, b);
             }
 
             return arr;
