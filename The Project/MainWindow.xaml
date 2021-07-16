@@ -7,12 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Button Name="btn_login"  Content="Login" HorizontalAlignment="Left" Margin="559,345,0,0" VerticalAlignment="Top" Height="35" Width="91" />
-        <Button Name="btn_register" Content="Register" HorizontalAlignment="Right" Margin="0,345,38,0" VerticalAlignment="Top" Height="35" Width="91" />
-        <TextBox Name="txtinput_username" Text="Username" MouseLeftButtonDown="Txtinput_username_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,58,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
-        <TextBox Name="txtinput_pswd" Text="Password" MouseLeftButtonDown="Txtinput_pswd_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,107,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
-        <TextBox Name="txtinput_confpswd" Text="Confirm Password" MouseLeftButtonDown="Txtinput_confpswd_MouseLeftButtonDown"  TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,160,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" />
-        <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="79" Width="527"/>
-        <Rectangle Stroke="Black" Margin="6,0,0,10" Height="82" Width="530" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
+        <Button Name="btn_login"  Content="Login" HorizontalAlignment="Left" Margin="559,345,0,0" VerticalAlignment="Top" Height="35" Width="91" Grid.ColumnSpan="2" />
+        <Button Name="btn_register" Content="Register" HorizontalAlignment="Right" Margin="0,345,38,0" VerticalAlignment="Top" Height="35" Width="91" Grid.ColumnSpan="2" Grid.Column="1" />
+        <TextBox Name="txtinput_username" Text="Username" MouseLeftButtonDown="Txtinput_username_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,58,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" Grid.ColumnSpan="3" />
+        <TextBox Name="txtinput_pswd" Text="Password" MouseLeftButtonDown="Txtinput_pswd_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,107,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" Grid.ColumnSpan="3" />
+        <TextBox Name="txtinput_confpswd" Text="Confirm Password" MouseLeftButtonDown="Txtinput_confpswd_MouseLeftButtonDown"  TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,160,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" Grid.ColumnSpan="3" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="414" Margin="10,0,0,0" Width="527" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        </ScrollViewer>
+        <Rectangle Stroke="Black" Margin="6,0,0,0" Height="414" Width="530" VerticalAlignment="Center" HorizontalAlignment="Left"/>
     </Grid>
 </Window>
