@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
 
 namespace The_Project.Encryption
 {
     public class Hashing
     {
-        public Hashing()
+        private MainWindow mainWindow;
+
+        public Hashing(MainWindow window)
         {
+            mainWindow = window;
         }
 
         private const uint h0 = 0x6a09e667;
@@ -31,7 +32,7 @@ namespace The_Project.Encryption
    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2};
 
-        public static string Hash(string str)
+        public string Hash(string str)
         {
             // implementation of SHA256 hashing
 
@@ -39,13 +40,36 @@ namespace The_Project.Encryption
 
             // turn string into bytes
             BitArray arr = new(Encoding.UTF8.GetBytes(str));
+
+            // ***
             // pad string
+            // ***
             arr = Pad(arr);
 
-            s += $"PADDED ARR LENGTH: {arr.Length}";
+            mainWindow.Output($"PADDED ARR LENGTH: {arr.Length}");
+
+            // ***
             // break into 512 bit chunks
+            // ***
             List<BitArray> ChunkedArr = SplitIntoChunks(arr);
 
+            // ***
+            // create message schedule
+            // ***
+
+            foreach (BitArray chunk in ChunkedArr)
+            {
+                List<BitArray> chunk32bit = SplitIntoChunks(chunk, 32);
+                for (int j = 16; j < 64; j++)
+                {
+                    chunk32bit[j] = new BitArray(32);
+                }
+
+            }
+
+            ///---
+            ///logging
+            ///
             int i = 0;
             foreach (BitArray b in ChunkedArr)
             {
@@ -54,12 +78,12 @@ namespace The_Project.Encryption
                 s += "\n],";
             }
 
-            s += $"LIST LENGTH: {ChunkedArr.Count}\n";
-            foreach (BitArray b in ChunkedArr) s += $"ChunkedArr[] Length {b.Length}";
+            mainWindow.Output($"LIST LENGTH: {ChunkedArr.Count}\n");
+            foreach (BitArray b in ChunkedArr) mainWindow.Output($"ChunkedArr[] Length {b.Length}");
             return s;
         }
 
-        private static List<BitArray> SplitIntoChunks(BitArray arr)
+        private static List<BitArray> SplitIntoChunks(BitArray arr, int bits = 512)
         {
             int originalLength = arr.Length / 8;
 
@@ -67,9 +91,9 @@ namespace The_Project.Encryption
             arr.CopyTo(Bytes, 0);
 
             List<BitArray> BitArrayList = new();
-            for (int i = 0; i < originalLength; i += 64)
+            for (int i = 0; i < originalLength; i += bits / 8)
             {
-                BitArray bitArray = new(Bytes[i..(i + 64)]);
+                BitArray bitArray = new(Bytes[i..(i + (bits / 8))]);
                 BitArrayList.Add(bitArray);
             }
             return BitArrayList;
