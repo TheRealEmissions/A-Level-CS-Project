@@ -60,11 +60,14 @@ namespace The_Project.Encryption
             foreach (BitArray chunk in ChunkedArr)
             {
                 List<BitArray> chunk32bit = SplitIntoChunks(chunk, 32);
-                for (int j = 16; j < 64; j++)
+                for (int j = 0; j < 64; j++) chunk32bit.Add(new BitArray(32));
+                for (int j = 0; j < 64; j++)
                 {
-                    chunk32bit[j] = new BitArray(32);
+                    BitArray tempBitArray = new BitArray(chunk32bit[j-15]);
+                    BitArray s0 = Utils.Bitwise.RightRotate(chunk32bit[j - 15], 7).Xor(Utils.Bitwise.RightRotate(chunk32bit[j - 15], 18)).Xor(chunk32bit[j-15].RightShift(3));
+                    BitArray s1 = Utils.Bitwise.RightRotate(chunk32bit[j - 2], 17).Xor(Utils.Bitwise.RightRotate(chunk32bit[j - 2], 19)).Xor(chunk32bit[j - 2].RightShift(10));
+                    //chunk32bit[j] = chunk32bit[j - 16] + s0 + chunk32bit[j - 7] + s1;
                 }
-
             }
 
             ///---
