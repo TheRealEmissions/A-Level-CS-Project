@@ -9,14 +9,26 @@ namespace The_Project.Utils
 {
     public class Bitwise
     {
-        public static BitArray RightRotate(uint bits)
+        public static BitArray RightRotate(BitArray bitArray, int bits)
         {
-            // todo
+            BitArray Temp = new(bitArray);
+            bitArray.RightShift(bits);
+            for (int i = 0; i < bits; i++)
+            {
+                bitArray[i] = Temp[bitArray.Length - 1 - bits + i];
+            }
+            return bitArray;
         }
 
-        public static BitArray LeftRotate(uint bits)
+        public static BitArray LeftRotate(BitArray bitArray, int bits)
         {
-            // todo
+            BitArray Temp = new(bitArray);
+            bitArray.LeftShift(bits);
+            for (int i = 0; i < bits; i++)
+            {
+                bitArray[bitArray.Length - 1 - bits + i] = Temp[i];
+            }
+            return bitArray;
         }
     }
 }
