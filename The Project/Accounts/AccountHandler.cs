@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 
 #nullable enable
+
 namespace The_Project.Accounts
 {
     public class AccountHandler
@@ -31,13 +27,11 @@ namespace The_Project.Accounts
             {
                 hasAccount = true;
             }
-            
-
         }
 
         public AccountHandler(string Username, string Password, string ConfPassword, SqliteConnection? Connection)
         {
-            if (Connection is null) return;   
+            if (Connection is null) return;
         }
     }
 }
