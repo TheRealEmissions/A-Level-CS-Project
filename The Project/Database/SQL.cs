@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Data.Sqlite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Data.Sqlite;
 
 #nullable enable
+
 namespace The_Project.Database
 {
     public class SQL
     {
         public SqliteConnection? Connection = null;
+
         public SQL()
         {
             Connection = Start();
