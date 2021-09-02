@@ -1,13 +1,8 @@
-﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using The_Project.Accounts;
+﻿using The_Project.Accounts;
 using The_Project.Database;
 
 #nullable enable
+
 namespace The_Project
 {
     public class MessagingHandler : SQL
@@ -17,7 +12,6 @@ namespace The_Project
 
         public MessagingHandler() : base()
         {
-
         }
     }
 }

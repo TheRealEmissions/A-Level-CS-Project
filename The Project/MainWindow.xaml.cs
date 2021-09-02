@@ -1,23 +1,21 @@
-﻿
-using Microsoft.Data.Sqlite;
+﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
-using The_Project.Encryption;
+using The_Project.Cryptography;
 
 #nullable enable
+
 namespace The_Project
 {
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-
         public List<string> OutputLog = new();
 
         private MessagingHandler Handler = new();
@@ -114,7 +112,6 @@ namespace The_Project
 
         private void Txtinput_username_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
         }
 
         private void Btn_register_Click(object sender, RoutedEventArgs e)
@@ -127,7 +124,9 @@ namespace The_Project
             Hashing Hash = new(this);
 
             Output("Registered LOGIN CLICK - Finding account");
-            Output($"Password hash: {Hash.Hash(txtinput_pswd.Text)}");
+            string PasswordHash = Hash.Hash(txtinput_pswd.Text);
+            Output($"Password hash: {PasswordHash}");
+            Output($"Hash length: {PasswordHash.Length}");
             Account account = new(txtinput_username.Text, txtinput_pswd.Text, SQLConnection);
             Handler.UserAccount = account;
             Output("FOUND ACCOUNT!");

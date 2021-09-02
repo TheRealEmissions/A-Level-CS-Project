@@ -13,8 +13,8 @@
         <TextBox Name="txtinput_pswd" Text="Password" MouseLeftButtonDown="Txtinput_pswd_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,107,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" Grid.ColumnSpan="3" />
         <TextBox Name="txtinput_confpswd" Text="Confirm Password" MouseLeftButtonDown="Txtinput_confpswd_MouseLeftButtonDown"  TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,160,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" Grid.ColumnSpan="3" />
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="414" Margin="10,0,0,0" Width="527" VerticalAlignment="Center" HorizontalAlignment="Left">
-            <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" />
         </ScrollViewer>
-        <Rectangle Stroke="Black" Margin="6,0,0,0" Height="414" Width="530" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+        <Rectangle Stroke="Black" Margin="6,0,0,0" Height="414" Width="530" VerticalAlignment="Center" HorizontalAlignment="Left" />
     </Grid>
 </Window>

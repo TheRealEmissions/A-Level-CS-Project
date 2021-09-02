@@ -1,10 +1,9 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Windows;
+﻿using System.Windows;
 
 #nullable enable
+
 namespace The_Project
 {
-
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
