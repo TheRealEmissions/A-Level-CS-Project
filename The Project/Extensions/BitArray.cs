@@ -78,10 +78,5 @@ namespace The_Project.Extensions
             BitArray Arr = TempArr.Not();
             return Arr;
         }
-
-        public static int Square(this int value)
-        {
-            return value * value;
-        }
     }
 }
