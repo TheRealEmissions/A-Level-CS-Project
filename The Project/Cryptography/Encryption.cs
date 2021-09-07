@@ -87,8 +87,8 @@ namespace The_Project.Cryptography
 
         public Encryption(PublicKey Public, PrivateKey Private)
         {
-            this.PublicKey = Public;
-            this.PrivateKey = Private;
+            PublicKey = Public;
+            PrivateKey = Private;
         }
 
         private BigInteger GetD()
