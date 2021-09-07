@@ -41,7 +41,7 @@ namespace The_Project.Cryptography
 
         private static readonly BigInteger phi = (x - 1) * (y - 1);
 
-        private static readonly BigInteger e = GetCoprimeToPhi();
+        private static readonly BigInteger e = 65537;//new BigInteger(2).GetCoprime(phi);
         private static readonly BigInteger d = GetD();
 
         public static readonly PublicKey Public = new(n, e);
@@ -61,15 +61,14 @@ namespace The_Project.Cryptography
 
         // find e such that e > 1, e < phi
         // e is co-prime to phi
-        private static BigInteger GetCoprimeToPhi()
+        private static BigInteger GetCoprime(this BigInteger x, BigInteger y)
         {
-            BigInteger e = 2;
-            while (e < phi)
+            while (x < y)
             {
-                if (GreatestCommonDivider(e, phi) == 1) break;
-                e++;
+                if (GreatestCommonDivider(x, y) == 1) break;
+                x++;
             }
-            return e;
+            return x;
         }
 
         private static BigInteger GreatestCommonDivider(BigInteger a, BigInteger b)
@@ -79,7 +78,7 @@ namespace The_Project.Cryptography
             return GreatestCommonDivider(b, temp);
         }
 
-        private static BigInteger GeneratePrime(int bits = 8)
+        private static BigInteger GeneratePrime(int bits = 1024)
         {
             byte[] Byte = new byte[bits / 8];
             new Random().NextBytes(Byte);
@@ -88,21 +87,19 @@ namespace The_Project.Cryptography
             bitArray.Set(bits - 1, true);
             bitArray.CopyTo(Byte, 0);
             BigInteger Prime = new(Byte, true);
-            return Prime.IsPrime() ? Prime : GeneratePrime(bits);
+            return Prime.IsProbablyPrime() ? Prime : GeneratePrime(bits);
         }
 
-        private static bool IsPrime(this BigInteger n, int k=128)
+        private static bool IsProbablyPrime(this BigInteger n)
         {
             if (n <= 1 || n % 2 == 0) return false;
             if (n == 3) return true;
 
-            // O(n^2) - improve
-            for (uint i = 3; i < Math.Sqrt((double)n); i += 2)
+            BigInteger a = new BigInteger(2).GetCoprime(n);
+            BigInteger result = BigInteger.ModPow(a, n - 1, n);
+            if (result != 1)
             {
-                if (n % i == 0)
-                {
-                    return false;
-                }
+                return false;
             }
             return true;
         }
@@ -110,8 +107,8 @@ namespace The_Project.Cryptography
         public static string Encrypt(this string s, PublicKey Key)
         {
             byte[] StringBytes = Encoding.UTF8.GetBytes(s.ToCharArray()).ToArray();
-            uint[] Numbers = StringBytes.Select(x => (uint)x).ToArray();
-            uint[] CipheredNumbers = Numbers.Select(x => (uint)BigInteger.ModPow(x, Key.e, Key.n)).ToArray();
+            BigInteger[] Numbers = StringBytes.Select(x => (BigInteger)x).ToArray();
+            BigInteger[] CipheredNumbers = Numbers.Select(x => BigInteger.ModPow(x, Key.e, Key.n)).ToArray();
             string[] Ciphered = CipheredNumbers.Select(x => x.ToString("X")).ToArray();
             string Cipher = string.Join('-', Ciphered);
             return Cipher;
@@ -120,8 +117,8 @@ namespace The_Project.Cryptography
         public static string Decrypt(this string s)
         {
             string[] Ciphered = s.Split('-');
-            uint[] CipheredNumbers = Ciphered.Select(x => Convert.ToUInt32(x, 16)).ToArray();
-            uint[] Numbers = CipheredNumbers.Select(x => (uint)BigInteger.ModPow(x, Private.d, Private.n)).ToArray();
+            BigInteger[] CipheredNumbers = Ciphered.Select(x => BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier)).ToArray();
+            BigInteger[] Numbers = CipheredNumbers.Select(x => BigInteger.ModPow(x, Private.d, Private.n)).ToArray();
             byte[] CharBytes = Numbers.Select(x => (byte)x).ToArray();
             char[] Characters = Encoding.UTF8.GetChars(CharBytes);
             return new string(Characters);
