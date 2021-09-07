@@ -42,6 +42,7 @@ namespace The_Project
             txtinput_username.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
             txtinput_pswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
             txtinput_confpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
+            txtinput_testEncryption.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(txtinput_testEncryption_MouseLeftButtonDown), true);
         }
 
         public void Output(string text)
@@ -151,6 +152,30 @@ namespace The_Project
         private void Txtinput_confpswd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             txtinput_confpswd.Text = string.Empty;
+        }
+
+        private void txtinput_testEncryption_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            txtinput_testEncryption.Text = string.Empty;
+        }
+
+        private void txtinput_testEncryption_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+
+                Output($"Text to encrypt -> {txtinput_testEncryption.Text}");
+
+                Encryption encryption = new();
+
+                Output($"PUBLIC KEY -> {encryption.PublicKey.n}");
+
+                string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey);
+                Output($"ENCRYPTED STRING -> {EncryptedString}");
+                Output($"Decrypting using PRIVATE KEY...");
+                string DecryptedString = EncryptedString.Decrypt(encryption.PrivateKey);
+                Output($"DECRYPTED STRING -> {DecryptedString}");
+            }
         }
     }
 }

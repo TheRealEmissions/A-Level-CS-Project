@@ -16,5 +16,6 @@
             <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" />
         </ScrollViewer>
         <Rectangle Stroke="Black" Margin="6,0,0,0" Height="414" Width="530" VerticalAlignment="Center" HorizontalAlignment="Left" />
+        <TextBox x:Name="txtinput_testEncryption" Text="Test Encryption/Decryption" MouseLeftButtonDown="txtinput_testEncryption_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="559,252,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Left" Width="203" KeyDown="txtinput_testEncryption_KeyDown"/>
     </Grid>
 </Window>
