@@ -44,8 +44,6 @@ namespace The_Project.Cryptography
         {
             // implementation of SHA256 hashing
 
-            string s = "";
-
             // turn string into bytes
             BitArray arr = new(Encoding.UTF8.GetBytes(str));
 
