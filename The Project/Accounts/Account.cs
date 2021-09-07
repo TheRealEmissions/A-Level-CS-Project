@@ -6,12 +6,20 @@ namespace The_Project.Accounts
     {
         public string Username = "";
 
+        // login into account and retrieve details
         public Account(string Username, string Password, SqliteConnection Connection) : base(Username, Password, Connection)
         {
             this.Username = Username;
         }
 
+        // register new account
         public Account(string Username, string Password, string ConfPassword, SqliteConnection Connection) : base(Username, Password, ConfPassword, Connection)
+        {
+            this.Username = Username;
+        }
+
+        // retrieve information for recipient account
+        public Account(string Username) : base(Username)
         {
             this.Username = Username;
         }
