@@ -42,12 +42,19 @@ namespace The_Project
             txtinput_username.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
             txtinput_pswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
             txtinput_confpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
+
+            Output("PUBLIC KEY ->" + Encryption.Public.n + " -- " + Encryption.Public.e);
+            Output("Message to encrypt: \"hello there woman you are very nice and THIS IS AN ENCRYPTED---->>> MESSAGE <<@@ !!!!\" (using own public key for now)");
+            Output("hello there woman you are very nice and THIS IS AN ENCRYPTED---->>> MESSAGE <<@@ !!!!".Encrypt(Encryption.Public));
+
+            Output("Decrypting message using private key");
+            Output("hello there woman you are very nice and THIS IS AN ENCRYPTED---->>> MESSAGE <<@@ !!!!".Encrypt(Encryption.Public).Decrypt());
         }
 
         public void Output(string text)
         {
-            OutputLog.Insert(0, text);
-            if (OutputLog.Count > 100) OutputLog.RemoveAt(OutputLog.Count - 1);
+            OutputLog.Add(text);
+            if (OutputLog.Count > 100) OutputLog.RemoveAt(0);
             txt_log.Text = string.Join("\n", OutputLog);
         }
 
