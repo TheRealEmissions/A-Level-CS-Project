@@ -33,5 +33,10 @@ namespace The_Project.Accounts
         {
             if (Connection is null) return;
         }
+
+        public AccountHandler(string Username)
+        {
+
+        }
     }
 }
