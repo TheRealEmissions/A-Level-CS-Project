@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using The_Project.Extensions;
 
@@ -64,13 +65,16 @@ namespace The_Project.Cryptography
             // SPLITS INTO 32 bit chunks (16 originally, then adds 48 initalised to 0 for 64 bit)
             // ***
 
+
+
             foreach (BitArray chunk in ChunkedArr)
             {
                 List<BitArray> chunk32bit = SplitIntoChunks(chunk, 32); // 16 entries
-                for (int j = 0; j < 48; j++)
-                {
-                    chunk32bit.Add(new BitArray(32)); // add 48 more to bring to 64 (256 bytes)
-                }
+                chunk32bit.AddRange(Enumerable.Repeat(new BitArray(32), 48));
+                /*                for (int j = 0; j < 48; j++)
+                                {
+                                    chunk32bit.Add(new BitArray(32)); // add 48 more to bring to 64 (256 bytes)
+                                }*/
 
                 for (int j = 16; j < 64; j++)
                 {
@@ -126,7 +130,7 @@ namespace The_Project.Cryptography
                 h7 = temph7.ToUInt32();
             }
 
-            return h0.ToString("X").PadLeft(8, '0') + h1.ToString("X").PadLeft(8, '0') + h2.ToString("X").PadLeft(8, '0') + h3.ToString("X").PadLeft(8, '0') + h4.ToString("X").PadLeft(8, '0') + h5.ToString("X").PadLeft(8, '0') + h6.ToString("X").PadLeft(8, '0') + h7.ToString("X").PadLeft(8, '0');
+            return string.Concat((new uint[8] { h0, h1, h2, h3, h4, h5, h6, h7 }).Select(x => x.ToString("X").PadLeft(8, '0')));
         }
 
         private static List<BitArray> SplitIntoChunks(BitArray arr, int bits = 512)
