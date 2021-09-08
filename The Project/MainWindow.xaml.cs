@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -170,11 +171,18 @@ namespace The_Project
 
                 Output($"PUBLIC KEY -> {encryption.PublicKey.n}");
 
-                string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey);
-                Output($"ENCRYPTED STRING -> {EncryptedString}");
+                DateTime startTimeEncrypt = DateTime.Now;
+                string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey, this);
+                DateTime endTimeEncrypt = DateTime.Now;
+                //Output($"ENCRYPTED STRING ->");
+                //Output(EncryptedString);
+                Debug.WriteLine($"Time to encrypt -> {(endTimeEncrypt - startTimeEncrypt).TotalMilliseconds}ms");
                 Output($"Decrypting using PRIVATE KEY...");
+                DateTime startTimeDecrypt = DateTime.Now;
                 string DecryptedString = EncryptedString.Decrypt(encryption.PrivateKey);
+                DateTime endTimeDecrypt = DateTime.Now;
                 Output($"DECRYPTED STRING -> {DecryptedString}");
+                Output($"Time to decrypt -> {(endTimeDecrypt - startTimeDecrypt).TotalMilliseconds}ms");
             }
         }
     }
