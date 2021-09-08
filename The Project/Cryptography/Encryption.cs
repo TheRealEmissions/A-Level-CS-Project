@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using The_Project.Extensions;
 
+#nullable enable
 namespace The_Project.Cryptography
 {
     public struct PublicKey
@@ -35,24 +37,53 @@ namespace The_Project.Cryptography
 
     public static class EncryptionExtensions
     {
-        public static string Encrypt(this string s, PublicKey Key)
+        public static string Encrypt(this string s, PublicKey Key, MainWindow? window = null)
         {
-            byte[] StringBytes = Encoding.UTF8.GetBytes(s.ToCharArray()).ToArray();
-            BigInteger[] Numbers = StringBytes.Select(x => (BigInteger)x).ToArray();
-            BigInteger[] CipheredNumbers = Numbers.Select(x => BigInteger.ModPow(x, Key.e, Key.n)).ToArray();
-            string[] Ciphered = CipheredNumbers.Select(x => x.ToString("X")).ToArray();
-            string Cipher = string.Join('-', Ciphered);
-            return Cipher;
+            DateTime startStringBytes = DateTime.Now;
+            byte[]? StringBytes = Encoding.UTF8.GetBytes(s);
+            DateTime endStringBytes = DateTime.Now;
+            Debug.WriteLine($"StringBytes -> {(endStringBytes - startStringBytes).TotalMilliseconds}ms");
+
+            DateTime startNumbers = DateTime.Now;
+            IEnumerable<uint>? Numbers = StringBytes.AsParallel().AsOrdered().Select(x => (uint)x);
+            DateTime endNumbers = DateTime.Now;
+            Debug.WriteLine($"Numbers -> {(endNumbers - startNumbers).TotalMilliseconds}ms");
+
+            StringBytes = null;
+            DateTime startCN = DateTime.Now;
+            IEnumerable<BigInteger>? CipheredNumbers = Numbers.AsParallel().AsOrdered().Select(x => BigInteger.ModPow(x, Key.e, Key.n));
+            DateTime endCN = DateTime.Now;
+            Debug.WriteLine($"CN -> {(endCN - startCN).TotalMilliseconds}ms");
+
+            // find more efficient way to convert BigInteger (too slow right now)
+            Numbers = null;
+            DateTime startCiphered = DateTime.Now;
+            string[] Ciphered = CipheredNumbers.AsParallel().AsOrdered().Select(x => x.ToString("X")).ToArray();
+            DateTime endCiphered = DateTime.Now;
+            Debug.WriteLine($"Ciphered -> {(endCiphered - startCiphered).TotalMilliseconds}ms");
+
+            DateTime startCipher = DateTime.Now;
+            string Cipher = Ciphered.ParallelJoin('-');
+            DateTime endCipher = DateTime.Now;
+            Debug.WriteLine($"Cipher -> {(endCipher - startCipher).TotalMilliseconds}ms");
+
+            return Cipher;//string.Join('-', Ciphered);
         }
 
         public static string Decrypt(this string s, PrivateKey Key)
         {
-            string[] Ciphered = s.Split('-');
-            BigInteger[] CipheredNumbers = Ciphered.Select(x => BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier)).ToArray();
-            BigInteger[] Numbers = CipheredNumbers.Select(x => BigInteger.ModPow(x, Key.d, Key.n)).ToArray();
-            byte[] CharBytes = Numbers.Select(x => (byte)x).ToArray();
+            string[]? Ciphered = s.Split('-');
+            IEnumerable<BigInteger>? CipheredNumbers = Ciphered.AsParallel().AsOrdered().Select(x => BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier));
+            Ciphered = null;
+            IEnumerable<BigInteger>? Numbers = CipheredNumbers.AsParallel().AsOrdered().Select(x => BigInteger.ModPow(x, Key.d, Key.n));
+            CipheredNumbers = null;
+            byte[]? CharBytes = Numbers.AsParallel().AsOrdered().Select(x => (byte)x).ToArray();
+            Numbers = null;
             char[] Characters = Encoding.UTF8.GetChars(CharBytes);
-            return new string(Characters);
+            CharBytes = null;
+            GC.Collect();
+            string Plaintext = new string(Characters);
+            return Plaintext;
         }
     }
 
