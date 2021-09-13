@@ -40,14 +40,14 @@ namespace The_Project.Cryptography
         public static string Encrypt(this string s, PublicKey Key, MainWindow? window = null)
         {
             byte[]? StringBytes = Encoding.UTF8.GetBytes(s);
-            IEnumerable<string> Ciphered = StringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.e, Key.n).ToString("X"));
+            IEnumerable<string> Ciphered = StringBytes.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount).AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.e, Key.n).ToString("X"));
             string Cipher = Ciphered.ParallelJoin('-');
             return Cipher; //string.Join('-', Ciphered);
         }
 
         public static string Decrypt(this string s, PrivateKey Key)
         {
-            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.d, Key.n));
+            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount).AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.d, Key.n));
             //IEnumerable<byte>? CharBytes = CipheredNumbers.Select(x => (byte)BigInteger.ModPow(x, Key.d, Key.n));
             return Encoding.UTF8.GetString(CharBytes.ToArray());
         }

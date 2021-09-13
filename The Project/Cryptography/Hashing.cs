@@ -130,7 +130,7 @@ namespace The_Project.Cryptography
                 PrimeHash7 = temph7.ToUInt32();
             }
 
-            return string.Concat((new uint[8] { PrimeHash0, PrimeHash1, PrimeHash2, PrimeHash3, PrimeHash4, PrimeHash5, PrimeHash6, PrimeHash7 }).AsParallel().AsOrdered().Select(x => x.ToString("X").PadLeft(8, '0')));
+            return string.Concat((new uint[8] { PrimeHash0, PrimeHash1, PrimeHash2, PrimeHash3, PrimeHash4, PrimeHash5, PrimeHash6, PrimeHash7 }).AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount).AsOrdered().Select(x => x.ToString("X").PadLeft(8, '0')));
         }
 
         private static List<BitArray> SplitIntoChunks(BitArray arr, int bits = 512)
