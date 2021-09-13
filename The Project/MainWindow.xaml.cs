@@ -174,8 +174,8 @@ namespace The_Project
                 DateTime startTimeEncrypt = DateTime.Now;
                 string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey, this);
                 DateTime endTimeEncrypt = DateTime.Now;
-                //Output($"ENCRYPTED STRING ->");
-                //Output(EncryptedString);
+                Output($"ENCRYPTED STRING ->");
+                Output(EncryptedString);
                 Debug.WriteLine($"Time to encrypt -> {(endTimeEncrypt - startTimeEncrypt).TotalMilliseconds}ms");
                 Output($"Decrypting using PRIVATE KEY...");
                 DateTime startTimeDecrypt = DateTime.Now;
