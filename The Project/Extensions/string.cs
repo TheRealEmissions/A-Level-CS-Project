@@ -48,7 +48,7 @@ namespace The_Project.Extensions
         private static string MergeString(List<List<string>> Arr, char Separator)
         {
             Debug.WriteLine(Arr.Count);
-            List<List<string>> Strings = Arr.AsParallel().WithDegreeOfParallelism(Environment.ProcessorCount).AsOrdered().Select(x => new List<string>() { string.Join(Separator, x) }).ToList();
+            List<List<string>> Strings = Arr.AsParallel().AsOrdered().WithDegreeOfParallelism(Environment.ProcessorCount).Select(x => new List<string>() { string.Join(Separator, x) }).ToList();
             if (Strings.Count == 1)
             {
                 if (Strings[0].Count > 1)
