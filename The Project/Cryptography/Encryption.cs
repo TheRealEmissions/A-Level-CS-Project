@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using The_Project.Extensions;
 
 #nullable enable
+/**
+ * IMPLEMENTATION OF RSA ENCRYPTION
+ * HEXADECIMAL CONVERSION
+ */
 namespace The_Project.Cryptography
 {
     public struct PublicKey
