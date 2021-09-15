@@ -10,7 +10,7 @@ namespace The_Project.Database
 {
     class UserAccount : IDatabaseUserAccount
     {
-        SqliteConnection Connection;
+        private readonly SqliteConnection Connection;
 
         public UserAccount(SqliteConnection Connection)
         {
@@ -28,7 +28,7 @@ namespace The_Project.Database
             return DbPassword == Password;
         }
 
-        public void CreateEntry()
+        public void CreateEntry(string Username, string Password)
         {
 
         }
