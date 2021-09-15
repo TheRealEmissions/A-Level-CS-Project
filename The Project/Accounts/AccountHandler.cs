@@ -1,10 +1,11 @@
 ﻿using Microsoft.Data.Sqlite;
+using The_Project.Database;
 
 #nullable enable
 
 namespace The_Project.Accounts
 {
-    public class AccountHandler
+    public class AccountHandler : UserAccount
     {
         public readonly bool hasAccount = false;
         public readonly string AccountID = "NONE";
@@ -17,10 +18,8 @@ namespace The_Project.Accounts
                 SELECT *
                 FROM accounts
                 WHERE username = $USERNAME
-                AND password = $PASSWORD
-            ";
+                ";
             Command.Parameters.AddWithValue("$USERNAME", Username);
-            Command.Parameters.AddWithValue("$PASSWORD", Password);
 
             SqliteDataReader? Reader = Command.ExecuteReader();
             if (Reader.Read())
@@ -32,6 +31,7 @@ namespace The_Project.Accounts
         public AccountHandler(string Username, string Password, string ConfPassword, SqliteConnection? Connection)
         {
             if (Connection is null) return;
+            if (Password != ConfPassword) return;
         }
 
         public AccountHandler(string Username)
