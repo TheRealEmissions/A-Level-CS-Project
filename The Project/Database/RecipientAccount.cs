@@ -9,7 +9,7 @@ namespace The_Project.Database
 {
     public class RecipientAccount : IDatabaseAccount
     {
-        SqliteConnection Connection;
+        private readonly SqliteConnection Connection;
 
         public RecipientAccount(SqliteConnection Connection)
         {
@@ -21,7 +21,7 @@ namespace The_Project.Database
             Connection = new SQL().Connection;
         }
 
-        public void CreateEntry()
+        public void CreateEntry(string Username, string Password)
         {
 
         }
