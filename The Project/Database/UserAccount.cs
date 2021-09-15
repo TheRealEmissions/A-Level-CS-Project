@@ -8,7 +8,7 @@ using The_Project.Database.Interfaces;
 
 namespace The_Project.Database
 {
-    class UserAccount : IDatabaseUserAccount
+    public class UserAccount : IDatabaseUserAccount
     {
         private readonly SqliteConnection Connection;
 
