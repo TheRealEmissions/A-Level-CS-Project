@@ -8,6 +8,6 @@ namespace The_Project.Database
 {
     interface IDatabaseAccount
     {
-        public void CreateEntry();
+        public void CreateEntry(string Username, string Password);
     }
 }
