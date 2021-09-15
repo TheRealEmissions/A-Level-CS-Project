@@ -6,7 +6,7 @@ namespace The_Project.Database
 {
     public class SQL
     {
-        public SqliteConnection? Connection;
+        public SqliteConnection Connection;
 
         public SQL()
         {
