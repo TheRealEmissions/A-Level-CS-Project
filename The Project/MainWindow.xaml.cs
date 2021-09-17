@@ -29,7 +29,7 @@ namespace The_Project
         {
             SQLConnection = Handler.Connection;
 
-            new Tables(SQLConnection).GetAndCreateAllTables();
+            //new Tables(SQLConnection).GetAndCreateAllTables();
 
             InitializeComponent();
             SetAllButtonsToDisabled();
@@ -174,7 +174,7 @@ namespace The_Project
 
                 Encryption encryption = new();
 
-                Output($"PUBLIC KEY -> {encryption.PublicKey.n}");
+                //Output($"PUBLIC KEY -> {encryption.PublicKey.n}");
 
                 DateTime startTimeEncrypt = DateTime.Now;
                 string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey, this);
