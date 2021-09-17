@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
+using The_Project.Database.Tables;
 
 #nullable enable
 
@@ -25,6 +28,8 @@ namespace The_Project
         public MainWindow()
         {
             SQLConnection = Handler.Connection;
+
+            new Tables(SQLConnection).GetAndCreateAllTables();
 
             InitializeComponent();
             SetAllButtonsToDisabled();
@@ -174,8 +179,8 @@ namespace The_Project
                 DateTime startTimeEncrypt = DateTime.Now;
                 string EncryptedString = txtinput_testEncryption.Text.Encrypt(encryption.PublicKey, this);
                 DateTime endTimeEncrypt = DateTime.Now;
-                //Output($"ENCRYPTED STRING ->");
-                //Output(EncryptedString);
+                Output($"ENCRYPTED STRING ->");
+                Output(EncryptedString);
                 Debug.WriteLine($"Time to encrypt -> {(endTimeEncrypt - startTimeEncrypt).TotalMilliseconds}ms");
                 Output($"Decrypting using PRIVATE KEY...");
                 DateTime startTimeDecrypt = DateTime.Now;
