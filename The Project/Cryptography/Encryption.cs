@@ -58,7 +58,7 @@ namespace The_Project.Cryptography
             // find more efficient way to convert BigInteger (too slow right now)
             Numbers = null;
             DateTime startCiphered = DateTime.Now;
-            string[] Ciphered = CipheredNumbers.AsParallel().AsOrdered().Select(x => x.ToString("X")).ToArray();
+            ParallelQuery<string> Ciphered = CipheredNumbers.AsParallel().AsOrdered().Select(x => x.ToString("X"));
             DateTime endCiphered = DateTime.Now;
             Debug.WriteLine($"Ciphered -> {(endCiphered - startCiphered).TotalMilliseconds}ms");
 
