@@ -36,7 +36,8 @@ namespace The_Project.Extensions
                 if (Array.Count() - 1 < i + 1)
                 {
                     NewArr.Add(new List<string>() { Array.ElementAt(i) });
-                } else
+                }
+                else
                 {
                     NewArr.Add(new List<string>() { Array.ElementAt(i), Array.ElementAt(i + 1) });
                 }
@@ -54,7 +55,8 @@ namespace The_Project.Extensions
                 if (Strings.ElementAt(0).Count() > 1)
                 {
                     return Strings.ElementAt(0).ElementAt(0) + '-' + Strings.ElementAt(0).ElementAt(1);
-                } else
+                }
+                else
                 {
                     return Strings.ElementAt(0).ElementAt(0);
                 }
@@ -68,7 +70,7 @@ namespace The_Project.Extensions
                 }
                 else
                 {
-                    NewStrings.Add(new List<string> { Strings.ElementAt(i).ElementAt(0), Strings.ElementAt(i+1).ElementAt(0) });
+                    NewStrings.Add(new List<string> { Strings.ElementAt(i).ElementAt(0), Strings.ElementAt(i + 1).ElementAt(0) });
                 }
             }
             return MergeString(NewStrings, Separator);

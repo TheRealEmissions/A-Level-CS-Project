@@ -14,12 +14,10 @@ namespace The_Project.Database
 
         public UserAccount(SqliteConnection Connection) : base(Connection)
         {
-            CreateTable();
         }
 
         public UserAccount() : base(new SQL().Connection)
         {
-            CreateTable();
         }
 
         public bool ComparePassword(string Password)

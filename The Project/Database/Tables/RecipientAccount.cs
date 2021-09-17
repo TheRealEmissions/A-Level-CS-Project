@@ -15,7 +15,7 @@ namespace The_Project.Database.Tables
         public RecipientAccount(SqliteConnection connection) : base(connection)
         {
             Connection = connection;
-            CreateTable();
+            //CreateTable();
         }
 
         public void CreateTable()

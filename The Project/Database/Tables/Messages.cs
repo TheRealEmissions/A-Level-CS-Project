@@ -15,7 +15,7 @@ namespace The_Project.Database.Tables
         public Messages(SqliteConnection Connection) : base(Connection)
         {
             this.Connection = Connection;
-            CreateTable();
+            //CreateTable();
         }
 
         public void CreateTable()

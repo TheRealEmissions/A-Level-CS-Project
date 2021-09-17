@@ -9,10 +9,6 @@ using System.Threading.Tasks;
 using The_Project.Extensions;
 
 #nullable enable
-/**
- * IMPLEMENTATION OF RSA ENCRYPTION
- * HEXADECIMAL CONVERSION
- */
 namespace The_Project.Cryptography
 {
     public struct PublicKey
@@ -44,33 +40,14 @@ namespace The_Project.Cryptography
         public static string Encrypt(this string s, PublicKey Key, MainWindow? window = null)
         {
             byte[]? StringBytes = Encoding.UTF8.GetBytes(s);
-
-            DateTime startNumbers = DateTime.Now;
-            IEnumerable<uint>? Numbers = StringBytes.AsParallel().AsOrdered().Select(x => (uint)x);
-            DateTime endNumbers = DateTime.Now;
-            Debug.WriteLine($"Numbers -> {(endNumbers - startNumbers).TotalMilliseconds}ms");
-
-            StringBytes = null;
-            DateTime startCN = DateTime.Now;
-            IEnumerable<BigInteger>? CipheredNumbers = Numbers.AsParallel().AsOrdered().Select(x => BigInteger.ModPow(x, Key.e, Key.n));
-            DateTime endCN = DateTime.Now;
-            Debug.WriteLine($"CN -> {(endCN - startCN).TotalMilliseconds}ms");
-
-            // find more efficient way to convert BigInteger (too slow right now)
-            Numbers = null;
-            DateTime startCiphered = DateTime.Now;
-            string[] Ciphered = CipheredNumbers.AsParallel().AsOrdered().Select(x => x.ToString("X")).ToArray();
-            DateTime endCiphered = DateTime.Now;
-            Debug.WriteLine($"Ciphered -> {(endCiphered - startCiphered).TotalMilliseconds}ms");
-
-            DateTime startCipher = DateTime.Now;
-            string Cipher = Ciphered.ParallelJoin('-');
-            return Cipher; //string.Join('-', Ciphered);
+            IEnumerable<string> Ciphered = StringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.e, Key.n).ToString("X"));
+            //string Cipher = Ciphered.ParallelJoin('-');
+            return string.Join('-', Ciphered);
         }
 
         public static string Decrypt(this string s, PrivateKey Key)
         {
-            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().WithDegreeOfParallelism(Environment.ProcessorCount).Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.d, Key.n));
+            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.d, Key.n));
             //IEnumerable<byte>? CharBytes = CipheredNumbers.Select(x => (byte)BigInteger.ModPow(x, Key.d, Key.n));
             return Encoding.UTF8.GetString(CharBytes.ToArray());
         }
@@ -115,7 +92,7 @@ namespace The_Project.Cryptography
         {
             BigInteger d = (1 + phi) / e;
             int i = 1;
-            while (e*d%phi != (1%phi))
+            while (e * d % phi != (1 % phi))
             {
                 d = (1 + ((i + 1) * phi)) / e;
                 i++;
