@@ -23,7 +23,19 @@ namespace The_Project.Database.Tables
             SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"
                 CREATE TABLE IF NOT EXISTS db.messages (
-                    user_account_id TEXT NOT NULL
+                    user_account_id TEXT NOT NULL,
+                    recipient_account_id TEXT NOT NULL,
+                    timestamp INTEGER NOT NULL,
+                    message TEXT,
+                    received BOOL NOT NULL,
+                    FOREIGN KEY (user_account_id)
+                        REFERENCES useraccounts (account_id)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE,
+                    FOREIGN KEY (recipient_account_id)
+                        REFERENCES recipientaccounts (account_id)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE
                 )
             ";
         }
