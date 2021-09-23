@@ -5,16 +5,13 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>The_Project</RootNamespace>
     <UseWPF>true</UseWPF>
+    <StartupObject>The_Project.App</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="5.0.7" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Networking\" />
   </ItemGroup>
 
 </Project>
