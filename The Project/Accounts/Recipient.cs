@@ -6,7 +6,12 @@
         {
 
         }
+        /**
+         * Send a message to the recipient
+         */
+        public void Send(string text)
+        {
 
-
+        }
     }
 }
