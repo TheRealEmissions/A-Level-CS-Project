@@ -53,7 +53,7 @@ namespace The_Project.Cryptography
             // ***
             StringToBytesArray = Pad(StringToBytesArray);
 
-            mainWindow.Output($"PADDED ARR LENGTH: {StringToBytesArray.Length}");
+            mainWindow.Debug($"PADDED ARR LENGTH: {StringToBytesArray.Length}");
 
             // ***
             // break into 512 bit chunks
