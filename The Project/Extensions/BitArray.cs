@@ -78,5 +78,12 @@ namespace The_Project.Extensions
             BitArray Arr = TempArr.Not();
             return Arr;
         }
+
+        public static byte[] ToByteArray(this BitArray bitArray)
+        {
+            byte[] bytes = new byte[bitArray.Length / 8];
+            bitArray.CopyTo(bytes, 0);
+            return bytes;
+        }
     }
 }
