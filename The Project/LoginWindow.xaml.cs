@@ -23,7 +23,7 @@ namespace The_Project
         LoggingWindow DebugWindow = new();
 
         private MessagingHandler Handler = new();
-        public SqliteConnection? SQLConnection = null;
+        public SqliteConnection? SQLConnection;
 
         public MainWindow()
         {
@@ -174,6 +174,11 @@ namespace The_Project
         {
             if (DebugWindow.IsActive) return;
             DebugWindow.Show();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            DebugWindow.Close();
         }
     }
 }
