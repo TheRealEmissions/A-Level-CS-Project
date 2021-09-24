@@ -165,7 +165,11 @@ namespace The_Project.Cryptography
             }
 
             byte[] Int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(originalLength));
-            if (BitConverter.IsLittleEndian) Array.Reverse(Int64Bytes);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(Int64Bytes);
+            }
+
             BitArray messageLengthArr = new(Int64Bytes);
 
             foreach (bool b in messageLengthArr)
