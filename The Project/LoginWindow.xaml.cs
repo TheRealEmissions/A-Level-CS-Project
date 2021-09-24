@@ -1,15 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
-using The_Project.Database.Tables;
 
 #nullable enable
 
@@ -22,7 +16,7 @@ namespace The_Project
     {
         LoggingWindow DebugWindow = new();
 
-        private MessagingHandler Handler = new();
+        private readonly MessagingHandler Handler = new();
         public SqliteConnection? SQLConnection;
 
         public MainWindow()
@@ -40,9 +34,6 @@ namespace The_Project
             txtinput_username.TextChanged += Txtinput_username_TextChanged;
             txtinput_pswd.PasswordChanged += Txtinput_pswd_TextChanged;
             txtinput_confpswd.PasswordChanged += Txtinput_confpswd_TextChanged;
-            txtinput_username.LostFocus += Txtinput_username_LostFocus;
-            txtinput_pswd.LostFocus += Txtinput_pswd_LostFocus;
-            txtinput_confpswd.LostFocus += Txtinput_confpswd_LostFocus;
 
             // add handler
             txtinput_username.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
@@ -55,30 +46,6 @@ namespace The_Project
             DebugWindow.Debug(text);
         }
 
-        private void Txtinput_confpswd_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtinput_confpswd.Password.Length < 1)
-            {
-                txtinput_confpswd.Password = "Confirm Password";
-            }
-        }
-
-        private void Txtinput_pswd_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtinput_pswd.Password.Length < 1)
-            {
-                txtinput_pswd.Password = "Password";
-            }
-        }
-
-        private void Txtinput_username_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (txtinput_username.Text.Length < 1)
-            {
-                txtinput_username.Text = "Username";
-            }
-        }
-
         private void Txtinput_pswd_TextChanged(object sender, RoutedEventArgs e)
         {
             if (txtinput_username.Text.Length < 1)
@@ -89,7 +56,10 @@ namespace The_Project
             if (txtinput_pswd.Password.Length > 0 && txtinput_pswd.Password != "Password")
             {
                 btn_login.IsEnabled = true;
-                if (txtinput_confpswd.Password.Length > 0 && txtinput_confpswd.Password == txtinput_pswd.Password) btn_register.IsEnabled = true;
+                if (txtinput_confpswd.Password.Length > 0 && txtinput_confpswd.Password == txtinput_pswd.Password)
+                {
+                    btn_register.IsEnabled = true;
+                }
             }
             else
             {
@@ -104,14 +74,7 @@ namespace The_Project
                 SetAllButtonsToDisabled();
                 return;
             }
-            if (txtinput_pswd.Password == txtinput_confpswd.Password && (txtinput_confpswd.Password != "Confirm Password" || txtinput_confpswd.Password != "Password"))
-            {
-                btn_register.IsEnabled = true;
-            }
-            else
-            {
-                btn_register.IsEnabled = false;
-            }
+            btn_register.IsEnabled = txtinput_pswd.Password == txtinput_confpswd.Password && (txtinput_confpswd.Password != "Confirm Password" || txtinput_confpswd.Password != "Password");
         }
 
         private void Txtinput_username_TextChanged(object sender, TextChangedEventArgs e)
@@ -172,7 +135,11 @@ namespace The_Project
 
         private void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)
         {
-            if (DebugWindow.IsActive) return;
+            if (DebugWindow.IsActive)
+            {
+                return;
+            }
+
             DebugWindow.Show();
         }
 

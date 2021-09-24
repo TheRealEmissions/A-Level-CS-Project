@@ -29,7 +29,11 @@ namespace The_Project.Extensions
                         }
                         return NewArr;*/
 
-            if (Array.Count() <= 1) return new List<IEnumerable<string>>() { Array };
+            if (Array.Count() <= 1)
+            {
+                return new List<IEnumerable<string>>() { Array };
+            }
+
             List<IEnumerable<string>> NewArr = new();
             for (int i = 0; i <= Array.Count() - 1; i += 2)
             {
@@ -48,18 +52,12 @@ namespace The_Project.Extensions
 
         private static string MergeString(List<IEnumerable<string>> Arr, char Separator)
         {
-            Debug.WriteLine(Arr.Count());
             IEnumerable<IEnumerable<string>> Strings = Arr.AsParallel().AsOrdered().Select(x => new List<string>() { string.Join(Separator, x) });
             if (Strings.Count() == 1)
             {
-                if (Strings.ElementAt(0).Count() > 1)
-                {
-                    return Strings.ElementAt(0).ElementAt(0) + '-' + Strings.ElementAt(0).ElementAt(1);
-                }
-                else
-                {
-                    return Strings.ElementAt(0).ElementAt(0);
-                }
+                return Strings.ElementAt(0).Count() > 1
+                    ? Strings.ElementAt(0).ElementAt(0) + '-' + Strings.ElementAt(0).ElementAt(1)
+                    : Strings.ElementAt(0).ElementAt(0);
             }
             List<IEnumerable<string>> NewStrings = new();
             for (int i = 0; i <= Strings.Count() - 1; i += 2)
@@ -78,16 +76,8 @@ namespace The_Project.Extensions
 
         public static string ParallelJoin(this IEnumerable<string> Arr, char Separator)
         {
-            DateTime startSplit = DateTime.Now;
             List<IEnumerable<string>> ArrSplit = SplitArr(Arr);
-            DateTime endSplit = DateTime.Now;
-            Debug.WriteLine($"SPLIT TIME -> {(endSplit - startSplit).TotalMilliseconds}ms");
-
-            Debug.WriteLine(ArrSplit.Count);
-            DateTime startMerge = DateTime.Now;
             string Merged = MergeString(ArrSplit, Separator);
-            DateTime endMerge = DateTime.Now;
-            Debug.WriteLine($"MERGE TIME -> {(endMerge - startMerge).TotalMilliseconds}ms");
             return Merged;
         }
     }

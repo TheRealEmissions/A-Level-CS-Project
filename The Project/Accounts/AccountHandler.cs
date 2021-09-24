@@ -7,12 +7,16 @@ namespace The_Project.Accounts
 {
     public class AccountHandler : UserAccount
     {
-        public readonly bool hasAccount = false;
-        public readonly string AccountID = "NONE";
+        public bool HasAccount { get; }
+        public string AccountID { get; } = "NONE";
 
         public AccountHandler(string Username, string Password, SqliteConnection? Connection)
         {
-            if (Connection is null) return;
+            if (Connection is null)
+            {
+                return;
+            }
+
             SqliteCommand? Command = Connection.CreateCommand();
             Command.CommandText = @"
                 SELECT *
@@ -24,14 +28,21 @@ namespace The_Project.Accounts
             SqliteDataReader? Reader = Command.ExecuteReader();
             if (Reader.Read())
             {
-                hasAccount = true;
+                HasAccount = true;
             }
         }
 
         public AccountHandler(string Username, string Password, string ConfPassword, SqliteConnection? Connection)
         {
-            if (Connection is null) return;
-            if (Password != ConfPassword) return;
+            if (Connection is null)
+            {
+                return;
+            }
+
+            if (Password != ConfPassword)
+            {
+                return;
+            }
         }
 
         public AccountHandler(string Username)

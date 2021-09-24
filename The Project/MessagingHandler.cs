@@ -7,8 +7,8 @@ namespace The_Project
 {
     public class MessagingHandler : SQL
     {
-        public Account? UserAccount { get; set; } = null;
-        public Recipient? Recipient { get; set; } = null;
+        public Account? UserAccount { get; set; }
+        public Recipient? Recipient { get; set; }
 
         public MessagingHandler() : base()
         {

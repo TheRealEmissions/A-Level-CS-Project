@@ -7,14 +7,14 @@ namespace The_Project.Extensions
     {
         public static BitArray SafeRightShift(this BitArray bitArray, int bits)
         {
-            BitArray tempArr = new BitArray(bitArray);
+            BitArray tempArr = new(bitArray);
             tempArr.RightShift(bits);
             return tempArr;
         }
 
         public static BitArray SafeLeftShift(this BitArray bitArray, int bits)
         {
-            BitArray tempArr = new BitArray(bitArray);
+            BitArray tempArr = new(bitArray);
             tempArr.LeftShift(bits);
             return tempArr;
         }
@@ -67,14 +67,14 @@ namespace The_Project.Extensions
 
         public static BitArray SafeAnd(this BitArray bitArray1, BitArray bitArray2)
         {
-            BitArray TempArr = new BitArray(bitArray1);
+            BitArray TempArr = new(bitArray1);
             BitArray Arr = TempArr.And(bitArray2);
             return Arr;
         }
 
         public static BitArray SafeNot(this BitArray bitArray1)
         {
-            BitArray TempArr = new BitArray(bitArray1);
+            BitArray TempArr = new(bitArray1);
             BitArray Arr = TempArr.Not();
             return Arr;
         }

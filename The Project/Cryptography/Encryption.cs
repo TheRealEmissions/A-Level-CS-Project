@@ -13,41 +13,41 @@ namespace The_Project.Cryptography
 {
     public struct PublicKey
     {
-        public BigInteger n;
-        public BigInteger e;
+        public BigInteger N { get; }
+        public BigInteger E { get; }
 
         public PublicKey(BigInteger n, BigInteger? e = null)
         {
-            this.n = n;
-            this.e = e ?? 65537;
+            N = n;
+            E = e ?? 65537;
         }
     }
 
     public struct PrivateKey
     {
-        public BigInteger n;
-        public BigInteger d;
+        public BigInteger N { get; }
+        public BigInteger D { get; }
 
         public PrivateKey(BigInteger n, BigInteger d)
         {
-            this.n = n;
-            this.d = d;
+            N = n;
+            D = d;
         }
     }
 
     public static class EncryptionExtensions
     {
-        public static string Encrypt(this string s, PublicKey Key, MainWindow? window = null)
+        public static string Encrypt(this string s, PublicKey Key)
         {
             byte[]? StringBytes = Encoding.UTF8.GetBytes(s);
-            IEnumerable<string> Ciphered = StringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.e, Key.n).ToString("X"));
+            IEnumerable<string> Ciphered = StringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.E, Key.N).ToString("X"));
             //string Cipher = Ciphered.ParallelJoin('-');
             return string.Join('-', Ciphered);
         }
 
         public static string Decrypt(this string s, PrivateKey Key)
         {
-            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.d, Key.n));
+            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.D, Key.N));
             //IEnumerable<byte>? CharBytes = CipheredNumbers.Select(x => (byte)BigInteger.ModPow(x, Key.d, Key.n));
             return Encoding.UTF8.GetString(CharBytes.ToArray());
         }
@@ -67,8 +67,8 @@ namespace The_Project.Cryptography
         private readonly BigInteger e = 65537;//new BigInteger(2).GetCoprime(phi);
         private readonly BigInteger d;
 
-        public readonly PublicKey PublicKey;
-        public readonly PrivateKey PrivateKey;
+        public PublicKey PublicKey { get; }
+        public PrivateKey PrivateKey { get; }
 
         public Encryption()
         {

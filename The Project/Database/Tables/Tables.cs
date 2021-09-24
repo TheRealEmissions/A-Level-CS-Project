@@ -10,7 +10,7 @@ namespace The_Project.Database.Tables
 {
     public class Tables
     {
-        private List<ISQLTable> AllTables = new();
+        private readonly List<ISQLTable> AllTables = new();
 
         public Tables(SqliteConnection Connection)
         {
@@ -20,6 +20,9 @@ namespace The_Project.Database.Tables
             AllTables.Add(new UserAccount(Connection));
         }
 
-        public ISQLTable[] GetAndCreateAllTables() => AllTables.ToArray();
+        public ISQLTable[] GetAndCreateAllTables()
+        {
+            return AllTables.ToArray();
+        }
     }
 }

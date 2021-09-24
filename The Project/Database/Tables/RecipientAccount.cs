@@ -11,7 +11,7 @@ namespace The_Project.Database.Tables
 {
     public class RecipientAccount : MustConstructWith<SqliteConnection>, ISQLTable
     {
-        protected SqliteConnection Connection;
+        private readonly SqliteConnection Connection;
         public RecipientAccount(SqliteConnection connection) : base(connection)
         {
             Connection = connection;
@@ -32,7 +32,7 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
-            Command.ExecuteReader();
+            Command.ExecuteNonQuery();
         }
     }
 }

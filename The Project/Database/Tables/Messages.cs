@@ -11,7 +11,7 @@ namespace The_Project.Database.Tables
 {
     public class Messages : MustConstructWith<SqliteConnection>, ISQLTable
     {
-        protected SqliteConnection Connection;
+        private readonly SqliteConnection Connection;
         public Messages(SqliteConnection Connection) : base(Connection)
         {
             this.Connection = Connection;
@@ -38,6 +38,7 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
+            Command.ExecuteNonQuery();
         }
     }
 }

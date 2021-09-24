@@ -11,7 +11,7 @@ namespace The_Project.Database.Tables
 {
     public class UserAccount : MustConstructWith<SqliteConnection>, ISQLTable
     {
-        protected SqliteConnection Connection;
+        private readonly SqliteConnection Connection;
 
         public UserAccount(SqliteConnection connection) : base(connection)
         {
@@ -29,7 +29,7 @@ namespace The_Project.Database.Tables
                     account_id TEXT PRIMARY KEY
                 )
             ";
-            Command.ExecuteReader();
+            Command.ExecuteNonQuery();
         }
     }
 }

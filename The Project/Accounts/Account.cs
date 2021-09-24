@@ -4,7 +4,7 @@ namespace The_Project.Accounts
 {
     public class Account : AccountHandler
     {
-        public string Username = "";
+        public string Username { get; } = "";
 
         // login into account and retrieve details
         public Account(string Username, string Password, SqliteConnection Connection) : base(Username, Password, Connection)

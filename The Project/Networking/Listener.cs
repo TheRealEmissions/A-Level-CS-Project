@@ -15,7 +15,7 @@ namespace The_Project.Networking
     public class Listener
     {
 
-        public readonly TcpListener Server;
+        public TcpListener Server { get; }
         public int Port { get; }
 
         public Listener(UserId UserId)
@@ -25,7 +25,7 @@ namespace The_Project.Networking
             Server.Start();
         }
 
-        private int GeneratePort(int Min, int Max)
+        private static int GeneratePort(int Min, int Max)
         {
             return new Random().Next(Min, Max);
         }
@@ -40,7 +40,9 @@ namespace The_Project.Networking
             while (Connection is null)
             {
                 // if no pending connection, continue loop
-                if (!Server.Pending()) continue;
+                if (!Server.Pending()) {
+                    continue;
+                }
                 // accept pending connection
                 TcpClient Client = Server.AcceptTcpClient();
 

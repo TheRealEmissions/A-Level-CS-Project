@@ -6,18 +6,19 @@ namespace The_Project.Database
 {
     public class SQL
     {
-        public SqliteConnection Connection;
+        public SqliteConnection Connection { get; set; }
 
         public SQL()
         {
             Connection = Start();
         }
 
-        private SqliteConnection Start()
+        private static SqliteConnection Start()
         {
             SqliteConnection Connection = new("Data Source=account.db;Mode=ReadWriteCreate");
             Connection.Open();
             return Connection;
         }
+
     }
 }

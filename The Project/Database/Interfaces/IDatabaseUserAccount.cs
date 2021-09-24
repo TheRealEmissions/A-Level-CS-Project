@@ -10,7 +10,7 @@ namespace The_Project.Database.Interfaces
      * REQUIRED:
      * check password (based on hashes)
      */
-    interface IDatabaseUserAccount : IDatabaseAccount
+    internal interface IDatabaseUserAccount : IDatabaseAccount
     {
         public bool ComparePassword(string Password);
         public string GetPassword();

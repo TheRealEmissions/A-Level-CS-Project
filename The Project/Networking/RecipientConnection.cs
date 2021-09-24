@@ -13,7 +13,7 @@ namespace The_Project.Networking
     public class RecipientConnection
     {
 
-        public TcpClient? Client;
+        public TcpClient? Client { get; }
 
         public RecipientConnection()
         {
@@ -25,7 +25,7 @@ namespace The_Project.Networking
             this.Client = Client;
         }
 
-        public bool ConnectTo(UserId UserId)
+        public static bool ConnectTo(UserId UserId)
         {
             TcpClient? Client = null;
             int PortToCheck = UserId.MinPort;
@@ -36,7 +36,7 @@ namespace The_Project.Networking
             return Client is null;
         }
 
-        public TcpClient? CreateConnection(IPAddress IP, int Port, string AccountId)
+        public static TcpClient? CreateConnection(IPAddress IP, int Port, string AccountId)
         {
             TcpClient Client = new(IP.ToString(), Port);
             return !Client.Connected ? null : Client;

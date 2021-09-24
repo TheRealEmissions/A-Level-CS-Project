@@ -29,7 +29,11 @@ namespace The_Project
         public void Debug(string text)
         {
             OutputLog.Add(text);
-            if (OutputLog.Count > 100) OutputLog.RemoveAt(0);
+            if (OutputLog.Count > 100)
+            {
+                OutputLog.RemoveAt(0);
+            }
+
             txt_log.Text = string.Join("\n", OutputLog);
         }
 

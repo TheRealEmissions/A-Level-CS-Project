@@ -13,7 +13,11 @@ namespace The_Project.Extensions
         {
             while (x < y)
             {
-                if (x.GreatestCommonDivider(y) == 1) break;
+                if (x.GreatestCommonDivider(y) == 1)
+                {
+                    break;
+                }
+
                 x++;
             }
             return x;
@@ -22,19 +26,24 @@ namespace The_Project.Extensions
         public static BigInteger GreatestCommonDivider(this BigInteger a, BigInteger b)
         {
             BigInteger temp = a % b;
-            if (temp == 0) return b;
-            return b.GreatestCommonDivider(temp);
+            return temp == 0 ? b : b.GreatestCommonDivider(temp);
         }
 
         public static bool IsProbablyPrime(this BigInteger n)
         {
-            if (n <= 1 || n % 2 == 0) return false;
-            if (n == 3) return true;
+            if (n <= 1 || n % 2 == 0)
+            {
+                return false;
+            }
+
+            if (n == 3)
+            {
+                return true;
+            }
 
             BigInteger a = new BigInteger(2).GetCoprime(n);
             BigInteger result = BigInteger.ModPow(a, n - 1, n);
-            if (result != 1) return false;
-            return true;
+            return result == 1;
         }
     }
 }

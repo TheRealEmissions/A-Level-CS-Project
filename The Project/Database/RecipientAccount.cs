@@ -10,6 +10,7 @@ namespace The_Project.Database
 {
     public class RecipientAccount : Tables.RecipientAccount, IDatabaseAccount
     {
+        private readonly SqliteConnection Connection;
 
         public RecipientAccount(SqliteConnection Connection) : base(Connection)
         {
