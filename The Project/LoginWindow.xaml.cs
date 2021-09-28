@@ -14,10 +14,10 @@ namespace The_Project
     /// </summary>
     public partial class MainWindow : Window
     {
-        LoggingWindow DebugWindow = new();
+        private readonly LoggingWindow DebugWindow = new();
 
         private readonly MessagingHandler Handler = new();
-        public SqliteConnection? SQLConnection;
+        public SqliteConnection? SQLConnection { get; }
 
         public MainWindow()
         {
