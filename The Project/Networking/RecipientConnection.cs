@@ -39,7 +39,7 @@ namespace The_Project.Networking
         public static TcpClient? CreateConnection(IPAddress IP, int Port, string AccountId)
         {
             TcpClient Client = new(IP.ToString(), Port);
-            return !Client.Connected ? null : Client;
+            return Client.Connected ? Client : null;
         }
     }
 }
