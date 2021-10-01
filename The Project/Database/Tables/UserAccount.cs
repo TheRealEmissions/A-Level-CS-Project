@@ -1,11 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using The_Project.Database.Tables.Interfaces;
 using The_Project.Extensions;
+
+#nullable enable
 
 namespace The_Project.Database.Tables
 {
@@ -19,6 +16,20 @@ namespace The_Project.Database.Tables
             //CreateTable();
         }
 
+        public struct Schema
+        {
+            public string Username { get; }
+            public string Password { get; }
+            public string AccountId { get; }
+
+            public Schema(string Username, string Password, string AccountId)
+            {
+                this.Username = Username;
+                this.Password = Password;
+                this.AccountId = AccountId;
+            }
+        }
+
         public void CreateTable()
         {
             SqliteCommand Command = Connection.CreateCommand();
@@ -30,6 +41,34 @@ namespace The_Project.Database.Tables
                 )
             ";
             Command.ExecuteNonQuery();
+        }
+
+        public Schema? GetAccountEntry(string Username)
+        {
+            SqliteCommand? Command = Connection.CreateCommand();
+            Command.CommandText = @"
+                SELECT *
+                FROM accounts
+                WHERE username = $USERNAME
+                ";
+            Command.Parameters.AddWithValue("$USERNAME", Username);
+
+            SqliteDataReader? Reader = Command.ExecuteReader();
+
+            if (!Reader.HasRows)
+            {
+                return null;
+            }
+
+            if (Reader.Read())
+            {
+                object[] RowColumns = new object[3];
+                Reader.GetValues(RowColumns);
+
+                Schema Schema = new(RowColumns[0].ToString(), RowColumns[1].ToString(), RowColumns[2].ToString());
+                return Schema;
+            }
+            return null;
         }
     }
 }

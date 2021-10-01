@@ -1,9 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using The_Project.Database.Tables.Interfaces;
 using The_Project.Extensions;
 
@@ -12,10 +8,29 @@ namespace The_Project.Database.Tables
     public class Messages : MustConstructWith<SqliteConnection>, ISQLTable
     {
         private readonly SqliteConnection Connection;
+
         public Messages(SqliteConnection Connection) : base(Connection)
         {
             this.Connection = Connection;
             //CreateTable();
+        }
+
+        public struct Schema
+        {
+            public string UserAccountId { get; }
+            public string RefAccountId { get; }
+            public DateTime Timestamp { get; }
+            public string Message { get; }
+            public bool Received { get; }
+
+            public Schema(string UserAccountId, string RefAccountId, int Timestamp, string Message, bool Received)
+            {
+                this.UserAccountId = UserAccountId;
+                this.RefAccountId = RefAccountId;
+                this.Timestamp = new DateTime(Timestamp);
+                this.Message = Message;
+                this.Received = Received;
+            }
         }
 
         public void CreateTable()
