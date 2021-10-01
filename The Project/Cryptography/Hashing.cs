@@ -45,7 +45,7 @@ namespace The_Project.Cryptography
         {
             // implementation of SHA256 hashing
 
-            // turn string into bytes
+            // turn string into bytes (based on UTF8)
             BitArray StringToBytesArray = new(Encoding.UTF8.GetBytes(str));
 
             // ***
@@ -65,25 +65,23 @@ namespace The_Project.Cryptography
             // SPLITS INTO 32 bit chunks (16 originally, then adds 48 initalised to 0 for 64 bit)
             // ***
 
-
-
             foreach (BitArray chunk in ChunkedArr)
             {
+                // splits into 32 bit chunks (16 original entries)
                 List<BitArray> chunk32bit = SplitIntoChunks(chunk, 32); // 16 entries
+                // adds 48 more 32 bit chunks (initialised to 0)
                 chunk32bit.AddRange(collection: Enumerable.Repeat(new BitArray(32), 48));
-                /*                for (int j = 0; j < 48; j++)
-                                {
-                                    chunk32bit.Add(new BitArray(32)); // add 48 more to bring to 64 (256 bytes)
-                                }*/
-
+                // loop to extend original 16 entries into the other 48 entries
                 for (int j = 16; j < 64; j++)
                 {
+                    // logical bitwise operations on temporary variables for extension
                     BitArray s0 = chunk32bit[j - 15].SafeRightRotate(7)
                                                     .SafeXor(chunk32bit[j - 15].SafeRightRotate(18))
                                                     .SafeXor(chunk32bit[j - 15].SafeRightShift(3));
                     BitArray s1 = chunk32bit[j - 2].SafeRightRotate(17)
                                                    .SafeXor(chunk32bit[j - 2].SafeRightRotate(19))
                                                    .SafeXor(chunk32bit[j - 2].SafeRightShift(10));
+                    // re-assign entry after bitwise operations
                     chunk32bit[j] = chunk32bit[j - 16].Add(s0)
                                                       .Add(chunk32bit[j - 7])
                                                       .Add(s1);
