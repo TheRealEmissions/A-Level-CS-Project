@@ -24,9 +24,9 @@ namespace The_Project.Database
             this.Tables = Tables;
         }
 
-        public bool ComparePassword(Account Account, string Password)
+        public bool ComparePassword(Account Account, string PasswordHash)
         {
-            return GetPassword(Account) == Password;
+            return GetPassword(Account) == PasswordHash;
         }
 
         public void CreateEntry(string Username, UserId UserId)
@@ -42,13 +42,15 @@ namespace The_Project.Database
 
         public string GetPassword(Account Account)
         {
-            SqliteCommand Command = new();
-            Command.CommandText = @"SELECT ";
+            Tables.UserAccount.Schema Entry = (Tables.UserAccount.Schema)GetAccount(Account.Username);
+            return Entry.Password;
         }
 
-        public void SetPassword(Account Account)
+        public void SetPassword(Account Account, string PasswordHash)
         {
-            throw new NotImplementedException();
+            Tables.UserAccount Table = (Tables.UserAccount)Tables.GetTable("UserAccount");
+            Table.UpdatePasswordInEntry(Account.AccountId, PasswordHash);
+
         }
     }
 }

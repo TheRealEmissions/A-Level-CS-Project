@@ -9,10 +9,10 @@ namespace The_Project.Database.Interfaces
 
     internal interface IDatabaseUserAccount : IDatabaseAccount
     {
-        public bool ComparePassword(string Password);
+        public bool ComparePassword(Account Account, string PasswordHash);
 
         public string GetPassword(Account Account);
 
-        public void SetPassword(Account Account);
+        public void SetPassword(Account Account, string PasswordHash);
     }
 }

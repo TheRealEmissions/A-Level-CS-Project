@@ -50,6 +50,7 @@ namespace The_Project.Database.Tables
             SqliteCommand Command = new();
             Command.CommandText = @"";
             Command.ExecuteNonQuery();
+            return new Schema();
         }
     }
 }

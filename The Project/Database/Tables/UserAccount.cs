@@ -70,5 +70,14 @@ namespace The_Project.Database.Tables
             }
             return null;
         }
+
+        public void UpdatePasswordInEntry(string AccountId, string Password)
+        {
+            SqliteCommand Command = new();
+            Command.CommandText = @"UPDATE accounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
+            Command.Parameters.AddWithValue("$PASSWORD", Password);
+            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
+            Command.ExecuteNonQuery();
+        }
     }
 }
