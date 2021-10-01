@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 using The_Project.Extensions;
 
 #nullable enable
+
 namespace The_Project.Cryptography
 {
     public struct PublicKey
@@ -55,7 +54,6 @@ namespace The_Project.Cryptography
 
     public class Encryption
     {
-
         private readonly BigInteger x;
         private readonly BigInteger y;
         private readonly BigInteger n;
@@ -65,6 +63,7 @@ namespace The_Project.Cryptography
         // find e such that e > 1, e < phi
         // e is co-prime to phi
         private readonly BigInteger e = 65537;//new BigInteger(2).GetCoprime(phi);
+
         private readonly BigInteger d;
 
         public PublicKey PublicKey { get; }
