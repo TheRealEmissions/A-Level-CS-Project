@@ -19,6 +19,5 @@ namespace The_Project.Database
             Connection.Open();
             return Connection;
         }
-
     }
 }
