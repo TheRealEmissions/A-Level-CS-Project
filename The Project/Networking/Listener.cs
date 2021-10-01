@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using The_Project.Accounts;
 using The_Project.Extensions;
 
 #nullable enable
+
 namespace The_Project.Networking
 {
     public class Listener
     {
-
         public TcpListener Server { get; }
         public int Port { get; }
 
@@ -40,7 +37,8 @@ namespace The_Project.Networking
             while (Connection is null)
             {
                 // if no pending connection, continue loop
-                if (!Server.Pending()) {
+                if (!Server.Pending())
+                {
                     continue;
                 }
                 // accept pending connection
@@ -54,9 +52,11 @@ namespace The_Project.Networking
                     // verify account id
                     if (accountIdBuffer == AccountId)
                     {
-                        Stream.Write(new BitArray(new bool[8] { true, true, true, true, true, true, true, true}).ToByteArray());
+                        Stream.Write(new BitArray(new bool[8] { true, true, true, true, true, true, true, true }).ToByteArray());
                         Connection = new(Client);
-                    } else
+                        break;
+                    }
+                    else
                     {
                         Stream.Write(new byte[1]);
                         Client.Close();

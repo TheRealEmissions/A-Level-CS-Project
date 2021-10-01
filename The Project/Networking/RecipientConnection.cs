@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using The_Project.Accounts;
 
 #nullable enable
+
 namespace The_Project.Networking
 {
     public class RecipientConnection
     {
-
-        public TcpClient? Client { get; }
+        public TcpClient? Client { get; set; }
 
         public RecipientConnection()
         {
-            
         }
 
         public RecipientConnection(TcpClient Client)
@@ -25,13 +19,13 @@ namespace The_Project.Networking
             this.Client = Client;
         }
 
-        public static bool ConnectTo(UserId UserId)
+        public bool ConnectTo(UserId UserId)
         {
-            TcpClient? Client = null;
             int PortToCheck = UserId.MinPort;
-            while (Client is null)
+            while (Client is null && PortToCheck <= UserId.MaxPort)
             {
                 Client = CreateConnection(UserId.IP, PortToCheck, UserId.AccountId);
+                PortToCheck++;
             }
             return Client is null;
         }
