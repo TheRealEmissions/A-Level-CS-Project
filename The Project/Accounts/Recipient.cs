@@ -1,8 +1,13 @@
-﻿namespace The_Project.Accounts
+﻿using The_Project.Networking;
+
+namespace The_Project.Accounts
 {
-    public class Recipient : Account
+    public class Recipient
     {
-        public Recipient(string Username) : base(Username)
+
+        public RecipientConnection Connection;
+
+        public Recipient(string Username)
         {
         }
 
