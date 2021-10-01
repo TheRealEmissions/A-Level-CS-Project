@@ -83,7 +83,6 @@ namespace The_Project
 
         private void Btn_register_Click(object sender, RoutedEventArgs e)
         {
-
             Hashing Hash = new(this);
 
             // generate password hash

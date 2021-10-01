@@ -7,14 +7,14 @@
         mc:Ignorable="d"
         Title="Encrypted Messaging - Login Or Register" Height="450" Width="800" ResizeMode="NoResize" SizeToContent="Height" Closing="Window_Closing">
     <Grid>
-        <Button Name="btn_login"  Content="Login" Margin="302,345,0,0" Width="92" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35"/>
+        <Button Name="btn_login"  Content="Login" Margin="302,345,0,0" Width="92" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" />
         <Button Name="btn_register" Content="Register" HorizontalAlignment="Left" Margin="407,345,0,0" VerticalAlignment="Top" Height="35" Width="90" />
         <TextBox Name="txtinput_username" MouseLeftButtonDown="Txtinput_username_MouseLeftButtonDown" TextWrapping="Wrap" TextAlignment="Center" VerticalContentAlignment="Center" Margin="0,58,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" Width="203" Grid.ColumnSpan="3" />
         <PasswordBox Name="txtinput_pswd" MaxLength="256" MouseLeftButtonDown="Txtinput_pswd_MouseLeftButtonDown" VerticalContentAlignment="Center" Margin="0,107,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" Width="203" Grid.ColumnSpan="3" />
         <PasswordBox Name="txtinput_confpswd" MouseLeftButtonDown="Txtinput_confpswd_MouseLeftButtonDown" VerticalContentAlignment="Center" Margin="0,160,0,0" Height="28" VerticalAlignment="Top" HorizontalAlignment="Center" Width="203" Grid.ColumnSpan="3" />
-        <Label Content="Username:" Margin="0,36,0,370" FontSize="12" HorizontalContentAlignment="Center" HorizontalAlignment="Center"/>
-        <Label Content="Password:" Margin="0,85,0,321" FontSize="12" HorizontalContentAlignment="Center"/>
-        <Label Content="Confirm Password:" Margin="0,137,0,269" FontSize="12" HorizontalContentAlignment="Center"/>
-        <Button Name="Btn_DebugWindow" Content="View Debug Window" Margin="28,58,612,354" Click="Btn_DebugWindow_Click"/>
+        <Label Content="Username:" Margin="0,36,0,370" FontSize="12" HorizontalContentAlignment="Center" HorizontalAlignment="Center" />
+        <Label Content="Password:" Margin="0,85,0,321" FontSize="12" HorizontalContentAlignment="Center" />
+        <Label Content="Confirm Password:" Margin="0,137,0,269" FontSize="12" HorizontalContentAlignment="Center" />
+        <Button Name="Btn_DebugWindow" Content="View Debug Window" Margin="28,58,612,354" Click="Btn_DebugWindow_Click" />
     </Grid>
 </Window>
