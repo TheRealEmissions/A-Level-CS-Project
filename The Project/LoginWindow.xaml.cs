@@ -18,15 +18,19 @@ namespace The_Project
 
         private readonly MessagingHandler Handler = new();
         public SqliteConnection? SQLConnection { get; }
+        public Database.Tables.Tables Tables;
 
         public MainWindow()
         {
             SQLConnection = Handler.Connection;
+            Tables = new(SQLConnection);
 
             //new Tables(SQLConnection).GetAndCreateAllTables();
 
             InitializeComponent();
             SetAllButtonsToDisabled();
+
+
 
             // register events
             btn_login.Click += Btn_login_Click;
@@ -89,7 +93,7 @@ namespace The_Project
             string PasswordHash = Hash.Hash(txtinput_pswd.Password);
 
             // create an account
-            Account Account = new(txtinput_username.Text, txtinput_pswd.Password, txtinput_confpswd.Password, SQLConnection);
+            Account Account = new(txtinput_username.Text, PasswordHash, PasswordHash, SQLConnection, Tables);
 
             // register account to handler
             Handler.UserAccount = Account;
@@ -103,7 +107,7 @@ namespace The_Project
             string PasswordHash = Hash.Hash(txtinput_pswd.Password);
             Debug($"Password hash: {PasswordHash}");
             Debug($"Hash length: {PasswordHash.Length}");
-            Account account = new(txtinput_username.Text, txtinput_pswd.Password, SQLConnection);
+            Account account = new(txtinput_username.Text, txtinput_pswd.Password, SQLConnection, Tables);
             Handler.UserAccount = account;
             Debug("FOUND ACCOUNT!");
 
