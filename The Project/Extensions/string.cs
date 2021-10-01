@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace The_Project.Extensions
@@ -45,7 +43,6 @@ namespace The_Project.Extensions
                 {
                     NewArr.Add(new List<string>() { Array.ElementAt(i), Array.ElementAt(i + 1) });
                 }
-
             }
             return NewArr;
         }
