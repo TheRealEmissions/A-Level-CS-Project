@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using The_Project.Accounts;
 
 namespace The_Project.Database.Interfaces
 {
@@ -10,10 +6,13 @@ namespace The_Project.Database.Interfaces
      * REQUIRED:
      * check password (based on hashes)
      */
+
     internal interface IDatabaseUserAccount : IDatabaseAccount
     {
         public bool ComparePassword(string Password);
-        public string GetPassword();
-        public void SetPassword();
+
+        public string GetPassword(Account Account);
+
+        public void SetPassword(Account Account);
     }
 }
