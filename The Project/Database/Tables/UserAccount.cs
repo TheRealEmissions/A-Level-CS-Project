@@ -65,19 +65,31 @@ namespace The_Project.Database.Tables
                 object[] RowColumns = new object[3];
                 Reader.GetValues(RowColumns);
 
-                Schema Schema = new(RowColumns[0].ToString(), RowColumns[1].ToString(), RowColumns[2].ToString());
+                Schema Schema = new(Username: RowColumns[0].ToString(), Password: RowColumns[1].ToString(), AccountId: RowColumns[2].ToString());
                 return Schema;
             }
             return null;
         }
 
-        public void UpdatePasswordInEntry(string AccountId, string Password)
+        public bool CreateAccountEntry(string Username, string PasswordHash, string AccountId)
+        {
+            SqliteCommand Command = Connection.CreateCommand();
+            Command.CommandText = @"INSERT INTO accounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
+            Command.Parameters.AddWithValue("$USERNAME", Username);
+            Command.Parameters.AddWithValue("$PASSWORD", PasswordHash);
+            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
+            int Rows = Command.ExecuteNonQuery();
+            return Rows > 0;
+        }
+
+        public bool UpdatePasswordInEntry(string AccountId, string Password)
         {
             SqliteCommand Command = new();
             Command.CommandText = @"UPDATE accounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
             Command.Parameters.AddWithValue("$PASSWORD", Password);
             Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
-            Command.ExecuteNonQuery();
+            int Rows = Command.ExecuteNonQuery();
+            return Rows > 0;
         }
     }
 }
