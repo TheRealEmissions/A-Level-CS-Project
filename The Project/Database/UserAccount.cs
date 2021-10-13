@@ -2,6 +2,7 @@
 using System;
 using The_Project.Accounts;
 using The_Project.Database.Interfaces;
+using The_Project.Exceptions;
 
 #nullable enable
 
@@ -29,8 +30,14 @@ namespace The_Project.Database
             return GetPassword(Account) == PasswordHash;
         }
 
-        public void CreateEntry(string Username, UserId UserId)
+        public void CreateEntry(string Username, string PasswordHash, UserId UserId)
         {
+            Tables.UserAccount UserAccountDb = (Tables.UserAccount)Tables.GetTable("UserAccount");
+            bool CreatedEntry = UserAccountDb.CreateAccountEntry(Username, PasswordHash, UserId.AccountId);
+            if (!CreatedEntry)
+            {
+                throw new AccountCreationException("ACCOUNT NOT CREATED");
+            }
         }
 
         public Tables.UserAccount.Schema? GetAccount(string Username)
