@@ -18,7 +18,7 @@ namespace The_Project
 
         private readonly MessagingHandler Handler = new();
         public SqliteConnection? SQLConnection { get; }
-        public Database.Tables.Tables Tables;
+        public Database.Tables.Tables Tables { get; }
 
         public MainWindow()
         {
