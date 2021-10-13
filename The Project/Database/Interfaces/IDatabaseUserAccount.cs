@@ -7,12 +7,14 @@ namespace The_Project.Database.Interfaces
      * check password (based on hashes)
      */
 
-    internal interface IDatabaseUserAccount : IDatabaseAccount
+    internal interface IDatabaseUserAccount
     {
         public bool ComparePassword(Account Account, string PasswordHash);
 
         public string GetPassword(Account Account);
 
         public void SetPassword(Account Account, string PasswordHash);
+
+        public void CreateEntry(string Username, string PasswordHash, UserId UserId);
     }
 }
