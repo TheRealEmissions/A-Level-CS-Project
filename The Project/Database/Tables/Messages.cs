@@ -37,7 +37,7 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"
-                CREATE TABLE IF NOT EXISTS db.messages (
+                CREATE TABLE IF NOT EXISTS $database (
                     user_account_id TEXT NOT NULL,
                     recipient_account_id TEXT NOT NULL,
                     timestamp INTEGER NOT NULL,
@@ -53,6 +53,9 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
+            //Command.CommandType = System.Data.CommandType.Text;
+            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".messages");
+            //Command.Parameters.AddWithValue("$database", Connection.Database + ".messages");
             Command.ExecuteNonQuery();
         }
     }

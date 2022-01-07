@@ -34,12 +34,14 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"
-                CREATE TABLE IF NOT EXISTS db.useraccounts (
+                CREATE TABLE IF NOT EXISTS $database (
                     username TEXT NOT NULL UNIQUE,
                     password TEXT NOT NULL,
                     account_id TEXT PRIMARY KEY
                 )
             ";
+            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".useraccounts");
+            //Command.Parameters.AddWithValue("$database", Connection.Database + ".useraccounts");
             Command.ExecuteNonQuery();
         }
 
@@ -48,7 +50,7 @@ namespace The_Project.Database.Tables
             SqliteCommand? Command = Connection.CreateCommand();
             Command.CommandText = @"
                 SELECT *
-                FROM accounts
+                FROM useraccounts
                 WHERE username = $USERNAME
                 ";
             Command.Parameters.AddWithValue("$USERNAME", Username);
@@ -74,7 +76,7 @@ namespace The_Project.Database.Tables
         public bool CreateAccountEntry(string Username, string PasswordHash, string AccountId)
         {
             SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"INSERT INTO accounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
+            Command.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
             Command.Parameters.AddWithValue("$USERNAME", Username);
             Command.Parameters.AddWithValue("$PASSWORD", PasswordHash);
             Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
@@ -85,7 +87,7 @@ namespace The_Project.Database.Tables
         public bool UpdatePasswordInEntry(string AccountId, string Password)
         {
             SqliteCommand Command = new();
-            Command.CommandText = @"UPDATE accounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
+            Command.CommandText = @"UPDATE useraccounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
             Command.Parameters.AddWithValue("$PASSWORD", Password);
             Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
             int Rows = Command.ExecuteNonQuery();

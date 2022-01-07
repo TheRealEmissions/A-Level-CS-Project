@@ -16,12 +16,6 @@ namespace The_Project.Database
             this.Tables = Tables;
         }
 
-        public RecipientAccount(Tables.Tables Tables)
-        {
-            Connection = new SQL().Connection;
-            this.Tables = Tables;
-        }
-
         public void CreateEntry(string Username, UserId UserId)
         {
             Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");

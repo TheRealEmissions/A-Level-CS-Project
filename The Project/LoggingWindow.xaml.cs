@@ -19,7 +19,7 @@ namespace The_Project
     /// </summary>
     public partial class LoggingWindow : Window
     {
-        public List<string> OutputLog = new();
+        private readonly List<string> OutputLog = new();
 
         public LoggingWindow()
         {

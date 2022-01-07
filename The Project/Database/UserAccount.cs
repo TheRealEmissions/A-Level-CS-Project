@@ -19,12 +19,6 @@ namespace The_Project.Database
             this.Tables = Tables;
         }
 
-        public UserAccount(Tables.Tables Tables)
-        {
-            Connection = new SQL().Connection;
-            this.Tables = Tables;
-        }
-
         public bool ComparePassword(Account Account, string PasswordHash)
         {
             return GetPassword(Account) == PasswordHash;

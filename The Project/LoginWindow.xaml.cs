@@ -16,19 +16,20 @@ namespace The_Project
     {
         private readonly LoggingWindow DebugWindow = new();
 
-        private readonly MessagingHandler Handler = new();
+        private readonly MessagingHandler Handler;
         public SqliteConnection? SQLConnection { get; }
         public Database.Tables.Tables Tables { get; }
 
         public MainWindow()
         {
+            Handler = new();
             SQLConnection = Handler.Connection;
-            Tables = new(SQLConnection);
+            Tables = Handler.Tables;
 
             //new Tables(SQLConnection).GetAndCreateAllTables();
 
             InitializeComponent();
-            SetAllButtonsToDisabled();
+            DisableAllButtons();
 
 
 
@@ -54,49 +55,70 @@ namespace The_Project
         {
             if (txtinput_username.Text.Length < 1)
             {
-                SetAllButtonsToDisabled();
+                DisableAllButtons();
                 return;
             }
             if (txtinput_pswd.Password.Length > 0 && txtinput_pswd.Password != "Password")
             {
                 btn_login.IsEnabled = true;
+                Debug("Login Button Enabled");
                 if (txtinput_confpswd.Password.Length > 0 && txtinput_confpswd.Password == txtinput_pswd.Password)
                 {
                     btn_register.IsEnabled = true;
+                    Debug("Register Button Enabled");
                 }
             }
             else
             {
                 btn_login.IsEnabled = false;
+                Debug("Login Button Enabled");
             }
         }
 
         private void Txtinput_confpswd_TextChanged(object sender, RoutedEventArgs e)
         {
+            btn_register.IsEnabled = false;
             if (txtinput_pswd.Password.Length < 1)
             {
-                SetAllButtonsToDisabled();
+                DisableAllButtons();
                 return;
             }
-            btn_register.IsEnabled = txtinput_pswd.Password == txtinput_confpswd.Password && (txtinput_confpswd.Password != "Confirm Password" || txtinput_confpswd.Password != "Password");
+            if (txtinput_confpswd.Password.ToLower() is "confirm password" or "password")
+            {
+                return;
+            }
+
+
+            btn_register.IsEnabled = txtinput_pswd.Password == txtinput_confpswd.Password;
+            Debug("Enabled register button");
         }
 
         private void Txtinput_username_TextChanged(object sender, TextChangedEventArgs e)
         {
+
         }
 
         private void Btn_register_Click(object sender, RoutedEventArgs e)
         {
+            if (new Database.UserAccount(SQLConnection, Tables).GetAccount(txtinput_username.Text) is not null)
+            {
+                _ = new ErrorWindow().SetError("This account already exists!").Initialize();
+                return;
+            }
+
             Hashing Hash = new(this);
 
             // generate password hash
             string PasswordHash = Hash.Hash(txtinput_pswd.Password);
+            DebugWindow.Debug($"Password Hash: {PasswordHash}");
 
             // create an account
             Account Account = new(txtinput_username.Text, PasswordHash, PasswordHash, SQLConnection, Tables);
 
             // register account to handler
             Handler.UserAccount = Account;
+
+            this.Content = new UserConnectionPage();
         }
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
@@ -115,10 +137,11 @@ namespace The_Project
             this.Content = UserConnectionPage;
         }
 
-        public void SetAllButtonsToDisabled()
+        public void DisableAllButtons()
         {
             btn_login.IsEnabled = false;
             btn_register.IsEnabled = false;
+            Debug("All buttons disabled");
         }
 
         private void Txtinput_username_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

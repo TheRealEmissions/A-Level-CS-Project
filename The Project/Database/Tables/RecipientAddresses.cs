@@ -36,7 +36,7 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"
-                CREATE TABLE IF NOT EXISTS db.recipientaddress (
+                CREATE TABLE IF NOT EXISTS $database (
                     octet_one INT NOT NULL,
                     octet_two INT NOT NULL,
                     octet_three INT NOT NULL,
@@ -51,6 +51,7 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
+            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".recipientaddress");
             Command.ExecuteNonQuery();
         }
     }

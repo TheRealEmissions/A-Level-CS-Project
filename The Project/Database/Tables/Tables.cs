@@ -20,5 +20,10 @@ namespace The_Project.Database.Tables
         {
             return AllTables.Find(x => x.Key == Key).Value;
         }
+
+        public List<KeyValuePair<string, ISQLTable>> GetAllTables()
+        {
+            return AllTables;
+        }
     }
 }
