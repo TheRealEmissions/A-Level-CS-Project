@@ -9,6 +9,7 @@
       Title="UserConnection">
 
     <Grid Opacity="1" Background="White">
-        <TextBox Text="Input User ID" TextWrapping="Wrap" Name="txtinput_userid" Margin="184,55,184,352" />
+        <TextBox Text="Input User ID" TextWrapping="Wrap" Name="txtinput_userid" Margin="184,55,184,352" TextChanged="Txtinput_userid_TextChanged" />
+        <Button Content="Debug Window" Margin="10,10,689,414" Name="btn_debugWindow" Click="Btn_debugWindow_Click"/>
     </Grid>
 </Page>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
+using System.Net;
 using The_Project.Database.Tables;
 using The_Project.Exceptions;
 
@@ -74,6 +75,12 @@ namespace The_Project.Accounts
                 AccountId += Alphabet[Random.Next(1, 52) - 1];
             }
             return AccountId;
+        }
+
+        public UserId ToUserId()
+        {
+            UserId UserId = new(IPAddress.Parse("127.0.0.1"), MinPort, MaxPort, AccountId);
+            return UserId;
         }
     }
 }

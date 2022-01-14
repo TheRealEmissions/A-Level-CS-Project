@@ -1,9 +1,11 @@
 ﻿using Microsoft.Data.Sqlite;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
+using The_Project.Exceptions;
 
 #nullable enable
 
@@ -16,7 +18,7 @@ namespace The_Project
     {
         private readonly LoggingWindow DebugWindow = new();
 
-        private readonly MessagingHandler Handler;
+        public readonly MessagingHandler Handler;
         public SqliteConnection? SQLConnection { get; }
         public Database.Tables.Tables Tables { get; }
 
@@ -113,12 +115,18 @@ namespace The_Project
             DebugWindow.Debug($"Password Hash: {PasswordHash}");
 
             // create an account
-            Account Account = new(txtinput_username.Text, PasswordHash, PasswordHash, SQLConnection, Tables);
+            try
+            {
+                Account Account = new(txtinput_username.Text, PasswordHash, PasswordHash, SQLConnection, Tables);
 
-            // register account to handler
-            Handler.UserAccount = Account;
+                // register account to handler
+                Handler.UserAccount = Account;
+            } catch (Exception Error)
+            {
+                _ = new ErrorWindow().SetError(Error.Message).Initialize();
+            }
 
-            this.Content = new UserConnectionPage();
+            this.Content = new UserConnectionPage(this);
         }
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
@@ -129,11 +137,18 @@ namespace The_Project
             string PasswordHash = Hash.Hash(txtinput_pswd.Password);
             Debug($"Password hash: {PasswordHash}");
             Debug($"Hash length: {PasswordHash.Length}");
-            Account account = new(txtinput_username.Text, txtinput_pswd.Password, SQLConnection, Tables);
-            Handler.UserAccount = account;
+            try
+            {
+                Account account = new(txtinput_username.Text, txtinput_pswd.Password, SQLConnection, Tables);
+                Handler.UserAccount = account;
+            } catch (Exception Error)
+            {
+                _ = new ErrorWindow().SetError(Error.Message).Initialize();
+                return;
+            }
             Debug("FOUND ACCOUNT!");
 
-            UserConnectionPage UserConnectionPage = new();
+            UserConnectionPage UserConnectionPage = new(this);
             this.Content = UserConnectionPage;
         }
 
@@ -159,7 +174,7 @@ namespace The_Project
             txtinput_confpswd.Password = string.Empty;
         }
 
-        private void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)
+        public void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)
         {
             if (DebugWindow.IsActive)
             {

@@ -15,9 +15,11 @@ namespace The_Project.Networking
     {
         public TcpListener Server { get; }
         public int Port { get; }
+        private readonly LoggingWindow? debugWindow;
 
-        public Listener(UserId UserId)
+        public Listener(UserId UserId, LoggingWindow? debugWindow = null)
         {
+            this.debugWindow = debugWindow;
             Port = GeneratePort(UserId.MinPort, UserId.MaxPort);
             Server = new(IPAddress.Parse("127.0.0.1"), Port);
             Server.Start();
@@ -30,6 +32,7 @@ namespace The_Project.Networking
 
         public Task<RecipientConnection> ListenAndConnect(string AccountId)
         {
+            debugWindow?.Debug("Launching listening and connect process!"); 
             return Task.Run(() =>
             {
                 // buffer
