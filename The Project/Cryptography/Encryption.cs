@@ -14,15 +14,17 @@ namespace The_Project.Cryptography
     {
         // N is such a number in the public key which is two arbitrarily large random prime numbers multiplied together
         public BigInteger N { get; }
+
         // E is the exponent of the public key for which the data needing to be encrypted should be raised to
         public BigInteger E { get; }
 
         /**
          * Creation of public key
-         * 
+         *
          * Parameter n represents N (two random prime numbers multiplied together)
          * Parameter e is the exponent which is default 65537 as standard in RSA PKCS
          */
+
         public PublicKey(BigInteger n, BigInteger? e = null)
         {
             N = n;
@@ -34,15 +36,17 @@ namespace The_Project.Cryptography
     {
         // Similarly to the public key, N is the same two arbitrarily large random prime numbers multiplied together
         public BigInteger N { get; }
+
         // D is the "secret exponent" of the exponent of which the encrypted data is raised to to return it to its original state
         public BigInteger D { get; }
 
         /**
          * Creation of private key
-         * 
+         *
          * Parameter n represents N (two random prime numbers multiplied together)
          * Parameter d represents the "secret exponent"
          */
+
         public PrivateKey(BigInteger n, BigInteger d)
         {
             N = n;
@@ -53,6 +57,7 @@ namespace The_Project.Cryptography
     /**
      * Class used to add "Encrypt" and "Decrypt" extension methods to string
      */
+
     public static class EncryptionExtensions
     {
         public static string Encrypt(this string s, PublicKey Key)
@@ -63,7 +68,7 @@ namespace The_Project.Cryptography
             /**
              * PARALLELISED FOR EFFICIENCY USING PLINQ
              * Ordered to ensure encrypted string is returned in the correct order
-             * 
+             *
              * For each byte in the byte array (StringBytes) converted to an unsigned 32 bit integer, it will be raised to the power E and modulus with N
              * and converted to hexidecimal string
              */
@@ -79,7 +84,7 @@ namespace The_Project.Cryptography
             /**
              * PARALLELISED FOR EFFICIENCY USING PLINQ
              * Ordered to ensure decrypted string is returned in the correct order
-             * 
+             *
              * String provided is split by "-" which converts it to a string array
              * In parallel, each element is parsed by BigInteger from hexidecimal into a number
              * Raised to the power D (secret exponent) and modulus with N

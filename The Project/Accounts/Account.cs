@@ -33,13 +33,14 @@ namespace The_Project.Accounts
 
             this.Username = Username;
             AccountId = Entry.Value.AccountId;
+            MinPort = new Random().Next(10000, 12000);
+            MaxPort = new Random().Next(20000, 49151);
 
             bool PasswordIsCorrect = UserAccount.ComparePassword(this, PasswordHash);
             if (!PasswordIsCorrect)
             {
                 throw new WrongPasswordException();
             }
-
         }
 
         // register new account
@@ -54,8 +55,8 @@ namespace The_Project.Accounts
             }
 
             Database.UserAccount UserAccount = new(Connection, Tables);
-
-            UserId UserId = new(Networking.Utils.GetIPAddress(), new Random().Next(10000, 30000), new Random().Next(60000, 99999), GenerateAccountId());
+            Random random = new Random();
+            UserId UserId = new(Networking.Utils.GetIPAddress(), random.Next(10000, 12000), random.Next(20000, 49151), GenerateAccountId());
             MinPort = UserId.MinPort;
             MaxPort = UserId.MaxPort;
             AccountId = UserId.AccountId;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace The_Project.Extensions
+﻿namespace The_Project.Extensions
 {
     public abstract class MustConstructWith<T>
     {

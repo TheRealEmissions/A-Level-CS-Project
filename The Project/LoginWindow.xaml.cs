@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
-using The_Project.Exceptions;
 
 #nullable enable
 
@@ -16,9 +15,9 @@ namespace The_Project
     /// </summary>
     public partial class MainWindow : Window
     {
-        public readonly LoggingWindow DebugWindow = new();
+        public LoggingWindow DebugWindow { get; } = new();
 
-        public readonly MessagingHandler Handler;
+        public MessagingHandler Handler { get; }
         public SqliteConnection? SQLConnection { get; }
         public Database.Tables.Tables Tables { get; }
 
@@ -32,8 +31,6 @@ namespace The_Project
 
             InitializeComponent();
             DisableAllButtons();
-
-
 
             // register events
             btn_login.Click += Btn_login_Click;
@@ -90,14 +87,12 @@ namespace The_Project
                 return;
             }
 
-
             btn_register.IsEnabled = txtinput_pswd.Password == txtinput_confpswd.Password;
             Debug("Enabled register button");
         }
 
         private void Txtinput_username_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Btn_register_Click(object sender, RoutedEventArgs e)
@@ -121,7 +116,8 @@ namespace The_Project
 
                 // register account to handler
                 Handler.UserAccount = Account;
-            } catch (Exception Error)
+            }
+            catch (Exception Error)
             {
                 _ = new ErrorWindow().SetError(Error.Message).Initialize();
             }
@@ -141,7 +137,8 @@ namespace The_Project
             {
                 Account account = new(txtinput_username.Text, PasswordHash, SQLConnection, Tables);
                 Handler.UserAccount = account;
-            } catch (Exception Error)
+            }
+            catch (Exception Error)
             {
                 _ = new ErrorWindow().SetError(Error.Message).Initialize();
                 return;

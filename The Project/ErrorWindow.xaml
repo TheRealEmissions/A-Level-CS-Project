@@ -7,7 +7,6 @@
         mc:Ignorable="d"
         Title="ErrorWindow" Height="150" Width="300">
     <Grid>
-        <TextBlock Text="" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Name="txtblock_error"/>
-
+        <TextBlock Text="" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" Name="txtblock_error" />
     </Grid>
 </Window>

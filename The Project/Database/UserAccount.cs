@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using System;
 using The_Project.Accounts;
 using The_Project.Database.Interfaces;
 using The_Project.Exceptions;
@@ -51,7 +50,6 @@ namespace The_Project.Database
         {
             Tables.UserAccount Table = (Tables.UserAccount)Tables.GetTable("UserAccount");
             Table.UpdatePasswordInEntry(Account.AccountId, PasswordHash);
-
         }
     }
 }

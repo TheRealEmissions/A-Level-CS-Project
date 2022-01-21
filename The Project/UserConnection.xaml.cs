@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using The_Project.Networking;
 using The_Project.Accounts;
+using The_Project.Networking;
 
 namespace The_Project
 {
@@ -23,6 +13,7 @@ namespace The_Project
     public partial class UserConnectionPage : Page
     {
         private readonly MainWindow MainWindow;
+
         public UserConnectionPage(MainWindow MainWindow)
         {
             this.MainWindow = MainWindow;
@@ -46,7 +37,6 @@ namespace The_Project
 
         private void Txtinput_userid_TextChanged(object sender, TextChangedEventArgs e)
         {
-
         }
 
         private void Btn_debugWindow_Click(object sender, RoutedEventArgs e)
@@ -59,7 +49,8 @@ namespace The_Project
             if (new UserId().Regex.IsMatch(txtinput_userid.Text))
             {
                 // connect to user
-            } else
+            }
+            else
             {
                 return;
             }
