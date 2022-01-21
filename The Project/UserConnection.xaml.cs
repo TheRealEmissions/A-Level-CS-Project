@@ -28,6 +28,8 @@ namespace The_Project
             this.MainWindow = MainWindow;
             InitializeComponent();
 
+            txtblock_userId.Text = MainWindow.Handler.UserAccount.ToUserId().Id;
+
             Listener Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
             Task<RecipientConnection> RecipientConnection = Listener.ListenAndConnect(MainWindow.Handler.UserAccount.AccountId);
 
@@ -50,6 +52,17 @@ namespace The_Project
         private void Btn_debugWindow_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Btn_DebugWindow_Click(sender, e);
+        }
+
+        private void Btn_connect_Click(object sender, RoutedEventArgs e)
+        {
+            if (new UserId().Regex.IsMatch(txtinput_userid.Text))
+            {
+                // connect to user
+            } else
+            {
+                return;
+            }
         }
     }
 }
