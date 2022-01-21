@@ -28,7 +28,7 @@ namespace The_Project
             this.MainWindow = MainWindow;
             InitializeComponent();
 
-            Listener Listener = new(MainWindow.Handler.UserAccount.ToUserId());
+            Listener Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
             Task<RecipientConnection> RecipientConnection = Listener.ListenAndConnect(MainWindow.Handler.UserAccount.AccountId);
 
             txtinput_userid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);

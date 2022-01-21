@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using The_Project.Accounts;
 using The_Project.Extensions;
 
@@ -20,6 +22,8 @@ namespace The_Project.Networking
         public Listener(UserId UserId, LoggingWindow? debugWindow = null)
         {
             this.debugWindow = debugWindow;
+            Debug.WriteLine(debugWindow);
+            debugWindow?.Debug("Initialising Listener!");
             Port = GeneratePort(UserId.MinPort, UserId.MaxPort);
             Server = new(IPAddress.Parse("127.0.0.1"), Port);
             Server.Start();
@@ -32,7 +36,9 @@ namespace The_Project.Networking
 
         public Task<RecipientConnection> ListenAndConnect(string AccountId)
         {
-            debugWindow?.Debug("Launching listening and connect process!"); 
+            debugWindow?.Debug("Launching listening and connect process!");
+
+            Dispatcher? CurrentDispatcher = Dispatcher.CurrentDispatcher;
             return Task.Run(() =>
             {
                 // buffer
@@ -40,6 +46,7 @@ namespace The_Project.Networking
                 string? accountIdBuffer;
                 RecipientConnection? Connection = null;
 
+                CurrentDispatcher.Invoke(() => debugWindow?.Debug("Waiting for connection..."));
                 while (Connection is null)
                 {
                     // if no pending connection, continue loop
@@ -47,6 +54,7 @@ namespace The_Project.Networking
                     {
                         continue;
                     }
+                    CurrentDispatcher.Invoke(() => debugWindow?.Debug("Connection found! Connecting..."));
                     // accept pending connection
                     TcpClient Client = Server.AcceptTcpClient();
 
@@ -70,9 +78,9 @@ namespace The_Project.Networking
                     }
                     Server.Stop();
                 }
+                CurrentDispatcher.Invoke(() => debugWindow?.Debug("Connection established"));
                 return Connection;
             });
-          
         }
     }
 }

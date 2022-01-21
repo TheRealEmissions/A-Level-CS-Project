@@ -16,7 +16,7 @@ namespace The_Project
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly LoggingWindow DebugWindow = new();
+        public readonly LoggingWindow DebugWindow = new();
 
         public readonly MessagingHandler Handler;
         public SqliteConnection? SQLConnection { get; }
@@ -139,7 +139,7 @@ namespace The_Project
             Debug($"Hash length: {PasswordHash.Length}");
             try
             {
-                Account account = new(txtinput_username.Text, txtinput_pswd.Password, SQLConnection, Tables);
+                Account account = new(txtinput_username.Text, PasswordHash, SQLConnection, Tables);
                 Handler.UserAccount = account;
             } catch (Exception Error)
             {
