@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
+using The_Project.Exceptions;
 using The_Project.Networking;
 
 namespace The_Project
@@ -13,6 +15,7 @@ namespace The_Project
     public partial class UserConnectionPage : Page
     {
         private readonly MainWindow MainWindow;
+        protected RecipientConnection RecipientConnection { get; private set; }
 
         public UserConnectionPage(MainWindow MainWindow)
         {
@@ -20,11 +23,34 @@ namespace The_Project
             InitializeComponent();
 
             txtblock_userId.Text = MainWindow.Handler.UserAccount.ToUserId().Id;
+            txtinput_userid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
 
+            HandleConnection();
+        }
+
+        public async void HandleConnection()
+        {
             Listener Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
             Task<RecipientConnection> RecipientConnection = Listener.ListenAndConnect(MainWindow.Handler.UserAccount.AccountId);
+            this.RecipientConnection = await RecipientConnection;
 
-            txtinput_userid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
+            // accept/reject connection
+            // if accepted, continue
+            // if rejected, terminate connection
+            try
+            {
+                ConnectionAcceptWindow ConnectionAcceptWindow = new(this, ((IPEndPoint)RecipientConnection.Result.Client.GetStream().Socket.RemoteEndPoint).Address);
+            }
+            catch (RejectConnectionException)
+            {
+                this.Content = MainWindow;
+            }
+        }
+
+        public void TerminateConnection()
+        {
+            RecipientConnection.Client.Close();
+            this.Content = new UserConnectionPage(MainWindow);
         }
 
         private void Txtinput_userid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -48,7 +74,9 @@ namespace The_Project
         {
             if (new UserId().Regex.IsMatch(txtinput_userid.Text))
             {
-                // connect to user
+                this.RecipientConnection = new RecipientConnection();
+                bool Connected = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
+                if (!Connected) { throw new ConnectionRefusedException("CONNECTION REFUSED"); }
             }
             else
             {
