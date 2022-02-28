@@ -72,14 +72,17 @@ namespace The_Project
 
         private void Btn_connect_Click(object sender, RoutedEventArgs e)
         {
-            if (new UserId().Regex.IsMatch(txtinput_userid.Text))
+            MainWindow.Debug($"Connecting to {txtinput_userid.Text}");
+            if (UserId.Regex.Match(txtinput_userid.Text).Success)
             {
+                MainWindow.Debug("Regex checks out! Processing connection.");
                 this.RecipientConnection = new RecipientConnection();
                 bool Connected = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
                 if (!Connected) { throw new ConnectionRefusedException("CONNECTION REFUSED"); }
             }
             else
             {
+                MainWindow.Debug("Regex failed validation.");
                 return;
             }
         }

@@ -40,10 +40,10 @@ namespace The_Project.Database
             return Entry;
         }
 
-        public string GetPassword(Account Account)
+        public string? GetPassword(Account Account)
         {
-            Tables.UserAccount.Schema Entry = (Tables.UserAccount.Schema)GetAccount(Account.Username);
-            return Entry.Password;
+            Tables.UserAccount.Schema? Entry = GetAccount(Account.Username);
+            return Entry?.Password;
         }
 
         public void SetPassword(Account Account, string PasswordHash)

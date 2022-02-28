@@ -66,19 +66,21 @@ namespace The_Project.Networking
                         // verify account id
                         if (accountIdBuffer == AccountId)
                         {
+                            CurrentDispatcher.Invoke(() => debugWindow?.Debug("Verified account ID! Confirming connection..."));
                             Stream.Write(new BitArray(new bool[8] { true, true, true, true, true, true, true, true }).ToByteArray());
                             Connection = new(Client);
+                            CurrentDispatcher.Invoke(() => debugWindow?.Debug("Connection established!"));
                             break;
                         }
                         else
                         {
+                            CurrentDispatcher.Invoke(() => debugWindow?.Debug("Account ID does not match! Terminating connection."));
                             Stream.Write(new byte[1]);
                             Client.Close();
                         }
                     }
                     Server.Stop();
                 }
-                CurrentDispatcher.Invoke(() => debugWindow?.Debug("Connection established"));
                 return Connection;
             });
         }

@@ -4,6 +4,6 @@ namespace The_Project.Database
 {
     internal interface IDatabaseAccount
     {
-        public void CreateEntry(string Username, UserId UserId);
+        public void CreateAccount(string Username, UserId UserId);
     }
 }

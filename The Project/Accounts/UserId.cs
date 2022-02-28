@@ -12,7 +12,7 @@ namespace The_Project.Accounts
         public int MaxPort { get; }
         public string AccountId { get; }
 
-        public Regex Regex { get; }
+        public static Regex Regex { get; } = new(@"/[A-I]{1,3}a[A-I]{1,3}b[A-I]{1,3}c[A-I]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}/");
 
         public string Id { get; }
 
@@ -24,7 +24,6 @@ namespace The_Project.Accounts
             this.MinPort = MinPort;
             this.MaxPort = MaxPort;
             this.AccountId = AccountId;
-            Regex = new(@"/[A-I]{1,3}a[A-I]{1,3}b[A-I]{1,3}c[A-I]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}/g");
 
             #region userId
 
@@ -78,7 +77,6 @@ namespace The_Project.Accounts
         public UserId(string UserIdStr)
         {
             this.Id = UserIdStr;
-            Regex = new(@"/[A-I]{1,3}a[A-I]{1,3}b[A-I]{1,3}c[A-I]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}/g");
 
             char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
