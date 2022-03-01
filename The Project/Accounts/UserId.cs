@@ -12,7 +12,7 @@ namespace The_Project.Accounts
         public int MaxPort { get; }
         public string AccountId { get; }
 
-        public static Regex Regex { get; } = new(@"/[A-I]{1,3}a[A-I]{1,3}b[A-I]{1,3}c[A-I]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}/");
+        public static Regex Regex { get; } = new(@"^\A[A-I]{1,3}a[A-I]{1,3}b[A-I]{1,3}c[A-I]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}$");
 
         public string Id { get; }
 

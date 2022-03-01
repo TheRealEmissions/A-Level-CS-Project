@@ -38,16 +38,27 @@ namespace The_Project.Networking
 
         public TcpClient? CreateConnection(IPAddress IP, int Port, string AccountId)
         {
-            TcpClient Client = this.Client ?? new(IP.ToString(), Port);
+            TcpClient? Client = this.Client;
+            try
+            {
+                Client = new(IP.ToString(), Port);
+            }
+            catch (System.Exception e)
+            {
+                debugWindow?.Debug($"Could not connect to {IP}:{Port}");
+                debugWindow?.Debug(e.Message);
+                return null;
+            }
+
             debugWindow?.Debug("Connecting to client...");
-            if (Client.Connected)
+            if (Client?.Connected ?? false)
             {
                 debugWindow?.Debug("Connected to client!");
                 debugWindow?.Debug("Verifying account ID with connected client");
                 Client.GetStream().Write(Encoding.UTF8.GetBytes(AccountId));
             }
-            debugWindow?.Debug($"Connection {(Client.Connected ? "success" : "failed")}");
-            return Client.Connected ? Client : null;
+            debugWindow?.Debug($"Connection {((Client?.Connected ?? false) ? "success" : "failed")}");
+            return (Client?.Connected ?? false) ? Client : null;
         }
     }
 }
