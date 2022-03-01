@@ -56,7 +56,7 @@ namespace The_Project.Accounts
 
             Database.UserAccount UserAccount = new(Connection, Tables);
             Random random = new Random();
-            UserId UserId = new(Networking.Utils.GetIPAddress(), random.Next(10000, 12000), random.Next(20000, 49151), GenerateAccountId());
+            UserId UserId = new(Networking.Utils.GetIPAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
             MinPort = UserId.MinPort;
             MaxPort = UserId.MaxPort;
             AccountId = UserId.AccountId;
