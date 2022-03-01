@@ -49,7 +49,11 @@ namespace The_Project.Database
         public void SetPassword(Account Account, string PasswordHash)
         {
             Tables.UserAccount Table = (Tables.UserAccount)Tables.GetTable("UserAccount");
-            Table.UpdatePasswordInEntry(Account.AccountId, PasswordHash);
+            bool Updated = Table.UpdatePasswordInEntry(Account.AccountId, PasswordHash);
+            if (!Updated)
+            {
+                throw new PasswordUpdateException("Password not updated in entry");
+            }
         }
     }
 }
