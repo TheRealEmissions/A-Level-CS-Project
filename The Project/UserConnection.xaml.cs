@@ -77,8 +77,18 @@ namespace The_Project
             {
                 MainWindow.Debug("Regex checks out! Processing connection.");
                 this.RecipientConnection = new RecipientConnection();
-                bool Connected = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
-                if (!Connected) { throw new ConnectionRefusedException("CONNECTION REFUSED"); }
+                try
+                {
+                    bool Connected = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text)).Result;
+                    if (!Connected)
+                    {
+                        throw new ConnectionRefusedException("Could not connect!");
+                    }
+                }
+                catch (ConnectionRefusedException Error)
+                {
+                    throw;
+                }
             }
             else
             {
