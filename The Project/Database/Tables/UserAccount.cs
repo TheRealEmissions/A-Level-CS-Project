@@ -53,7 +53,7 @@ namespace The_Project.Database.Tables
                 FROM useraccounts
                 WHERE username = $USERNAME
                 ";
-            Command.Parameters.AddWithValue("$USERNAME", Username);
+            _ = Command.Parameters.AddWithValue("$USERNAME", Username);
 
             SqliteDataReader? Reader = Command.ExecuteReader();
 
@@ -77,19 +77,19 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
-            Command.Parameters.AddWithValue("$USERNAME", Username);
-            Command.Parameters.AddWithValue("$PASSWORD", PasswordHash);
-            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
+            _ = Command.Parameters.AddWithValue("$USERNAME", Username);
+            _ = Command.Parameters.AddWithValue("$PASSWORD", PasswordHash);
+            _ = Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
             int Rows = Command.ExecuteNonQuery();
             return Rows > 0;
         }
 
         public bool UpdatePasswordInEntry(string AccountId, string Password)
         {
-            SqliteCommand Command = new();
+            SqliteCommand Command = Connection.CreateCommand();
             Command.CommandText = @"UPDATE useraccounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
-            Command.Parameters.AddWithValue("$PASSWORD", Password);
-            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
+            _ = Command.Parameters.AddWithValue("$PASSWORD", Password);
+            _ = Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
             int Rows = Command.ExecuteNonQuery();
             return Rows > 0;
         }

@@ -15,22 +15,24 @@ namespace The_Project
     public partial class UserConnectionPage : Page
     {
         private readonly MainWindow MainWindow;
+        private Listener Listener { get; init; }
         protected RecipientConnection RecipientConnection { get; private set; }
 
         public UserConnectionPage(MainWindow MainWindow)
         {
             this.MainWindow = MainWindow;
+            this.Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
             InitializeComponent();
 
             txtblock_userId.Text = MainWindow.Handler.UserAccount.ToUserId().Id;
+            txtblock_port.Text += Listener.Port.ToString();
             txtinput_userid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
 
-            HandleConnection();
+            _ = HandleConnection();
         }
 
-        public async void HandleConnection()
+        public async Task HandleConnection()
         {
-            Listener Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
             Task<RecipientConnection> RecipientConnection = Listener.ListenAndConnect(MainWindow.Handler.UserAccount.AccountId);
             this.RecipientConnection = await RecipientConnection;
 
@@ -45,6 +47,8 @@ namespace The_Project
             {
                 this.Content = MainWindow;
             }
+
+            return;
         }
 
         public void TerminateConnection()
@@ -85,7 +89,7 @@ namespace The_Project
                         throw new ConnectionRefusedException("Could not connect!");
                     }
                 }
-                catch (ConnectionRefusedException Error)
+                catch (ConnectionRefusedException)
                 {
                     throw;
                 }

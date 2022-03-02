@@ -14,5 +14,6 @@
         <Button Content="Connect" Margin="360,329,360,88" Name="btn_connect" Click="Btn_connect_Click" />
         <TextBlock Text="Your User ID:" TextWrapping="Wrap" TextAlignment="Center" Margin="196,69,196,355" FontSize="20px" />
         <TextBlock Name="txtblock_userId" Text="Generating..." TextWrapping="Wrap" TextAlignment="Center" Margin="196,100,196,330" />
+        <TextBlock HorizontalAlignment="Center" Margin="0,134,0,0" Text="Port: " Name="txtblock_port" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center" />
     </Grid>
 </Page>

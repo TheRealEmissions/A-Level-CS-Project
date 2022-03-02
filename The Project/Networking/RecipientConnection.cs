@@ -16,17 +16,17 @@ namespace The_Project.Networking
     public class RecipientConnection
     {
         public TcpClient? Client { get; set; }
-        private LoggingWindow? debugWindow { get; init; }
+        private LoggingWindow? DebugWindow { get; init; }
 
-        public RecipientConnection(LoggingWindow? debugWindow = null)
+        public RecipientConnection(LoggingWindow? DebugWindow = null)
         {
-            this.debugWindow = debugWindow;
+            this.DebugWindow = DebugWindow;
         }
 
-        public RecipientConnection(TcpClient Client, LoggingWindow? debugWindow = null)
+        public RecipientConnection(TcpClient Client, LoggingWindow? DebugWindow = null)
         {
             this.Client = Client;
-            this.debugWindow = debugWindow;
+            this.DebugWindow = DebugWindow;
         }
 
         public async Task<bool> ConnectTo(UserId UserId)
@@ -42,7 +42,7 @@ namespace The_Project.Networking
                 {
                     Tasks[i] = CreateConnection(UserId.IP, Ports[i], UserId.AccountId, CurrentDispatcher);
                 }
-                catch (ConnectionRefusedException e)
+                catch (ConnectionRefusedException)
                 {
                     continue;
                 }
@@ -73,24 +73,24 @@ namespace The_Project.Networking
 
             try
             {
-                Dispatcher.Invoke(() => debugWindow?.Debug("Connecting to client..."));
+                Dispatcher.Invoke(() => DebugWindow?.Debug("Connecting to client..."));
                 await Client.ConnectAsync(IP, Port);
             }
             catch (Exception e)
             {
-                Dispatcher.Invoke(() => debugWindow?.Debug($"Could not connect to client on {IP}:{Port}!"));
-                Dispatcher.Invoke(() => debugWindow?.Debug(e.Message));
+                Dispatcher.Invoke(() => DebugWindow?.Debug($"Could not connect to client on {IP}:{Port}!"));
+                Dispatcher.Invoke(() => DebugWindow?.Debug(e.Message));
                 throw new ConnectionRefusedException($"Client refused connection: {e.Message}");
             }
 
             if (Client?.Connected ?? false)
             {
-                Dispatcher.Invoke(() => debugWindow?.Debug("Connected to client!"));
-                Dispatcher.Invoke(() => debugWindow?.Debug("Verifying account ID with connected client"));
+                Dispatcher.Invoke(() => DebugWindow?.Debug("Connected to client!"));
+                Dispatcher.Invoke(() => DebugWindow?.Debug("Verifying account ID with connected client"));
                 Client.GetStream().Write(Encoding.UTF8.GetBytes(AccountId));
                 return Client;
             }
-            Dispatcher.Invoke(() => debugWindow?.Debug($"Connection {((Client?.Connected ?? false) ? "success" : "failed")}"));
+            Dispatcher.Invoke(() => DebugWindow?.Debug($"Connection {Client switch { TcpClient client => $"success {client}", null => "failed" }}"));
 
             throw new ConnectionRefusedException("Client refused connection");
         }
