@@ -65,7 +65,7 @@ namespace The_Project.Accounts
 
             Database.UserAccount UserAccount = new(Connection, Tables);
             Random random = new();
-            UserId UserId = new(Networking.Utils.GetIPAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
+            UserId UserId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
             MinPort = UserId.MinPort;
             MaxPort = UserId.MaxPort;
             AccountId = UserId.AccountId;
@@ -89,7 +89,7 @@ namespace The_Project.Accounts
 
         public UserId ToUserId()
         {
-            UserId UserId = new(IPAddress.Parse("127.0.0.1"), MinPort, MaxPort, AccountId);
+            UserId UserId = new(Networking.Utils.GetLocalIpAddress(), MinPort, MaxPort, AccountId);
             return UserId;
         }
     }
