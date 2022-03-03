@@ -83,11 +83,11 @@ namespace The_Project
                 this.RecipientConnection = new RecipientConnection();
                 try
                 {
-                    bool Connected = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text)).Result;
-                    if (!Connected)
-                    {
-                        throw new ConnectionRefusedException("Could not connect!");
-                    }
+                    _ = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
+                    /*                    if (!Connected)
+                                        {
+                                            throw new ConnectionRefusedException("Could not connect!");
+                                        }*/
                 }
                 catch (ConnectionRefusedException)
                 {

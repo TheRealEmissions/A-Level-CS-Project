@@ -31,16 +31,14 @@ namespace The_Project.Networking
 
         public async Task<bool> ConnectTo(UserId UserId)
         {
-            int[] Ports = Enumerable.Range(UserId.MinPort, UserId.MaxPort).ToArray();
-
             Dispatcher? CurrentDispatcher = Dispatcher.CurrentDispatcher;
 
             Task<TcpClient?>[] Tasks = new Task<TcpClient?>[UserId.MaxPort - UserId.MinPort];
-            for (int i = 0; i < (UserId.MaxPort - UserId.MinPort); i++)
+            for (int port = UserId.MinPort; port < UserId.MinPort; port++)
             {
                 try
                 {
-                    Tasks[i] = CreateConnection(UserId.IP, Ports[i], UserId.AccountId, CurrentDispatcher);
+                    Tasks[port - UserId.MinPort] = CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher);
                 }
                 catch (ConnectionRefusedException)
                 {
@@ -48,7 +46,7 @@ namespace The_Project.Networking
                 }
             }
 
-            int index = Task.WaitAny(Tasks, 60000);
+            int index = Task.WaitAny(tasks: Tasks, 120000);
 
             Client = index > 0 ? await Tasks[index] : throw new ConnectionRefusedException($"Could not connect to {UserId.Id} on any port range!");
             return index > 0;
@@ -73,7 +71,7 @@ namespace The_Project.Networking
 
             try
             {
-                Dispatcher.Invoke(() => DebugWindow?.Debug("Connecting to client..."));
+                Dispatcher.Invoke(() => DebugWindow?.Debug($"Connecting to client on {IP}:{Port}..."));
                 await Client.ConnectAsync(IP, Port);
             }
             catch (Exception e)

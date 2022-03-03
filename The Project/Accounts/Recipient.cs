@@ -1,11 +1,11 @@
-﻿using The_Project.Networking;
+﻿using The_Project.Cryptography;
+using The_Project.Networking;
 
 namespace The_Project.Accounts
 {
     public class Recipient
     {
         public RecipientConnection Connection;
-
 
         public Recipient(string Username)
         {
@@ -17,7 +17,7 @@ namespace The_Project.Accounts
 
         public void Send(string text)
         {
-
+            /*    string Ciphertext = EncryptionExtensions.*/
         }
     }
 }
