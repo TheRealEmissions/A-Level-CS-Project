@@ -74,16 +74,17 @@ namespace The_Project
             MainWindow.Btn_DebugWindow_Click(sender, e);
         }
 
-        private void Btn_connect_Click(object sender, RoutedEventArgs e)
+        private async void Btn_connect_Click(object sender, RoutedEventArgs e)
         {
+            btn_connect.IsEnabled = false;
             MainWindow.Debug($"Connecting to {txtinput_userid.Text}");
             if (UserId.Regex.Match(txtinput_userid.Text).Success)
             {
                 MainWindow.Debug("Regex checks out! Processing connection.");
-                this.RecipientConnection = new RecipientConnection();
+                RecipientConnection = new RecipientConnection(MainWindow.DebugWindow);
                 try
                 {
-                    _ = RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
+                    bool Connected = await RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
                     /*                    if (!Connected)
                                         {
                                             throw new ConnectionRefusedException("Could not connect!");
@@ -91,6 +92,7 @@ namespace The_Project
                 }
                 catch (ConnectionRefusedException)
                 {
+                    btn_connect.IsEnabled = true;
                     throw;
                 }
             }

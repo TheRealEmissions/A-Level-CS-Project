@@ -33,11 +33,12 @@ namespace The_Project.Networking
         {
             Dispatcher? CurrentDispatcher = Dispatcher.CurrentDispatcher;
 
-            Task<TcpClient?>[] Tasks = new Task<TcpClient?>[UserId.MaxPort - UserId.MinPort];
+            Task<TcpClient>[] Tasks = new Task<TcpClient>[UserId.MaxPort - UserId.MinPort];
             for (int port = UserId.MinPort; port < UserId.MinPort; port++)
             {
                 try
                 {
+                    DebugWindow?.Debug($"Launching connection method for {UserId.IP}:{port}!");
                     Tasks[port - UserId.MinPort] = CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher);
                 }
                 catch (ConnectionRefusedException)
@@ -46,7 +47,7 @@ namespace The_Project.Networking
                 }
             }
 
-            int index = Task.WaitAny(tasks: Tasks, 120000);
+            int index = Task.WaitAny(tasks: Tasks.TakeWhile(x => x is not null).ToArray(), 120000);
 
             Client = index > 0 ? await Tasks[index] : throw new ConnectionRefusedException($"Could not connect to {UserId.Id} on any port range!");
             return index > 0;
@@ -65,7 +66,7 @@ namespace The_Project.Networking
                     return Client is null;
                 }*/
 
-        public async Task<TcpClient?> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher)
+        public async Task<TcpClient> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher)
         {
             TcpClient Client = new();
 
