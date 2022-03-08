@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using The_Project.Accounts;
@@ -33,13 +34,15 @@ namespace The_Project.Networking
         {
             Dispatcher? CurrentDispatcher = Dispatcher.CurrentDispatcher;
 
-            Task<TcpClient>[] Tasks = new Task<TcpClient>[UserId.MaxPort - UserId.MinPort];
+            List<Task<TcpClient?>> Tasks = new();
+            CancellationTokenSource CancellationToken = new();
+
             for (int port = UserId.MinPort; port < UserId.MinPort; port++)
             {
                 try
                 {
                     DebugWindow?.Debug($"Launching connection method for {UserId.IP}:{port}!");
-                    Tasks[port - UserId.MinPort] = CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher);
+                    Tasks.Add(CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher, CancellationToken));
                 }
                 catch (ConnectionRefusedException)
                 {
@@ -47,10 +50,28 @@ namespace The_Project.Networking
                 }
             }
 
-            int index = Task.WaitAny(tasks: Tasks.TakeWhile(x => x is not null).ToArray(), 120000);
+            /*            while (Tasks.Count > 0)
+                        {
+                            Task<TcpClient?> resultTask = await Task.WhenAny(Tasks);
+                            TcpClient? result = await resultTask;
+                            if (result is null)
+                            {
+                                Tasks.Remove(resultTask);
+                            }
+                            else
+                            {
+                                CancellationToken.Cancel();
+                                Client = result is TcpClient ? result : throw new ConnectionRefusedException("Returned task is not a TcpClient!");
+                                break;
+                            }
+                        }*/
+            try { Client = await Extensions.TaskExtension<TcpClient>.FirstSuccessNullAsReject(Tasks); }
+            catch (Exception)
+            {
+                throw;
+            }
 
-            Client = index > 0 ? await Tasks[index] : throw new ConnectionRefusedException($"Could not connect to {UserId.Id} on any port range!");
-            return index > 0;
+            return Client is TcpClient;
         }
 
         /*        public bool ConnectTo(UserId UserId)
@@ -66,9 +87,14 @@ namespace The_Project.Networking
                     return Client is null;
                 }*/
 
-        public async Task<TcpClient> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher)
+        public async Task<TcpClient?> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher, CancellationTokenSource CancellationToken)
         {
             TcpClient Client = new();
+
+            if (CancellationToken.Token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             try
             {
@@ -79,7 +105,8 @@ namespace The_Project.Networking
             {
                 Dispatcher.Invoke(() => DebugWindow?.Debug($"Could not connect to client on {IP}:{Port}!"));
                 Dispatcher.Invoke(() => DebugWindow?.Debug(e.Message));
-                throw new ConnectionRefusedException($"Client refused connection: {e.Message}");
+                /*throw new ConnectionRefusedException($"Client refused connection: {e.Message}");*/
+                return null;
             }
 
             if (Client?.Connected ?? false)
@@ -91,7 +118,8 @@ namespace The_Project.Networking
             }
             Dispatcher.Invoke(() => DebugWindow?.Debug($"Connection {Client switch { TcpClient client => $"success {client}", null => "failed" }}"));
 
-            throw new ConnectionRefusedException("Client refused connection");
+            /*throw new ConnectionRefusedException("Client refused connection");*/
+            return null;
         }
     }
 }
