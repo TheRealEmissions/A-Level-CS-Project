@@ -10,19 +10,18 @@ namespace The_Project.Extensions
 {
     public static class TaskExtension<T>
     {
-        public static async Task<T> FirstSuccessNullAsReject(IEnumerable<Task<T?>> tasks)
+        public static async Task<T> FirstSuccess(IEnumerable<Task<T?>> tasks)
         {
             List<Task<T?>> taskList = new(tasks);
-            Task<T>? firstCompleted = default;
+
+            T? result = default;
 
             while (taskList.Count > 0)
             {
                 Task<T?> currentCompleted = await Task.WhenAny(taskList);
                 if (currentCompleted.Status == TaskStatus.RanToCompletion && currentCompleted.Result is T)
                 {
-#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
-                    firstCompleted = currentCompleted;
-#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+                    result = currentCompleted.Result;
                     break;
                 }
                 else
@@ -31,7 +30,7 @@ namespace The_Project.Extensions
                 }
             }
 
-            return firstCompleted is not null && firstCompleted.Result is T ? firstCompleted.Result : throw new Exception("No tasks completed successfully");
+            return result is not null ? result : throw new Exception("result is null");
         }
     }
 }

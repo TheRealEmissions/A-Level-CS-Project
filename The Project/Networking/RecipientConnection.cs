@@ -65,7 +65,7 @@ namespace The_Project.Networking
                                 break;
                             }
                         }*/
-            try { Client = await Extensions.TaskExtension<TcpClient>.FirstSuccessNullAsReject(Tasks); }
+            try { Client = await Extensions.TaskExtension<TcpClient>.FirstSuccess(Tasks); }
             catch (Exception)
             {
                 throw;
