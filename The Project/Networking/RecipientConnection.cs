@@ -35,14 +35,13 @@ namespace The_Project.Networking
             Dispatcher? CurrentDispatcher = Dispatcher.CurrentDispatcher;
 
             List<Task<TcpClient?>> Tasks = new();
-            CancellationTokenSource CancellationToken = new();
 
             for (int port = UserId.MinPort; port < UserId.MinPort; port++)
             {
                 try
                 {
                     DebugWindow?.Debug($"Launching connection method for {UserId.IP}:{port}!");
-                    Tasks.Add(CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher, CancellationToken));
+                    Tasks.Add(CreateConnection(UserId.IP, port, UserId.AccountId, CurrentDispatcher));
                 }
                 catch (ConnectionRefusedException)
                 {
@@ -87,14 +86,9 @@ namespace The_Project.Networking
                     return Client is null;
                 }*/
 
-        public async Task<TcpClient?> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher, CancellationTokenSource CancellationToken)
+        public async Task<TcpClient?> CreateConnection(IPAddress IP, int Port, string AccountId, Dispatcher Dispatcher)
         {
             TcpClient Client = new();
-
-            if (CancellationToken.Token.IsCancellationRequested)
-            {
-                return null;
-            }
 
             try
             {
