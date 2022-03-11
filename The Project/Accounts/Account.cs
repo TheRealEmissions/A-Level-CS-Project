@@ -46,8 +46,8 @@ namespace The_Project.Accounts
                 throw new AccountNotFoundException("UserAccount");
             }
             AccountId = Entry.Value.AccountId;
-            MinPort = new Random().Next(19000, 19500);
-            MaxPort = new Random().Next(19900, 21000);
+            MinPort = new Random().Next(20000, 20005);
+            MaxPort = new Random().Next(20006, 20010);
 
             bool PasswordIsCorrect = UserAccount.ComparePassword(this, PasswordHash);
             if (!PasswordIsCorrect)

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,6 +86,7 @@ namespace The_Project
                 try
                 {
                     bool Connected = await RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
+                    Debug.WriteLine($"Connected? {Connected}");
                     /*                    if (!Connected)
                                         {
                                             throw new ConnectionRefusedException("Could not connect!");
