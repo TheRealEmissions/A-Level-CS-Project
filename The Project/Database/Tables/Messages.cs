@@ -5,13 +5,13 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class Messages : MustConstructWith<SqliteConnection>, ISQLTable
+    public class Messages : MustConstructWith<SqliteConnection>, ISqlTable
     {
-        private readonly SqliteConnection Connection;
+        private readonly SqliteConnection _sqliteConnection;
 
-        public Messages(SqliteConnection Connection) : base(Connection)
+        public Messages(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
-            this.Connection = Connection;
+            this._sqliteConnection = sqliteConnection;
             //CreateTable();
         }
 
@@ -23,20 +23,20 @@ namespace The_Project.Database.Tables
             public string Message { get; }
             public bool Received { get; }
 
-            public Schema(string UserAccountId, string RefAccountId, int Timestamp, string Message, bool Received)
+            public Schema(string userAccountId, string refAccountId, int timestamp, string message, bool received)
             {
-                this.UserAccountId = UserAccountId;
-                this.RefAccountId = RefAccountId;
-                this.Timestamp = new DateTime(Timestamp);
-                this.Message = Message;
-                this.Received = Received;
+                this.UserAccountId = userAccountId;
+                this.RefAccountId = refAccountId;
+                this.Timestamp = new DateTime(timestamp);
+                this.Message = message;
+                this.Received = received;
             }
         }
 
         public void CreateTable()
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 CREATE TABLE IF NOT EXISTS $database (
                     user_account_id TEXT NOT NULL,
                     recipient_account_id TEXT NOT NULL,
@@ -54,9 +54,9 @@ namespace The_Project.Database.Tables
                 )
             ";
             //Command.CommandType = System.Data.CommandType.Text;
-            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".messages");
-            //Command.Parameters.AddWithValue("$database", Connection.Database + ".messages");
-            Command.ExecuteNonQuery();
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
+            //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".messages");
+            sqliteCommand.ExecuteNonQuery();
         }
     }
 }

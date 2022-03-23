@@ -14,82 +14,82 @@ namespace The_Project.Accounts
         public int MinPort { get; private set; }
         public int MaxPort { get; private set; }
 
-        private readonly Tables Tables;
+        private readonly Tables _tables;
 
         // login into account and retrieve details
-        public Account(string Username, string PasswordHash, SqliteConnection Connection, Tables Tables)
+        public Account(string username, string passwordHash, SqliteConnection connection, Tables tables)
         {
-            this.Username = Username;
-            this.Tables = Tables;
+            this.Username = username;
+            this._tables = tables;
 
-            Login(Username, PasswordHash, Connection);
+            Login(username, passwordHash, connection);
         }
 
         // register new account
-        public Account(string Username, string PasswordHash, string ConfPasswordHash, SqliteConnection Connection, Tables Tables)
+        public Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection, Tables tables)
         {
-            this.Username = Username;
-            this.Tables = Tables;
+            this.Username = username;
+            this._tables = tables;
 
-            Register(Username, PasswordHash, ConfPasswordHash, Connection);
+            if (passwordHash != confPasswordHash)
+            {
+                throw new PasswordHashMismatchException();
+            }
+            Register(username, passwordHash, connection);
         }
 
-        private void Login(string Username, string PasswordHash, SqliteConnection Connection)
+        private void Login(string username, string passwordHash, SqliteConnection connection)
         {
-            UserAccount UserAccountTable = (UserAccount)Tables.GetTable("UserAccount");
-            Database.UserAccount UserAccount = new(Connection, Tables);
+            UserAccount userAccountTable = (UserAccount)_tables.GetTable("UserAccount");
+            Database.UserAccount userAccount = new(connection, _tables);
 
-            UserAccount.Schema? Entry = UserAccountTable.GetAccountEntry(Username);
-            if (!Entry.HasValue)
+            UserAccount.Schema? accountEntry = userAccountTable.GetAccountEntry(username);
+            if (!accountEntry.HasValue)
             {
                 throw new AccountNotFoundException("UserAccount");
             }
-            AccountId = Entry.Value.AccountId;
+            AccountId = accountEntry.Value.AccountId;
             MinPort = new Random().Next(20000, 20005);
             MaxPort = new Random().Next(20006, 20010);
 
-            bool PasswordIsCorrect = UserAccount.ComparePassword(this, PasswordHash);
-            if (!PasswordIsCorrect)
+            bool passwordIsCorrect = userAccount.ComparePassword(this, passwordHash);
+            if (!passwordIsCorrect)
             {
                 throw new WrongPasswordException();
             }
         }
 
-        private void Register(string Username, string PasswordHash, string ConfPasswordHash, SqliteConnection Connection)
+        private void Register(string username, string passwordHash, SqliteConnection connection)
         {
-            if (PasswordHash != ConfPasswordHash)
-            {
-                throw new PasswordHashMismatchException();
-            }
 
-            Database.UserAccount UserAccount = new(Connection, Tables);
+            Database.UserAccount userAccount = new(connection, _tables);
             Random random = new();
-            UserId UserId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
-            MinPort = UserId.MinPort;
-            MaxPort = UserId.MaxPort;
-            AccountId = UserId.AccountId;
+            UserId userId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
+            MinPort = userId.MinPort;
+            MaxPort = userId.MaxPort;
+            AccountId = userId.AccountId;
 
-            UserAccount.CreateEntry(Username, PasswordHash, UserId);
+            userAccount.CreateEntry(username, passwordHash, userId);
         }
 
         private static string GenerateAccountId()
         {
-            Random Random = new();
-            string AccountId = string.Empty;
+            Random random = new();
+            string accountId = string.Empty;
 
-            string[] Alphabet = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+            string[] alphabet = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 
             for (int i = 0; i < 3; i++)
             {
-                AccountId += Alphabet[Random.Next(1, 52) - 1];
+                accountId += alphabet[random.Next(1, 52) - 1];
             }
-            return AccountId;
+            return accountId;
         }
 
         public UserId ToUserId()
         {
-            UserId UserId = new(Networking.Utils.GetLocalIpAddress(), MinPort, MaxPort, AccountId);
-            return UserId;
+            UserId userId = new(Networking.Utils.GetLocalIpAddress(), MinPort, MaxPort, AccountId);
+            return userId;
         }
     }
 }

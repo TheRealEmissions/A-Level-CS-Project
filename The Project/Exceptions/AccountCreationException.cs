@@ -6,13 +6,9 @@ namespace The_Project.Exceptions
     {
         public string Type { get; }
 
-        public AccountCreationException() : base()
+        public AccountCreationException(string type) : base(type)
         {
-        }
-
-        public AccountCreationException(string Type) : base(Type)
-        {
-            this.Type = Type;
+            this.Type = type;
         }
     }
 }

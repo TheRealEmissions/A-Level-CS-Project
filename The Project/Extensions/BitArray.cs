@@ -21,38 +21,38 @@ namespace The_Project.Extensions
 
         public static BitArray SafeRightRotate(this BitArray bitArray, int bits)
         {
-            BitArray TempArr = new(bitArray);
-            BitArray Arr = bitArray.SafeRightShift(bits);
+            BitArray tempArr = new(bitArray);
+            BitArray arr = bitArray.SafeRightShift(bits);
             for (int i = 0; i < bits; i++)
             {
-                Arr[i] = TempArr[Arr.Length - 1 - bits + i];
+                arr[i] = tempArr[arr.Length - 1 - bits + i];
             }
-            return Arr;
+            return arr;
         }
 
         public static BitArray SafeLeftRotate(this BitArray bitArray, int bits)
         {
-            BitArray TempArr = new(bitArray);
-            BitArray Arr = bitArray.SafeLeftShift(bits);
+            BitArray tempArr = new(bitArray);
+            BitArray arr = bitArray.SafeLeftShift(bits);
             for (int i = 0; i < bits; i++)
             {
-                Arr[Arr.Length - 1 - bits + i] = TempArr[i];
+                arr[arr.Length - 1 - bits + i] = tempArr[i];
             }
-            return Arr;
+            return arr;
         }
 
         public static BitArray SafeXor(this BitArray bitArray1, BitArray bitArray2)
         {
-            BitArray TempArr = new(bitArray1);
-            BitArray Arr = TempArr.Xor(bitArray2);
-            return Arr;
+            BitArray tempArr = new(bitArray1);
+            BitArray arr = tempArr.Xor(bitArray2);
+            return arr;
         }
 
         public static uint ToUInt32(this BitArray bitArray)
         {
-            uint[] Arr = new uint[1];
-            bitArray.CopyTo(Arr, 0);
-            return Arr[0];
+            uint[] arr = new uint[1];
+            bitArray.CopyTo(arr, 0);
+            return arr[0];
         }
 
         public static BitArray Add(this BitArray bitArray1, BitArray bitArray2)
@@ -61,22 +61,22 @@ namespace The_Project.Extensions
             ulong j = bitArray2.ToUInt32();
             uint k = (uint)((i + j) % 4294967296);
             byte[] bytes = BitConverter.GetBytes(k);
-            BitArray Arr = new(bytes);
-            return Arr;
+            BitArray array = new(bytes);
+            return array;
         }
 
         public static BitArray SafeAnd(this BitArray bitArray1, BitArray bitArray2)
         {
-            BitArray TempArr = new(bitArray1);
-            BitArray Arr = TempArr.And(bitArray2);
-            return Arr;
+            BitArray tempArr = new(bitArray1);
+            BitArray arr = tempArr.And(bitArray2);
+            return arr;
         }
 
         public static BitArray SafeNot(this BitArray bitArray1)
         {
-            BitArray TempArr = new(bitArray1);
-            BitArray Arr = TempArr.Not();
-            return Arr;
+            BitArray tempArr = new(bitArray1);
+            BitArray arr = tempArr.Not();
+            return arr;
         }
 
         public static byte[] ToByteArray(this BitArray bitArray)

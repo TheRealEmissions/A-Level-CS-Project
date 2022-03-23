@@ -13,56 +13,55 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for UserConnection.xaml
     /// </summary>
-    public partial class UserConnectionPage : Page
+    public partial class UserConnectionPage
     {
-        private readonly MainWindow MainWindow;
-        private Listener Listener { get; init; }
+        private readonly MainWindow _mainWindow;
+        private Listener Listener { get; }
         protected RecipientConnection RecipientConnection { get; private set; }
 
-        public UserConnectionPage(MainWindow MainWindow)
+        public UserConnectionPage(MainWindow mainWindow)
         {
-            this.MainWindow = MainWindow;
-            this.Listener = new(MainWindow.Handler.UserAccount.ToUserId(), MainWindow.DebugWindow);
+            this._mainWindow = mainWindow;
+            this.Listener = new(mainWindow.Handler.UserAccount.ToUserId(), mainWindow.DebugWindow);
             InitializeComponent();
 
-            txtblock_userId.Text = MainWindow.Handler.UserAccount.ToUserId().Id;
-            txtblock_port.Text += Listener.Port.ToString();
-            txtinput_userid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
+            TxtblockUserId.Text = mainWindow.Handler.UserAccount.ToUserId().Id;
+            TxtblockPort.Text += Listener.Port.ToString();
+            TxtinputUserid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
 
             _ = HandleConnection();
         }
 
         public async Task HandleConnection()
         {
-            Task<RecipientConnection> RecipientConnection = Listener.ListenAndConnect(MainWindow.Handler.UserAccount.AccountId);
-            this.RecipientConnection = await RecipientConnection;
+            Task<RecipientConnection> recipientConnection = Listener.ListenAndConnect(_mainWindow.Handler.UserAccount.AccountId);
+            this.RecipientConnection = await recipientConnection;
 
             // accept/reject connection
             // if accepted, continue
             // if rejected, terminate connection
             try
             {
-                ConnectionAcceptWindow ConnectionAcceptWindow = new(this, ((IPEndPoint)RecipientConnection.Result.Client.GetStream().Socket.RemoteEndPoint).Address);
+                ConnectionAcceptWindow connectionAcceptWindow = new(this, ((IPEndPoint)recipientConnection.Result.TcpClient.GetStream().Socket.RemoteEndPoint).Address);
             }
             catch (RejectConnectionException)
             {
-                this.Content = MainWindow;
+                this.Content = _mainWindow;
             }
 
-            return;
         }
 
         public void TerminateConnection()
         {
-            RecipientConnection.Client.Close();
-            this.Content = new UserConnectionPage(MainWindow);
+            RecipientConnection.TcpClient.Close();
+            this.Content = new UserConnectionPage(_mainWindow);
         }
 
         private void Txtinput_userid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (txtinput_userid.Text is "Input User ID")
+            if (TxtinputUserid.Text is "Input User ID")
             {
-                txtinput_userid.Text = string.Empty;
+                TxtinputUserid.Text = string.Empty;
             }
         }
 
@@ -72,21 +71,21 @@ namespace The_Project
 
         private void Btn_debugWindow_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Btn_DebugWindow_Click(sender, e);
+            _mainWindow.Btn_DebugWindow_Click(sender, e);
         }
 
         private async void Btn_connect_Click(object sender, RoutedEventArgs e)
         {
-            btn_connect.IsEnabled = false;
-            MainWindow.Debug($"Connecting to {txtinput_userid.Text}");
-            if (UserId.Regex.Match(txtinput_userid.Text).Success)
+            BtnConnect.IsEnabled = false;
+            _mainWindow.Debug($"Connecting to {TxtinputUserid.Text}");
+            if (UserId.Regex.Match(TxtinputUserid.Text).Success)
             {
-                MainWindow.Debug("Regex checks out! Processing connection.");
-                RecipientConnection = new RecipientConnection(MainWindow.DebugWindow);
+                _mainWindow.Debug("Regex checks out! Processing connection.");
+                RecipientConnection = new RecipientConnection(_mainWindow.DebugWindow);
                 try
                 {
-                    bool Connected = await RecipientConnection.ConnectTo(new UserId(txtinput_userid.Text));
-                    Debug.WriteLine($"Connected? {Connected}");
+                    bool connected = await RecipientConnection.ConnectTo(new UserId(TxtinputUserid.Text));
+                    Debug.WriteLine($"Connected? {connected}");
                     /*                    if (!Connected)
                                         {
                                             throw new ConnectionRefusedException("Could not connect!");
@@ -94,14 +93,13 @@ namespace The_Project
                 }
                 catch (ConnectionRefusedException)
                 {
-                    btn_connect.IsEnabled = true;
+                    BtnConnect.IsEnabled = true;
                     throw;
                 }
             }
             else
             {
-                MainWindow.Debug("Regex failed validation.");
-                return;
+                _mainWindow.Debug("Regex failed validation.");
             }
         }
     }

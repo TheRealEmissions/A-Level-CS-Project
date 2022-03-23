@@ -1,60 +1,61 @@
 ﻿using Microsoft.Data.Sqlite;
 using The_Project.Accounts;
+using The_Project.Database.Interfaces;
 using The_Project.Exceptions;
 
 namespace The_Project.Database
 {
     public class RecipientAccount : IDatabaseAccount
     {
-        private readonly SqliteConnection Connection;
-        private readonly Account UserAccountInstance;
-        private readonly Tables.Tables Tables;
+        private readonly SqliteConnection _sqliteConnection;
+        private readonly Account _userAccountInstance;
+        private readonly Tables.Tables _tables;
 
-        public RecipientAccount(SqliteConnection Connection, Account Account, Tables.Tables Tables)
+        public RecipientAccount(SqliteConnection sqliteConnection, Account account, Tables.Tables tables)
         {
-            this.Connection = Connection;
-            this.UserAccountInstance = Account;
-            this.Tables = Tables;
+            this._sqliteConnection = sqliteConnection;
+            this._userAccountInstance = account;
+            this._tables = tables;
         }
 
-        public void CreateAccount(string Nickname, UserId UserId)
+        public void CreateAccount(string username, UserId userId)
         {
-            Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");
-            bool CreatedEntry = Table.CreateAccountEntry(Nickname, UserId.AccountId, UserAccountInstance.AccountId);
-            if (!CreatedEntry)
+            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            bool createdEntry = table.CreateAccountEntry(username, userId.AccountId, _userAccountInstance.AccountId);
+            if (!createdEntry)
             {
                 throw new AccountCreationException("RECIPIENT ACCOUNT NOT CREATED");
             }
         }
 
-        public void CreateAccount(UserId UserId)
+        public void CreateAccount(UserId userId)
         {
-            Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");
-            bool CreatedEntry = Table.CreateAccountEntry(UserId.AccountId, UserAccountInstance.AccountId);
-            if (!CreatedEntry)
+            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            bool createdEntry = table.CreateAccountEntry(userId.AccountId, _userAccountInstance.AccountId);
+            if (!createdEntry)
             {
                 throw new AccountCreationException("RECIPIENT ACCOUNT NOT CREATED");
             }
         }
 
-        public Tables.RecipientAccount.Schema? GetAccount(string Nickname)
+        public Tables.RecipientAccount.Schema? GetAccount(string nickname)
         {
-            Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");
-            Tables.RecipientAccount.Schema? Entry = Table.GetAccountEntry(Nickname, UserAccountInstance.ToUserId());
-            return Entry;
+            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount.Schema? accountEntry = recipientAccount.GetAccountEntry(nickname, _userAccountInstance.ToUserId());
+            return accountEntry;
         }
 
-        public Tables.RecipientAccount.Schema? GetAccount(UserId UserId)
+        public Tables.RecipientAccount.Schema? GetAccount(UserId userId)
         {
-            Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");
-            Tables.RecipientAccount.Schema? Entry = Table.GetAccountEntry(UserId, UserAccountInstance.ToUserId());
-            return Entry;
+            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount.Schema? accountEntry = recipientAccount.GetAccountEntry(userId, _userAccountInstance.ToUserId());
+            return accountEntry;
         }
 
-        public void UpdateNickname(string Nickname, UserId UserId)
+        public void UpdateNickname(string nickname, UserId userId)
         {
-            Tables.RecipientAccount Table = (Tables.RecipientAccount)Tables.GetTable("RecipientAccount");
-            Table.UpdateNickname(Nickname, UserId, UserAccountInstance.ToUserId());
+            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            table.UpdateNickname(nickname, userId, _userAccountInstance.ToUserId());
         }
     }
 }

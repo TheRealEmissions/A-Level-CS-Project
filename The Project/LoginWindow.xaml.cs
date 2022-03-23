@@ -13,36 +13,36 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         public LoggingWindow DebugWindow { get; } = new();
 
         public MessagingHandler Handler { get; }
-        public SqliteConnection? SQLConnection { get; }
+        public SqliteConnection? SqliteConnection { get; }
         public Database.Tables.Tables Tables { get; }
 
         public MainWindow()
         {
             Handler = new();
-            SQLConnection = Handler.Connection;
+            SqliteConnection = Handler.Connection;
             Tables = Handler.Tables;
 
-            //new Tables(SQLConnection).GetAndCreateAllTables();
+            //new Tables(SqliteConnection).GetAndCreateAllTables();
 
             InitializeComponent();
             DisableAllButtons();
 
             // register events
-            btn_login.Click += Btn_login_Click;
-            btn_register.Click += Btn_register_Click;
-            txtinput_username.TextChanged += Txtinput_username_TextChanged;
-            txtinput_pswd.PasswordChanged += Txtinput_pswd_TextChanged;
-            txtinput_confpswd.PasswordChanged += Txtinput_confpswd_TextChanged;
+            BtnLogin.Click += Btn_login_Click;
+            BtnRegister.Click += Btn_register_Click;
+            TxtinputUsername.TextChanged += Txtinput_username_TextChanged;
+            TxtinputPswd.PasswordChanged += Txtinput_pswd_TextChanged;
+            TxtinputConfpswd.PasswordChanged += Txtinput_confpswd_TextChanged;
 
             // add handler
-            txtinput_username.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
-            txtinput_pswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
-            txtinput_confpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
+            TxtinputUsername.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
+            TxtinputPswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
+            TxtinputConfpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
         }
 
         public void Debug(string text)
@@ -52,42 +52,42 @@ namespace The_Project
 
         private void Txtinput_pswd_TextChanged(object sender, RoutedEventArgs e)
         {
-            if (txtinput_username.Text.Length < 1)
+            if (TxtinputUsername.Text.Length < 1)
             {
                 DisableAllButtons();
                 return;
             }
-            if (txtinput_pswd.Password.Length > 0 && txtinput_pswd.Password != "Password")
+            if (TxtinputPswd.Password.Length > 0 && TxtinputPswd.Password != "Password")
             {
-                btn_login.IsEnabled = true;
+                BtnLogin.IsEnabled = true;
                 Debug("Login Button Enabled");
-                if (txtinput_confpswd.Password.Length > 0 && txtinput_confpswd.Password == txtinput_pswd.Password)
+                if (TxtinputConfpswd.Password.Length > 0 && TxtinputConfpswd.Password == TxtinputPswd.Password)
                 {
-                    btn_register.IsEnabled = true;
+                    BtnRegister.IsEnabled = true;
                     Debug("Register Button Enabled");
                 }
             }
             else
             {
-                btn_login.IsEnabled = false;
+                BtnLogin.IsEnabled = false;
                 Debug("Login Button Enabled");
             }
         }
 
         private void Txtinput_confpswd_TextChanged(object sender, RoutedEventArgs e)
         {
-            btn_register.IsEnabled = false;
-            if (txtinput_pswd.Password.Length < 1)
+            BtnRegister.IsEnabled = false;
+            if (TxtinputPswd.Password.Length < 1)
             {
                 DisableAllButtons();
                 return;
             }
-            if (txtinput_confpswd.Password.ToLower() is "confirm password" or "password")
+            if (TxtinputConfpswd.Password.ToLower() is "confirm password" or "password")
             {
                 return;
             }
 
-            btn_register.IsEnabled = txtinput_pswd.Password == txtinput_confpswd.Password;
+            BtnRegister.IsEnabled = TxtinputPswd.Password == TxtinputConfpswd.Password;
             Debug("Enabled register button");
         }
 
@@ -97,29 +97,29 @@ namespace The_Project
 
         private void Btn_register_Click(object sender, RoutedEventArgs e)
         {
-            if (new Database.UserAccount(SQLConnection, Tables).GetAccount(txtinput_username.Text) is not null)
+            if (new Database.UserAccount(SqliteConnection, Tables).GetAccount(TxtinputUsername.Text) is not null)
             {
                 _ = new ErrorWindow().SetError("This account already exists!").Initialize();
                 return;
             }
 
-            Hashing Hash = new(this);
+            Hashing hash = new(this);
 
             // generate password hash
-            string PasswordHash = Hash.Hash(txtinput_pswd.Password);
-            DebugWindow.Debug($"Password Hash: {PasswordHash}");
+            string passwordHash = hash.Hash(TxtinputPswd.Password);
+            DebugWindow.Debug($"Password Hash: {passwordHash}");
 
             // create an account
             try
             {
-                Account Account = new(txtinput_username.Text, PasswordHash, PasswordHash, SQLConnection, Tables);
+                Account userAccount = new(TxtinputUsername.Text, passwordHash, passwordHash, SqliteConnection, Tables);
 
                 // register account to handler
-                Handler.UserAccount = Account;
+                Handler.UserAccount = userAccount;
             }
-            catch (Exception Error)
+            catch (Exception exception)
             {
-                _ = new ErrorWindow().SetError(Error.Message).Initialize();
+                _ = new ErrorWindow().SetError(exception.Message).Initialize();
             }
 
             this.Content = new UserConnectionPage(this);
@@ -127,48 +127,48 @@ namespace The_Project
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
         {
-            Hashing Hash = new(this);
+            Hashing hash = new(this);
 
             Debug("Registered LOGIN CLICK - Finding account");
-            string PasswordHash = Hash.Hash(txtinput_pswd.Password);
-            Debug($"Password hash: {PasswordHash}");
-            Debug($"Hash length: {PasswordHash.Length}");
+            string passwordHash = hash.Hash(TxtinputPswd.Password);
+            Debug($"Password hash: {passwordHash}");
+            Debug($"Hash length: {passwordHash.Length}");
             try
             {
-                Account account = new(txtinput_username.Text, PasswordHash, SQLConnection, Tables);
+                Account account = new(TxtinputUsername.Text, passwordHash, SqliteConnection, Tables);
                 Handler.UserAccount = account;
             }
-            catch (Exception Error)
+            catch (Exception exception)
             {
-                _ = new ErrorWindow().SetError(Error.Message).Initialize();
+                _ = new ErrorWindow().SetError(exception.Message).Initialize();
                 return;
             }
             Debug("FOUND ACCOUNT!");
 
-            UserConnectionPage UserConnectionPage = new(this);
-            this.Content = UserConnectionPage;
+            UserConnectionPage userConnectionPage = new(this);
+            this.Content = userConnectionPage;
         }
 
         public void DisableAllButtons()
         {
-            btn_login.IsEnabled = false;
-            btn_register.IsEnabled = false;
+            BtnLogin.IsEnabled = false;
+            BtnRegister.IsEnabled = false;
             Debug("All buttons disabled");
         }
 
         private void Txtinput_username_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            txtinput_username.Text = string.Empty;
+            TxtinputUsername.Text = string.Empty;
         }
 
         private void Txtinput_pswd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            txtinput_pswd.Password = string.Empty;
+            TxtinputPswd.Password = string.Empty;
         }
 
         private void Txtinput_confpswd_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            txtinput_confpswd.Password = string.Empty;
+            TxtinputConfpswd.Password = string.Empty;
         }
 
         public void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)

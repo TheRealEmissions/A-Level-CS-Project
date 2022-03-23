@@ -1,11 +1,7 @@
 ﻿namespace The_Project.Database.Tables.Interfaces
 {
-    public interface ISQLTable
+    public interface ISqlTable
     {
         public void CreateTable();
-
-        public struct Schema
-        {
-        };
     }
 }

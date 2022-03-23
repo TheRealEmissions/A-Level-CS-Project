@@ -5,11 +5,11 @@ namespace The_Project.Extensions
 {
     public static class StringExtensions
     {
-        private static List<IEnumerable<string>> SplitArr(IEnumerable<string> Array)
+        private static List<IEnumerable<string>> SplitArr(IEnumerable<string> array)
         {
-            /*            if (Array.Count <= 1) return new List<List<string>>() { Array };
+            /*            if (array.Count <= 1) return new List<List<string>>() { array };
 
-                        List<List<string>> NewArr = new() { Array.GetRange(0, (int)Math.Floor((double)Array.Count / 2)), Array.GetRange((int)Math.Floor((double)Array.Count / 2), (int)Math.Ceiling((decimal)Array.Count / 2)) };
+                        List<List<string>> NewArr = new() { array.GetRange(0, (int)Math.Floor((double)array.Count / 2)), array.GetRange((int)Math.Floor((double)array.Count / 2), (int)Math.Ceiling((decimal)array.Count / 2)) };
                         if (!NewArr.All(x => x.Count == 2 || x.Count == 1))
                         {
                             List<List<string>> SplitArray = new();
@@ -27,55 +27,49 @@ namespace The_Project.Extensions
                         }
                         return NewArr;*/
 
-            if (Array.Count() <= 1)
+            if (array.Count() <= 1)
             {
-                return new List<IEnumerable<string>>() { Array };
+                return new List<IEnumerable<string>>() {array};
             }
 
-            List<IEnumerable<string>> NewArr = new();
-            for (int i = 0; i <= Array.Count() - 1; i += 2)
+            List<IEnumerable<string>> newArr = new();
+            for (int i = 0; i <= array.Count() - 1; i += 2)
             {
-                if (Array.Count() - 1 < i + 1)
-                {
-                    NewArr.Add(new List<string>() { Array.ElementAt(i) });
-                }
-                else
-                {
-                    NewArr.Add(new List<string>() { Array.ElementAt(i), Array.ElementAt(i + 1) });
-                }
+                newArr.Add(array.Count() - 1 < i + 1
+                    ? new List<string> {array.ElementAt(i)}
+                    : new List<string> {array.ElementAt(i), array.ElementAt(i + 1)});
             }
-            return NewArr;
+
+            return newArr;
         }
 
-        private static string MergeString(List<IEnumerable<string>> Arr, char Separator)
+        private static string MergeString(List<IEnumerable<string>> arr, char separator)
         {
-            IEnumerable<IEnumerable<string>> Strings = Arr.AsParallel().AsOrdered().Select(x => new List<string>() { string.Join(Separator, x) });
-            if (Strings.Count() == 1)
+            IEnumerable<IEnumerable<string>> strings = arr.AsParallel().AsOrdered()
+                .Select(x => new List<string>() {string.Join(separator, x)});
+            if (strings.Count() == 1)
             {
-                return Strings.ElementAt(0).Count() > 1
-                    ? Strings.ElementAt(0).ElementAt(0) + '-' + Strings.ElementAt(0).ElementAt(1)
-                    : Strings.ElementAt(0).ElementAt(0);
+                return strings.ElementAt(0).Count() > 1
+                    ? strings.ElementAt(0).ElementAt(0) + '-' + strings.ElementAt(0).ElementAt(1)
+                    : strings.ElementAt(0).ElementAt(0);
             }
-            List<IEnumerable<string>> NewStrings = new();
-            for (int i = 0; i <= Strings.Count() - 1; i += 2)
+
+            List<IEnumerable<string>> newStrings = new();
+            for (int i = 0; i <= strings.Count() - 1; i += 2)
             {
-                if (Strings.Count() - 1 < i + 1)
-                {
-                    NewStrings.Add(Strings.ElementAt(0));
-                }
-                else
-                {
-                    NewStrings.Add(new List<string> { Strings.ElementAt(i).ElementAt(0), Strings.ElementAt(i + 1).ElementAt(0) });
-                }
+                newStrings.Add(strings.Count() - 1 < i + 1
+                    ? strings.ElementAt(0)
+                    : new List<string> {strings.ElementAt(i).ElementAt(0), strings.ElementAt(i + 1).ElementAt(0)});
             }
-            return MergeString(NewStrings, Separator);
+
+            return MergeString(newStrings, separator);
         }
 
-        public static string ParallelJoin(this IEnumerable<string> Arr, char Separator)
+        public static string ParallelJoin(this IEnumerable<string> arr, char separator)
         {
-            List<IEnumerable<string>> ArrSplit = SplitArr(Arr);
-            string Merged = MergeString(ArrSplit, Separator);
-            return Merged;
+            List<IEnumerable<string>> arrSplit = SplitArr(arr);
+            string mergeString = MergeString(arrSplit, separator);
+            return mergeString;
         }
     }
 }

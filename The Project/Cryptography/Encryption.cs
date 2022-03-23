@@ -60,10 +60,10 @@ namespace The_Project.Cryptography
 
     public static class EncryptionExtensions
     {
-        public static string Encrypt(this string s, PublicKey Key)
+        public static string Encrypt(this string s, PublicKey key)
         {
             // Convert string to array of bytes using UTF8
-            byte[]? StringBytes = Encoding.UTF8.GetBytes(s);
+            byte[] stringBytes = Encoding.UTF8.GetBytes(s);
 
             /**
              * PARALLELISED FOR EFFICIENCY USING PLINQ
@@ -72,14 +72,14 @@ namespace The_Project.Cryptography
              * For each byte in the byte array (StringBytes) converted to an unsigned 32 bit integer, it will be raised to the power E and modulus with N
              * and converted to hexidecimal string
              */
-            IEnumerable<string> Ciphered = StringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, Key.E, Key.N).ToString("X"));
+            IEnumerable<string> ciphered = stringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, key.E, key.N).ToString("X"));
             //string Cipher = Ciphered.ParallelJoin('-');
 
             // Each hexidecimal will then by joined by "-" and returned from the method as a string
-            return string.Join('-', Ciphered);
+            return string.Join('-', ciphered);
         }
 
-        public static string Decrypt(this string s, PrivateKey Key)
+        public static string Decrypt(this string s, PrivateKey key)
         {
             /**
              * PARALLELISED FOR EFFICIENCY USING PLINQ
@@ -90,69 +90,64 @@ namespace The_Project.Cryptography
              * Raised to the power D (secret exponent) and modulus with N
              * This number is then converted to a byte (the original byte before encryption)
              */
-            IEnumerable<byte>? CharBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), Key.D, Key.N));
+            IEnumerable<byte> charBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), key.D, key.N));
             // Using the same encoding UTF8, the byte array returned is converted to a string
-            return Encoding.UTF8.GetString(CharBytes.ToArray());
+            return Encoding.UTF8.GetString(charBytes.ToArray());
         }
     }
 
     public class Encryption
     {
-        private readonly BigInteger x;
-        private readonly BigInteger y;
-        private readonly BigInteger n;
 
-        private readonly BigInteger phi;
+        private readonly BigInteger _phi;
 
-        // find e such that e > 1, e < phi
-        // e is co-prime to phi
-        private readonly BigInteger e = 65537;//new BigInteger(2).GetCoprime(phi);
+        // find _eInteger such that _eInteger > 1, _eInteger < _phi
+        // _eInteger is co-prime to _phi
+        private readonly BigInteger _eInteger = 65537;//new BigInteger(2).GetCoprime(_phi);
 
-        private readonly BigInteger d;
-
-        public PublicKey PublicKey { get; }
-        public PrivateKey PrivateKey { get; }
+        public PublicKey PublicKeyKey { get; }
+        public PrivateKey PrivateKeyKey { get; }
 
         public Encryption()
         {
-            x = GeneratePrime();
-            y = GeneratePrime();
-            n = x * y;
-            phi = (x - 1) * (y - 1);
-            d = GetD();
+            BigInteger xInteger = GeneratePrime();
+            BigInteger yInteger = GeneratePrime();
+            BigInteger nInteger = xInteger * yInteger;
+            _phi = (xInteger - 1) * (yInteger - 1);
+            BigInteger dInteger = GetD();
 
-            PublicKey = new(n, e);
-            PrivateKey = new(n, d);
+            PublicKeyKey = new PublicKey(nInteger, _eInteger);
+            PrivateKeyKey = new PrivateKey(nInteger, dInteger);
         }
 
-        public Encryption(PublicKey Public, PrivateKey Private)
+        public Encryption(PublicKey publicKey, PrivateKey privateKey)
         {
-            PublicKey = Public;
-            PrivateKey = Private;
+            PublicKeyKey = publicKey;
+            PrivateKeyKey = privateKey;
         }
 
         private BigInteger GetD()
         {
-            BigInteger d = (1 + phi) / e;
+            BigInteger d = (1 + _phi) / _eInteger;
             int i = 1;
-            while (e * d % phi != (1 % phi))
+            while (_eInteger * d % _phi != (1 % _phi))
             {
-                d = (1 + ((i + 1) * phi)) / e;
+                d = (1 + ((i + 1) * _phi)) / _eInteger;
                 i++;
             }
             return d;
         }
 
-        private BigInteger GeneratePrime(int bits = 1024)
+        private static BigInteger GeneratePrime(int bits = 1024)
         {
-            byte[] Byte = new byte[bits / 8];
-            new Random().NextBytes(Byte);
-            BitArray bitArray = new(Byte);
+            byte[] buffer = new byte[bits / 8];
+            new Random().NextBytes(buffer);
+            BitArray bitArray = new(buffer);
             bitArray.Set(0, true);
             bitArray.Set(bits - 1, true);
-            bitArray.CopyTo(Byte, 0);
-            BigInteger Prime = new(Byte, true);
-            return Prime.IsProbablyPrime() ? Prime : GeneratePrime(bits);
+            bitArray.CopyTo(buffer, 0);
+            BigInteger prime = new(buffer, true);
+            return prime.IsProbablyPrime() ? prime : GeneratePrime(bits);
         }
     }
 }

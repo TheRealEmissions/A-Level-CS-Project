@@ -6,12 +6,12 @@ using The_Project.Database.Tables.Interfaces;
 
 namespace The_Project.Database
 {
-    public class SQL
+    public class Sql
     {
-        public SqliteConnection Connection { get; private set; }
-        public Tables.Tables Tables { get; private set; }
+        public SqliteConnection Connection { get; }
+        public Tables.Tables Tables { get; }
 
-        public SQL()
+        public Sql()
         {
             Connection = Start();
             Tables = new(Connection);
@@ -20,17 +20,17 @@ namespace The_Project.Database
 
         private static SqliteConnection Start()
         {
-            SqliteConnection Connection = new(new SqliteConnectionStringBuilder() { DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate }.ToString());
-            Connection.Open();
-            return Connection;
+            SqliteConnection sqliteConnection = new(new SqliteConnectionStringBuilder() { DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate }.ToString());
+            sqliteConnection.Open();
+            return sqliteConnection;
         }
 
         private void CreateTables()
         {
-            List<KeyValuePair<string, ISQLTable>> DbTables = Tables.GetAllTables();
-            foreach (KeyValuePair<string, ISQLTable> Table in DbTables)
+            List<KeyValuePair<string, ISqlTable>> allTables = Tables.GetAllTables();
+            foreach (KeyValuePair<string, ISqlTable> keyValuePair in allTables)
             {
-                Table.Value.CreateTable();
+                keyValuePair.Value.CreateTable();
             }
         }
     }

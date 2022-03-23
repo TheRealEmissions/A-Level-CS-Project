@@ -8,7 +8,7 @@
         Title="LoggingWindow" Height="450" Width="800" Closing="Window_Closing">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,10,10,10">
-            <TextBlock Name="txt_log" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" />
+            <TextBlock Name="TxtLog" Text="Logging" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Left" />
         </ScrollViewer>
     </Grid>
 </Window>

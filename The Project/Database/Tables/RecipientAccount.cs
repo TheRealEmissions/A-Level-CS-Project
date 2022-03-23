@@ -5,13 +5,13 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class RecipientAccount : MustConstructWith<SqliteConnection>, ISQLTable
+    public class RecipientAccount : MustConstructWith<SqliteConnection>, ISqlTable
     {
-        private readonly SqliteConnection Connection;
+        private readonly SqliteConnection _sqliteConnection;
 
-        public RecipientAccount(SqliteConnection connection) : base(connection)
+        public RecipientAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
-            Connection = connection;
+            _sqliteConnection = sqliteConnection;
             //CreateTable();
         }
 
@@ -21,18 +21,18 @@ namespace The_Project.Database.Tables
             public string AccountId { get; }
             public string RefAccountId { get; }
 
-            public Schema(string Nickname, string AccountId, string RefAccountId)
+            public Schema(string nickname, string accountId, string refAccountId)
             {
-                this.Nickname = Nickname;
-                this.AccountId = AccountId;
-                this.RefAccountId = RefAccountId;
+                this.Nickname = nickname;
+                this.AccountId = accountId;
+                this.RefAccountId = refAccountId;
             }
         }
 
         public void CreateTable()
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 CREATE TABLE IF NOT EXISTS $database (
                     nickname TEXT,
                     account_id TEXT NOT NULL,
@@ -43,106 +43,105 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
-            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".recipientaccounts");
-            //Command.Parameters.AddWithValue("$database", Connection.Database + ".recipientaccounts");
-            Command.ExecuteNonQuery();
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".recipientaccounts");
+            //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".recipientaccounts");
+            sqliteCommand.ExecuteNonQuery();
         }
 
-        public bool CreateAccountEntry(string Nickname, string AccountId, string RefAccountId)
+        public bool CreateAccountEntry(string nickname, string accountId, string refAccountId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ($NICKNAME, $ACCOUNTID, $REFACCOUNTID)";
-            Command.Parameters.AddWithValue("$NICKNAME", Nickname);
-            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
-            Command.Parameters.AddWithValue("$REFACCOUNTID", RefAccountId);
-            int Rows = Command.ExecuteNonQuery();
-            return Rows > 0;
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ($NICKNAME, $ACCOUNTID, $REFACCOUNTID)";
+            sqliteCommand.Parameters.AddWithValue("$NICKNAME", nickname);
+            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
+            sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refAccountId);
+            int rows = sqliteCommand.ExecuteNonQuery();
+            return rows > 0;
         }
 
-        public bool CreateAccountEntry(string AccountId, string RefAccountId)
+        public bool CreateAccountEntry(string accountId, string refAccountId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"INSERT INTO recipientaccounts (account_id, ref_account_id) VALUES ($ACCOUNTID, $REFACCOUNTID)";
-            Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
-            Command.Parameters.AddWithValue("$REFACCOUNTID", RefAccountId);
-            int Rows = Command.ExecuteNonQuery();
-            return Rows > 0;
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (account_id, ref_account_id) VALUES ($ACCOUNTID, $REFACCOUNTID)";
+            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
+            sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refAccountId);
+            int rows = sqliteCommand.ExecuteNonQuery();
+            return rows > 0;
         }
 
-        public Schema? GetAccountEntry(string Nickname, UserId RefUserId)
+        public Schema? GetAccountEntry(string nickname, UserId refUserId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 SELECT *
                 FROM recipientaccounts
                 WHERE nickname = $NICKNAME AND ref_account_id = $REFACCOUNTID
             ";
-            Command.Parameters.AddWithValue("$NICKNAME", Nickname);
-            Command.Parameters.AddWithValue("$REFACCOUNTID", RefUserId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$NICKNAME", nickname);
+            sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refUserId.AccountId);
 
-            SqliteDataReader Reader = Command.ExecuteReader();
+            SqliteDataReader dataReader = sqliteCommand.ExecuteReader();
 
-            if (!Reader.HasRows)
+            if (!dataReader.HasRows)
             {
                 return null;
             }
 
-            if (Reader.Read())
+            if (dataReader.Read())
             {
-                object[] RowColumns = new object[3];
-                Reader.GetValues(RowColumns);
+                object[] rowColumns = new object[3];
+                dataReader.GetValues(rowColumns);
 
-                Schema Schema = new(Nickname: RowColumns[0].ToString(), AccountId: RowColumns[1].ToString(), RefAccountId: RowColumns[2].ToString());
-                return Schema;
+                Schema schema = new(nickname: rowColumns[0].ToString(), accountId: rowColumns[1].ToString(), refAccountId: rowColumns[2].ToString());
+                return schema;
             }
 
             return null;
         }
 
-        public Schema? GetAccountEntry(UserId UserId, UserId RefUserId)
+        public Schema? GetAccountEntry(UserId userId, UserId refUserId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 SELECT *
                 FROM recipientaccounts
                 WHERE account_id = $ACCOUNTID AND ref_account_id = $REFACCOUNTID
             ";
-            Command.Parameters.AddWithValue("$ACCOUNTID", UserId.AccountId);
-            Command.Parameters.AddWithValue("$REFACCOUNTID", RefUserId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", userId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refUserId.AccountId);
 
-            SqliteDataReader Reader = Command.ExecuteReader();
+            SqliteDataReader dataReader = sqliteCommand.ExecuteReader();
 
-            if (!Reader.HasRows)
+            if (!dataReader.HasRows)
             {
                 return null;
             }
 
-            if (Reader.Read())
+            if (dataReader.Read())
             {
-                object[] RowColumns = new object[3];
-                Reader.GetValues(RowColumns);
+                object[] rowColumns = new object[3];
+                dataReader.GetValues(rowColumns);
 
-                Schema Schema = new(Nickname: RowColumns[0].ToString(), AccountId: RowColumns[1].ToString(), RefAccountId: RowColumns[2].ToString());
-                return Schema;
+                Schema schema = new(nickname: rowColumns[0].ToString(), accountId: rowColumns[1].ToString(), refAccountId: rowColumns[2].ToString());
+                return schema;
             }
 
             return null;
         }
 
-        public void UpdateNickname(string Nickname, UserId UserId, UserId RefUserId)
+        public void UpdateNickname(string nickname, UserId userId, UserId refUserId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 UPDATE recipientaccounts
                 SET nickname = $NICKNAME
                 WHERE account_id = $ACCOUNTID AND ref_account_id = $REFACCOUNTID
             ";
-            Command.Parameters.AddWithValue("$NICKNAME", Nickname);
-            Command.Parameters.AddWithValue("$ACCOUNTID", UserId.AccountId);
-            Command.Parameters.AddWithValue("$REFACCOUNTID", RefUserId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$NICKNAME", nickname);
+            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", userId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refUserId.AccountId);
 
-            Command.ExecuteNonQuery();
-            return;
+            sqliteCommand.ExecuteNonQuery();
         }
     }
 }

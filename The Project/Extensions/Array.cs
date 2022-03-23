@@ -5,26 +5,22 @@ namespace The_Project.Extensions
 {
     public static class Array<T>
     {
-        public static List<IEnumerable<T>> SplitArr(IEnumerable<T> Arr)
+        public static List<IList<T>> SplitArr(IList<T> arr)
         {
-            if (Arr.Count() <= 1)
+            if (arr.Count <= 1)
             {
-                return new List<IEnumerable<T>>() { Arr };
+                return new List<IList<T>>() {arr};
             }
 
-            List<IEnumerable<T>> NewArr = new();
-            for (int i = 0; i <= Arr.Count() - 1; i += 2)
+            List<IList<T>> newArr = new();
+            for (int i = 0; i <= arr.Count - 1; i += 2)
             {
-                if (Arr.Count() - 1 <= i)
-                {
-                    NewArr.Add(new List<T>() { Arr.ElementAt(i) });
-                }
-                else
-                {
-                    NewArr.Add(new List<T>() { Arr.ElementAt(i), Arr.ElementAt(i + 1) });
-                }
+                newArr.Add(arr.Count - 1 <= i
+                    ? new List<T>() {arr.ElementAt(i)}
+                    : new List<T>() {arr.ElementAt(i), arr.ElementAt(i + 1)});
             }
-            return NewArr;
+
+            return newArr;
         }
     }
 }

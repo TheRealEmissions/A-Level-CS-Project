@@ -5,11 +5,11 @@ namespace The_Project.Exceptions
     [Serializable]
     internal class PasswordUpdateException : Exception
     {
-        public PasswordUpdateException() : base()
+        public PasswordUpdateException()
         {
         }
 
-        public PasswordUpdateException(string Message) : base(Message)
+        public PasswordUpdateException(string message) : base(message)
         {
         }
     }

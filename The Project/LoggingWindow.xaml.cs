@@ -6,9 +6,9 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for LoggingWindow.xaml
     /// </summary>
-    public partial class LoggingWindow : Window
+    public partial class LoggingWindow
     {
-        private readonly List<string> OutputLog = new();
+        private readonly List<string> _outputLog = new();
 
         public LoggingWindow()
         {
@@ -17,13 +17,13 @@ namespace The_Project
 
         public void Debug(string text)
         {
-            OutputLog.Add(text);
-            if (OutputLog.Count > 100)
+            _outputLog.Add(text);
+            if (_outputLog.Count > 100)
             {
-                OutputLog.RemoveAt(0);
+                _outputLog.RemoveAt(0);
             }
 
-            txt_log.Text = string.Join("\n", OutputLog);
+            TxtLog.Text = string.Join("\n", _outputLog);
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

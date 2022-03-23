@@ -5,19 +5,19 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for ErrorWindow.xaml
     /// </summary>
-    public partial class ErrorWindow : Window
+    public partial class ErrorWindow
     {
-        private string Error;
+        private string _error;
 
         public ErrorWindow()
         {
             InitializeComponent();
         }
 
-        public ErrorWindow SetError(string Error)
+        public ErrorWindow SetError(string error)
         {
-            this.Error = Error;
-            txtblock_error.Text = Error;
+            this._error = error;
+            TxtblockError.Text = error;
             return this;
         }
 

@@ -6,13 +6,13 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class UserAccount : MustConstructWith<SqliteConnection>, ISQLTable
+    public class UserAccount : MustConstructWith<SqliteConnection>, ISqlTable
     {
-        private readonly SqliteConnection Connection;
+        private readonly SqliteConnection _sqliteConnection;
 
-        public UserAccount(SqliteConnection connection) : base(connection)
+        public UserAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
-            Connection = connection;
+            _sqliteConnection = sqliteConnection;
             //CreateTable();
         }
 
@@ -22,76 +22,76 @@ namespace The_Project.Database.Tables
             public string Password { get; }
             public string AccountId { get; }
 
-            public Schema(string Username, string Password, string AccountId)
+            public Schema(string username, string password, string accountId)
             {
-                this.Username = Username;
-                this.Password = Password;
-                this.AccountId = AccountId;
+                this.Username = username;
+                this.Password = password;
+                this.AccountId = accountId;
             }
         }
 
         public void CreateTable()
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 CREATE TABLE IF NOT EXISTS $database (
                     username TEXT NOT NULL UNIQUE,
                     password TEXT NOT NULL,
                     account_id TEXT PRIMARY KEY
                 )
             ";
-            Command.CommandText = Command.CommandText.Replace("$database", Connection.Database + ".useraccounts");
-            //Command.Parameters.AddWithValue("$database", Connection.Database + ".useraccounts");
-            Command.ExecuteNonQuery();
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".useraccounts");
+            //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".useraccounts");
+            sqliteCommand.ExecuteNonQuery();
         }
 
-        public Schema? GetAccountEntry(string Username)
+        public Schema? GetAccountEntry(string username)
         {
-            SqliteCommand? Command = Connection.CreateCommand();
-            Command.CommandText = @"
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"
                 SELECT *
                 FROM useraccounts
                 WHERE username = $USERNAME
                 ";
-            _ = Command.Parameters.AddWithValue("$USERNAME", Username);
+            _ = sqliteCommand.Parameters.AddWithValue("$USERNAME", username);
 
-            SqliteDataReader? Reader = Command.ExecuteReader();
+            SqliteDataReader dataReader = sqliteCommand.ExecuteReader();
 
-            if (!Reader.HasRows)
+            if (!dataReader.HasRows)
             {
                 return null;
             }
 
-            if (Reader.Read())
+            if (dataReader.Read())
             {
-                object[] RowColumns = new object[3];
-                Reader.GetValues(RowColumns);
+                object[] rowColumns = new object[3];
+                dataReader.GetValues(rowColumns);
 
-                Schema Schema = new(Username: RowColumns[0].ToString(), Password: RowColumns[1].ToString(), AccountId: RowColumns[2].ToString());
-                return Schema;
+                Schema schema = new(username: rowColumns[0].ToString(), password: rowColumns[1].ToString(), accountId: rowColumns[2].ToString());
+                return schema;
             }
             return null;
         }
 
-        public bool CreateAccountEntry(string Username, string PasswordHash, string AccountId)
+        public bool CreateAccountEntry(string username, string passwordHash, string accountId)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
-            _ = Command.Parameters.AddWithValue("$USERNAME", Username);
-            _ = Command.Parameters.AddWithValue("$PASSWORD", PasswordHash);
-            _ = Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
-            int Rows = Command.ExecuteNonQuery();
-            return Rows > 0;
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
+            _ = sqliteCommand.Parameters.AddWithValue("$USERNAME", username);
+            _ = sqliteCommand.Parameters.AddWithValue("$PASSWORD", passwordHash);
+            _ = sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
+            int rows = sqliteCommand.ExecuteNonQuery();
+            return rows > 0;
         }
 
-        public bool UpdatePasswordInEntry(string AccountId, string Password)
+        public bool UpdatePasswordInEntry(string accountId, string password)
         {
-            SqliteCommand Command = Connection.CreateCommand();
-            Command.CommandText = @"UPDATE useraccounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
-            _ = Command.Parameters.AddWithValue("$PASSWORD", Password);
-            _ = Command.Parameters.AddWithValue("$ACCOUNTID", AccountId);
-            int Rows = Command.ExecuteNonQuery();
-            return Rows > 0;
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText = @"UPDATE useraccounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";
+            _ = sqliteCommand.Parameters.AddWithValue("$PASSWORD", password);
+            _ = sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
+            int rows = sqliteCommand.ExecuteNonQuery();
+            return rows > 0;
         }
     }
 }

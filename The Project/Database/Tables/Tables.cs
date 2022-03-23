@@ -6,23 +6,23 @@ namespace The_Project.Database.Tables
 {
     public class Tables
     {
-        private readonly List<KeyValuePair<string, ISQLTable>> AllTables = new();
+        private readonly List<KeyValuePair<string, ISqlTable>> _allTables = new();
 
-        public Tables(SqliteConnection Connection)
+        public Tables(SqliteConnection connection)
         {
-            AllTables.Add(KeyValuePair.Create<string, ISQLTable>("Messages", new Messages(Connection)));
-            AllTables.Add(KeyValuePair.Create<string, ISQLTable>("RecipientAccount", new RecipientAccount(Connection)));
-            AllTables.Add(KeyValuePair.Create<string, ISQLTable>("UserAccount", new UserAccount(Connection)));
+            _allTables.Add(KeyValuePair.Create<string, ISqlTable>("Messages", new Messages(connection)));
+            _allTables.Add(KeyValuePair.Create<string, ISqlTable>("RecipientAccount", new RecipientAccount(connection)));
+            _allTables.Add(KeyValuePair.Create<string, ISqlTable>("UserAccount", new UserAccount(connection)));
         }
 
-        public ISQLTable GetTable(string Key)
+        public ISqlTable GetTable(string key)
         {
-            return AllTables.Find(x => x.Key == Key).Value;
+            return _allTables.Find(x => x.Key == key).Value;
         }
 
-        public List<KeyValuePair<string, ISQLTable>> GetAllTables()
+        public List<KeyValuePair<string, ISqlTable>> GetAllTables()
         {
-            return AllTables;
+            return _allTables;
         }
     }
 }

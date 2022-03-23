@@ -7,7 +7,7 @@ namespace The_Project.Accounts
 {
     public struct UserId
     {
-        public IPAddress IP { get; }
+        public IPAddress Ip { get; }
         public int MinPort { get; }
         public int MaxPort { get; }
         public string AccountId { get; }
@@ -16,35 +16,35 @@ namespace The_Project.Accounts
 
         public string Id { get; }
 
-        public UserId(IPAddress IP, int MinPort, int MaxPort, string AccountId)
+        public UserId(IPAddress ip, int minPort, int maxPort, string accountId)
         {
-            char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-            this.IP = IP;
-            this.MinPort = MinPort;
-            this.MaxPort = MaxPort;
-            this.AccountId = AccountId;
+            this.Ip = ip;
+            this.MinPort = minPort;
+            this.MaxPort = maxPort;
+            this.AccountId = accountId;
 
             #region userId
 
             #region ipConversionToLetters
 
             string ipConverted = string.Empty;
-            string[] octets = IP.ToString().Split(".");
+            string[] octets = ip.ToString().Split(".");
             int pos = 0;
             foreach (string octet in octets)
             {
                 foreach (char number in octet)
                 {
                     int num = int.Parse(number.ToString());
-                    ipConverted += Alphabet[num];
+                    ipConverted += alphabet[num];
                 }
-                if (Alphabet[pos] == 'D')
+                if (alphabet[pos] == 'D')
                 {
                     continue;
                 }
 
-                ipConverted += Alphabet[pos].ToString().ToLower();
+                ipConverted += alphabet[pos].ToString().ToLower();
                 pos++;
             }
 
@@ -52,68 +52,68 @@ namespace The_Project.Accounts
 
             #region portConversionToLetters
 
-            char[] minPortArr = MinPort.ToString().ToCharArray();
+            char[] minPortArr = minPort.ToString().ToCharArray();
             string minPortStr = string.Empty;
-            char[] maxPortArr = MaxPort.ToString().ToCharArray();
+            char[] maxPortArr = maxPort.ToString().ToCharArray();
             string maxPortStr = string.Empty;
             foreach (char num in minPortArr)
             {
                 int n = int.Parse(num.ToString());
-                minPortStr += Alphabet[n];
+                minPortStr += alphabet[n];
             }
             foreach (char num in maxPortArr)
             {
                 int n = int.Parse(num.ToString());
-                maxPortStr += Alphabet[n];
+                maxPortStr += alphabet[n];
             }
 
             #endregion portConversionToLetters
 
-            this.Id = $"{ipConverted}ctpr{minPortStr}{maxPortStr}{AccountId}";
+            this.Id = $"{ipConverted}ctpr{minPortStr}{maxPortStr}{accountId}";
 
             #endregion userId
         }
 
-        public UserId(string UserIdStr)
+        public UserId(string userIdStr)
         {
-            this.Id = UserIdStr;
+            this.Id = userIdStr;
 
-            char[] Alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
             #region IPAddress
 
-            string IP = UserIdStr.Split("ctpr")[0];
-            string OctetOne = IP.Split("a")[0];
-            string OctetTwo = IP.Split("a")[1].Split("b")[0];
-            string OctetThree = IP.Split("b")[1].Split("c")[0];
-            string OctetFour = IP.Split("c")[1];
+            string ip = userIdStr.Split("ctpr")[0];
+            string octetOne = ip.Split("a")[0];
+            string octetTwo = ip.Split("a")[1].Split("b")[0];
+            string octetThree = ip.Split("b")[1].Split("c")[0];
+            string octetFour = ip.Split("c")[1];
 
-            OctetOne = string.Concat(OctetOne.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
-            OctetTwo = string.Concat(OctetTwo.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
-            OctetThree = string.Concat(OctetThree.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
-            OctetFour = string.Concat(OctetFour.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
+            octetOne = string.Concat(octetOne.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
+            octetTwo = string.Concat(octetTwo.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
+            octetThree = string.Concat(octetThree.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
+            octetFour = string.Concat(octetFour.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
 
-            byte[] OctetBytes = new byte[4] { (byte)int.Parse(OctetOne), (byte)int.Parse(OctetTwo), (byte)int.Parse(OctetThree), (byte)int.Parse(OctetFour) };
+            byte[] octetBytes = { (byte)int.Parse(octetOne), (byte)int.Parse(octetTwo), (byte)int.Parse(octetThree), (byte)int.Parse(octetFour) };
 
             #endregion IPAddress
 
-            this.IP = new(OctetBytes);
+            this.Ip = new(octetBytes);
 
             #region PortRange
 
-            string CTPR = UserIdStr.Split("ctpr")[1].Substring(0, 10);
-            string MinPortStr = CTPR.Substring(0, 5);
-            string MaxPortStr = CTPR.Substring(5, 5);
+            string ctpr = userIdStr.Split("ctpr")[1].Substring(0, 10);
+            string minPortStr = ctpr.Substring(0, 5);
+            string maxPortStr = ctpr.Substring(5, 5);
 
-            MinPortStr = string.Concat(MinPortStr.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
-            MaxPortStr = string.Concat(MaxPortStr.ToCharArray().Select(x => Array.IndexOf(Alphabet, x).ToString()));
+            minPortStr = string.Concat(minPortStr.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
+            maxPortStr = string.Concat(maxPortStr.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
 
             #endregion PortRange
 
-            this.MinPort = int.Parse(MinPortStr);
-            this.MaxPort = int.Parse(MaxPortStr);
+            this.MinPort = int.Parse(minPortStr);
+            this.MaxPort = int.Parse(maxPortStr);
 
-            this.AccountId = UserIdStr.Split("ctpr")[1].Substring(10, 3);
+            this.AccountId = userIdStr.Split("ctpr")[1].Substring(10, 3);
         }
     }
 }

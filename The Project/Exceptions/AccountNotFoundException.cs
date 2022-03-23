@@ -11,9 +11,9 @@ namespace The_Project.Exceptions
         {
         }
 
-        public AccountNotFoundException(string Type) : this()
+        public AccountNotFoundException(string type) : this()
         {
-            this.Type = Type;
+            this.Type = type;
         }
     }
 }

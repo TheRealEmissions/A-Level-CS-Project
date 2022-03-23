@@ -2,7 +2,7 @@
 {
     public abstract class MustConstructWith<T>
     {
-        public MustConstructWith(T parameters)
+        protected MustConstructWith(T parameters)
         {
         }
     }

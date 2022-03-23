@@ -9,48 +9,48 @@ namespace The_Project.Database
 {
     public class UserAccount : IDatabaseUserAccount
     {
-        private readonly SqliteConnection Connection;
-        private readonly Tables.Tables Tables;
+        private readonly SqliteConnection _sqliteConnection;
+        private readonly Tables.Tables _tables;
 
-        public UserAccount(SqliteConnection Connection, Tables.Tables Tables)
+        public UserAccount(SqliteConnection sqliteConnection, Tables.Tables tables)
         {
-            this.Connection = Connection;
-            this.Tables = Tables;
+            this._sqliteConnection = sqliteConnection;
+            this._tables = tables;
         }
 
-        public bool ComparePassword(Account Account, string PasswordHash)
+        public bool ComparePassword(Account account, string passwordHash)
         {
-            return GetPassword(Account) == PasswordHash;
+            return GetPassword(account) == passwordHash;
         }
 
-        public void CreateEntry(string Username, string PasswordHash, UserId UserId)
+        public void CreateEntry(string username, string passwordHash, UserId userId)
         {
-            Tables.UserAccount UserAccountDb = (Tables.UserAccount)Tables.GetTable("UserAccount");
-            bool CreatedEntry = UserAccountDb.CreateAccountEntry(Username, PasswordHash, UserId.AccountId);
-            if (!CreatedEntry)
+            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            bool createdEntry = userAccount.CreateAccountEntry(username, passwordHash, userId.AccountId);
+            if (!createdEntry)
             {
                 throw new AccountCreationException("ACCOUNT NOT CREATED");
             }
         }
 
-        public Tables.UserAccount.Schema? GetAccount(string Username)
+        public Tables.UserAccount.Schema? GetAccount(string username)
         {
-            Tables.UserAccount UserAccountDb = (Tables.UserAccount)Tables.GetTable("UserAccount");
-            Tables.UserAccount.Schema? Entry = UserAccountDb.GetAccountEntry(Username);
-            return Entry;
+            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            Tables.UserAccount.Schema? accountEntry = userAccount.GetAccountEntry(username);
+            return accountEntry;
         }
 
-        public string? GetPassword(Account Account)
+        public string? GetPassword(Account account)
         {
-            Tables.UserAccount.Schema? Entry = GetAccount(Account.Username);
-            return Entry?.Password;
+            Tables.UserAccount.Schema? entry = GetAccount(account.Username);
+            return entry?.Password;
         }
 
-        public void SetPassword(Account Account, string PasswordHash)
+        public void SetPassword(Account account, string passwordHash)
         {
-            Tables.UserAccount Table = (Tables.UserAccount)Tables.GetTable("UserAccount");
-            bool Updated = Table.UpdatePasswordInEntry(Account.AccountId, PasswordHash);
-            if (!Updated)
+            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            bool updated = userAccount.UpdatePasswordInEntry(account.AccountId, passwordHash);
+            if (!updated)
             {
                 throw new PasswordUpdateException("Password not updated in entry");
             }

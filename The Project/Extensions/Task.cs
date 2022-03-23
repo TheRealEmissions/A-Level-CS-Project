@@ -10,20 +10,20 @@ namespace The_Project.Extensions
 {
     public static class TaskExtension
     {
-        public static async Task<T> FirstSuccessAsync<T>(this IEnumerable<Task<T?>> tasks)
+        public static async Task<T> FirstSuccessAsync<T>(this IList<Task<T?>> tasks)
         {
             Debug.WriteLine(tasks.Count());
             List<Task<T?>> taskList = new(tasks);
             taskList.Reverse();
-            List<IEnumerable<Task<T?>>> splitTaskList = Array<Task<T?>>.SplitArr(taskList);
+            List<IList<Task<T?>>> splitTaskList = Array<Task<T?>>.SplitArr(taskList);
 
             T? result = default;
-            foreach (List<Task<T?>> subTasks in splitTaskList)
+            foreach (IList<Task<T?>> subTasks in splitTaskList)
             {
                 while (subTasks.Count > 0)
                 {
                     Task<T?> currentCompleted = await Task.WhenAny(subTasks);
-                    if (currentCompleted.Status == TaskStatus.RanToCompletion && currentCompleted.Result is T)
+                    if (currentCompleted.Status == TaskStatus.RanToCompletion && currentCompleted.Result is not null)
                     {
                         result = await currentCompleted;
                         break;

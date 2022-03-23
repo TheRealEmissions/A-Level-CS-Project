@@ -6,7 +6,7 @@ namespace The_Project.Accounts
     {
         public RecipientConnection Connection;
 
-        public Recipient(string Username)
+        public Recipient(string username)
         {
         }
 

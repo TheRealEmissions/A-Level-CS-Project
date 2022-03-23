@@ -7,19 +7,20 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for ConnectionAccept.xaml
     /// </summary>
-    public partial class ConnectionAcceptWindow : Window
+    public partial class ConnectionAcceptWindow
     {
-        private UserConnectionPage UserConnectionWindow { get; init; }
+        private readonly UserConnectionPage _userConnectionWindow;
 
-        public ConnectionAcceptWindow(UserConnectionPage UserConnectionWindow, IPAddress IP)
+        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress ipAddress)
         {
-            this.UserConnectionWindow = UserConnectionWindow;
-            Txtblock_IPAddress.Text = IP.ToString();
+            _userConnectionWindow = userConnectionWindow;
+            TxtblockIpAddress.Text = ipAddress.ToString();
+
             InitializeComponent();
 
             try
             {
-                Btn_RejectConnection.Click += Btn_RejectConnection_Click;
+                BtnRejectConnection.Click += Btn_RejectConnection_Click;
             }
             catch (RejectConnectionException)
             {
@@ -37,11 +38,11 @@ namespace The_Project
                     FrameworkElement feSource = e.Source as FrameworkElement;
                     switch (feSource.Name)
                     {
-                        case "Btn_AcceptConnection":
+                        case "BtnAcceptConnection":
                             break;
 
-                        case "Btn_RejectConnection":
-                            UserConnectionWindow.TerminateConnection();
+                        case "BtnRejectConnection":
+                            userConnectionWindow.TerminateConnection();
                             break;
 
                         default:
