@@ -12,7 +12,6 @@ namespace The_Project.Database.Tables
         {
             AllTables.Add(KeyValuePair.Create<string, ISQLTable>("Messages", new Messages(Connection)));
             AllTables.Add(KeyValuePair.Create<string, ISQLTable>("RecipientAccount", new RecipientAccount(Connection)));
-            AllTables.Add(KeyValuePair.Create<string, ISQLTable>("RecipientAddresses", new RecipientAddresses(Connection)));
             AllTables.Add(KeyValuePair.Create<string, ISQLTable>("UserAccount", new UserAccount(Connection)));
         }
 

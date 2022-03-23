@@ -1,5 +1,4 @@
-﻿using The_Project.Cryptography;
-using The_Project.Networking;
+﻿using The_Project.Networking;
 
 namespace The_Project.Accounts
 {

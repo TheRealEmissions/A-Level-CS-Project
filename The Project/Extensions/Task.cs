@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using The_Project.Exceptions;
 
 #nullable enable
 
 namespace The_Project.Extensions
 {
-    public static class TaskExtension<T>
+    public static class TaskExtension
     {
-        public static async Task<T> FirstSuccess(IEnumerable<Task<T?>> tasks)
+        public static async Task<T> FirstSuccessAsync<T>(this IEnumerable<Task<T?>> tasks)
         {
             Debug.WriteLine(tasks.Count());
             List<Task<T?>> taskList = new(tasks);
@@ -40,7 +39,7 @@ namespace The_Project.Extensions
                 }
             }
 
-            return result is not null ? result : throw new Exception("result is null");
+            return result is not null ? result : throw new TaskFirstSuccessNoSuccessException("result is null");
         }
     }
 }

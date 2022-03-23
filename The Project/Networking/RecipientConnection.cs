@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using The_Project.Accounts;
 using The_Project.Exceptions;
+using The_Project.Extensions;
 
 #nullable enable
 
@@ -68,7 +67,7 @@ namespace The_Project.Networking
                             }
                         }*/
             Debug.WriteLine(Tasks.Count);
-            try { Client = await Extensions.TaskExtension<TcpClient>.FirstSuccess(Tasks); }
+            try { Client = await Tasks.FirstSuccessAsync(); }
             catch (Exception)
             {
                 throw;
@@ -106,7 +105,7 @@ namespace The_Project.Networking
                 if (completedTask is null || completedTask == timeoutTask)
                 {
                     Debug.WriteLine(completedTask is null ? "completedTask is null" : $"timeout reached for {IP}:{Port}");
-                    throw new Exception();
+                    throw new CreateConnectionException("No task completed in Create Connection!");
                 }
             }
             catch (Exception e)
