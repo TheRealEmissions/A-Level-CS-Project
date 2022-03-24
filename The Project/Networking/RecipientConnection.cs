@@ -94,7 +94,7 @@ namespace The_Project.Networking
                 dispatcher.Invoke(() => LoggingWindow?.Debug($"Connecting to client on {ipAddress}:{port}..."));
                 Debug.WriteLine($"Connecting to client on {ipAddress}:{port}...");
                 /*await tcpClient.ConnectAsync(Ip, port);*/
-                Task timeoutTask = Task.Delay(5000);
+                Task timeoutTask = Task.Delay(20000);
                 Task connectionTask = tcpClient.ConnectAsync(ipAddress, port);
 
                 Task? completedTask = await Task.WhenAny(timeoutTask, connectionTask);

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using The_Project.Exceptions;
 
@@ -23,15 +24,17 @@ namespace The_Project.Extensions
                 while (subTasks.Count > 0)
                 {
                     Task<T?> currentCompleted = await Task.WhenAny(subTasks);
-                    if (currentCompleted.Status == TaskStatus.RanToCompletion && currentCompleted.Result is not null)
+                    T? subResult = await currentCompleted;
+                    if (currentCompleted.Status == TaskStatus.RanToCompletion && subResult is TcpClient)
                     {
-                        result = await currentCompleted;
-                        break;
+                        TcpClient? castedResult = subResult is TcpClient client ? client : null;
+                        if (castedResult is not null && castedResult.Connected)
+                        {
+                            result = subResult;
+                            break;
+                        }
                     }
-                    else
-                    {
-                        _ = subTasks.Remove(currentCompleted);
-                    }
+                    _ = subTasks.Remove(currentCompleted);
                 }
                 if (result is not null)
                 {
