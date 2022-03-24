@@ -9,9 +9,5 @@ namespace The_Project
     {
         public Account? UserAccount { get; set; }
         public Recipient? Recipient { get; set; }
-
-        public MessagingHandler() : base()
-        {
-        }
     }
 }

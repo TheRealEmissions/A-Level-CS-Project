@@ -5,7 +5,7 @@ namespace The_Project.Extensions
 {
     public static class StringExtensions
     {
-        private static List<IEnumerable<string>> SplitArr(IEnumerable<string> array)
+        private static List<IList<string>> SplitArr(IList<string> array)
         {
             /*            if (array.Count <= 1) return new List<List<string>>() { array };
 
@@ -27,47 +27,51 @@ namespace The_Project.Extensions
                         }
                         return NewArr;*/
 
-            if (array.Count() <= 1)
+            if (array.Count <= 1)
             {
-                return new List<IEnumerable<string>>() {array};
+                return new List<IList<string>> { array };
             }
 
-            List<IEnumerable<string>> newArr = new();
-            for (int i = 0; i <= array.Count() - 1; i += 2)
+            List<IList<string>> newArr = new();
+            for (int i = 0; i <= array.Count - 1; i += 2)
             {
-                newArr.Add(array.Count() - 1 < i + 1
-                    ? new List<string> {array.ElementAt(i)}
-                    : new List<string> {array.ElementAt(i), array.ElementAt(i + 1)});
+                newArr.Add(array.Count - 1 < i + 1
+                    ? new List<string> { array.ElementAt(i) }
+                    : new List<string> { array.ElementAt(i), array.ElementAt(i + 1) });
             }
 
             return newArr;
         }
 
-        private static string MergeString(List<IEnumerable<string>> arr, char separator)
+        private static string MergeString(IList<IList<string>> arr, char separator)
         {
-            IEnumerable<IEnumerable<string>> strings = arr.AsParallel().AsOrdered()
-                .Select(x => new List<string>() {string.Join(separator, x)});
-            if (strings.Count() == 1)
+            ParallelQuery<List<string>> strings = arr.AsParallel().AsOrdered()
+                .Select(x => new List<string> { string.Join(separator, x) });
+
+            int stringsCount = strings.Count();
+            IList<string> stringElement0 = strings.ElementAt(0);
+
+            if (stringsCount == 1)
             {
-                return strings.ElementAt(0).Count() > 1
-                    ? strings.ElementAt(0).ElementAt(0) + '-' + strings.ElementAt(0).ElementAt(1)
-                    : strings.ElementAt(0).ElementAt(0);
+                return stringElement0.Count > 1
+                    ? stringElement0.ElementAt(0) + '-' + stringElement0.ElementAt(1)
+                    : stringElement0.ElementAt(0);
             }
 
-            List<IEnumerable<string>> newStrings = new();
-            for (int i = 0; i <= strings.Count() - 1; i += 2)
+            List<IList<string>> newStrings = new();
+            for (int i = 0; i <= stringsCount - 1; i += 2)
             {
-                newStrings.Add(strings.Count() - 1 < i + 1
-                    ? strings.ElementAt(0)
-                    : new List<string> {strings.ElementAt(i).ElementAt(0), strings.ElementAt(i + 1).ElementAt(0)});
+                newStrings.Add(stringsCount - 1 < i + 1
+                    ? stringElement0
+                    : new List<string> { strings.ElementAt(i).ElementAt(0), strings.ElementAt(i + 1).ElementAt(0) });
             }
 
             return MergeString(newStrings, separator);
         }
 
-        public static string ParallelJoin(this IEnumerable<string> arr, char separator)
+        public static string ParallelJoin(this IList<string> arr, char separator)
         {
-            List<IEnumerable<string>> arrSplit = SplitArr(arr);
+            List<IList<string>> arrSplit = SplitArr(arr);
             string mergeString = MergeString(arrSplit, separator);
             return mergeString;
         }

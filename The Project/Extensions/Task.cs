@@ -12,7 +12,7 @@ namespace The_Project.Extensions
     {
         public static async Task<T> FirstSuccessAsync<T>(this IList<Task<T?>> tasks)
         {
-            Debug.WriteLine(tasks.Count());
+            Debug.WriteLine(tasks.Count);
             List<Task<T?>> taskList = new(tasks);
             taskList.Reverse();
             List<IList<Task<T?>>> splitTaskList = Array<Task<T?>>.SplitArr(taskList);
