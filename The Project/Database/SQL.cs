@@ -14,13 +14,13 @@ namespace The_Project.Database
         public Sql()
         {
             Connection = Start();
-            Tables = new(Connection);
+            Tables = new Tables.Tables(Connection);
             CreateTables();
         }
 
         private static SqliteConnection Start()
         {
-            SqliteConnection sqliteConnection = new(new SqliteConnectionStringBuilder() { DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate }.ToString());
+            SqliteConnection sqliteConnection = new(new SqliteConnectionStringBuilder { DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate }.ToString());
             sqliteConnection.Open();
             return sqliteConnection;
         }

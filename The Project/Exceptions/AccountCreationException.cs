@@ -8,7 +8,7 @@ namespace The_Project.Exceptions
 
         public AccountCreationException(string type) : base(type)
         {
-            this.Type = type;
+            Type = type;
         }
     }
 }

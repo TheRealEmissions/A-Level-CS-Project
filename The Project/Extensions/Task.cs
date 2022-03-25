@@ -13,10 +13,10 @@ namespace The_Project.Extensions
     {
         public static async Task<T> FirstSuccessAsync<T>(this IList<Task<T?>> tasks)
         {
-            Debug.WriteLine(tasks.Count);
+            Debug.WriteLine($"task list count -> {tasks.Count}");
             List<Task<T?>> taskList = new(tasks);
-            taskList.Reverse();
             List<IList<Task<T?>>> splitTaskList = Array<Task<T?>>.SplitArr(taskList);
+            Debug.WriteLine($"splitTaskList count -> {splitTaskList.Count}");
 
             T? result = default;
             foreach (IList<Task<T?>> subTasks in splitTaskList)
@@ -25,13 +25,29 @@ namespace The_Project.Extensions
                 {
                     Task<T?> currentCompleted = await Task.WhenAny(subTasks);
                     T? subResult = await currentCompleted;
-                    if (currentCompleted.Status == TaskStatus.RanToCompletion && subResult is TcpClient)
+                    if (currentCompleted.Status == TaskStatus.RanToCompletion && subResult is not null)
                     {
-                        TcpClient? castedResult = subResult is TcpClient client ? client : null;
-                        if (castedResult is not null && castedResult.Connected)
+                        Debug.WriteLine("got subresult -> subresult is not null, ran to completion");
+                        if (subResult is TcpClient)
                         {
-                            result = subResult;
-                            break;
+                            Debug.WriteLine("subresult is tcp client");
+                            TcpClient? castedResult = subResult is TcpClient client ? client : null;
+                            Debug.WriteLine($"castedresult -> {castedResult}");
+                            if (castedResult?.Client.Connected ?? false)
+                            {
+                                Debug.WriteLine("casted result is not null & is connected");
+                                result = subResult;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            T? castedResult = subResult is T res ? res : default;
+                            if (castedResult is not null)
+                            {
+                                result = subResult;
+                                break;
+                            }
                         }
                     }
                     _ = subTasks.Remove(currentCompleted);
@@ -42,6 +58,7 @@ namespace The_Project.Extensions
                 }
             }
 
+            Debug.WriteLine("debug");
             return result is not null ? result : throw new TaskFirstSuccessNoSuccessException("result is null");
         }
     }

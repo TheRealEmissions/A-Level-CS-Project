@@ -19,8 +19,8 @@ namespace The_Project.Accounts
         // login into account and retrieve details
         public Account(string username, string passwordHash, SqliteConnection connection, Tables tables)
         {
-            this.Username = username;
-            this._tables = tables;
+            Username = username;
+            _tables = tables;
 
             Login(username, passwordHash, connection);
         }
@@ -28,8 +28,8 @@ namespace The_Project.Accounts
         // register new account
         public Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection, Tables tables)
         {
-            this.Username = username;
-            this._tables = tables;
+            Username = username;
+            _tables = tables;
 
             if (passwordHash != confPasswordHash)
             {
@@ -61,7 +61,6 @@ namespace The_Project.Accounts
 
         private void Register(string username, string passwordHash, SqliteConnection connection)
         {
-
             Database.UserAccount userAccount = new(connection, _tables);
             Random random = new();
             UserId userId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
@@ -77,7 +76,7 @@ namespace The_Project.Accounts
             Random random = new();
             string accountId = string.Empty;
 
-            string[] alphabet = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+            string[] alphabet = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
 
             for (int i = 0; i < 3; i++)
             {

@@ -23,9 +23,9 @@ namespace The_Project.Database.Tables
 
             public Schema(string nickname, string accountId, string refAccountId)
             {
-                this.Nickname = nickname;
-                this.AccountId = accountId;
-                this.RefAccountId = refAccountId;
+                Nickname = nickname;
+                AccountId = accountId;
+                RefAccountId = refAccountId;
             }
         }
 
@@ -87,16 +87,16 @@ namespace The_Project.Database.Tables
                 return null;
             }
 
-            if (dataReader.Read())
+            if (!dataReader.Read())
             {
-                object[] rowColumns = new object[3];
-                dataReader.GetValues(rowColumns);
-
-                Schema schema = new(nickname: rowColumns[0].ToString(), accountId: rowColumns[1].ToString(), refAccountId: rowColumns[2].ToString());
-                return schema;
+                return null;
             }
 
-            return null;
+            object[] rowColumns = new object[3];
+            _ = dataReader.GetValues(rowColumns);
+
+            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return schema;
         }
 
         public Schema? GetAccountEntry(UserId userId, UserId refUserId)
@@ -117,16 +117,16 @@ namespace The_Project.Database.Tables
                 return null;
             }
 
-            if (dataReader.Read())
+            if (!dataReader.Read())
             {
-                object[] rowColumns = new object[3];
-                dataReader.GetValues(rowColumns);
-
-                Schema schema = new(nickname: rowColumns[0].ToString(), accountId: rowColumns[1].ToString(), refAccountId: rowColumns[2].ToString());
-                return schema;
+                return null;
             }
 
-            return null;
+            object[] rowColumns = new object[3];
+            dataReader.GetValues(rowColumns);
+
+            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return schema;
         }
 
         public void UpdateNickname(string nickname, UserId userId, UserId refUserId)

@@ -13,9 +13,9 @@ namespace The_Project.Database
 
         public RecipientAccount(SqliteConnection sqliteConnection, Account account, Tables.Tables tables)
         {
-            this._sqliteConnection = sqliteConnection;
-            this._userAccountInstance = account;
-            this._tables = tables;
+            _sqliteConnection = sqliteConnection;
+            _userAccountInstance = account;
+            _tables = tables;
         }
 
         public void CreateAccount(string username, UserId userId)

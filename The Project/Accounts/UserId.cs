@@ -18,12 +18,12 @@ namespace The_Project.Accounts
 
         public UserId(IPAddress ip, int minPort, int maxPort, string accountId)
         {
-            char[] alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
-            this.Ip = ip;
-            this.MinPort = minPort;
-            this.MaxPort = maxPort;
-            this.AccountId = accountId;
+            Ip = ip;
+            MinPort = minPort;
+            MaxPort = maxPort;
+            AccountId = accountId;
 
             #region userId
 
@@ -34,11 +34,7 @@ namespace The_Project.Accounts
             int pos = 0;
             foreach (string octet in octets)
             {
-                foreach (char number in octet)
-                {
-                    int num = int.Parse(number.ToString());
-                    ipConverted += alphabet[num];
-                }
+                ipConverted += octet.Select(x => alphabet[int.Parse(x.ToString())]);
                 if (alphabet[pos] == 'D')
                 {
                     continue;
@@ -56,29 +52,22 @@ namespace The_Project.Accounts
             string minPortStr = string.Empty;
             char[] maxPortArr = maxPort.ToString().ToCharArray();
             string maxPortStr = string.Empty;
-            foreach (char num in minPortArr)
-            {
-                int n = int.Parse(num.ToString());
-                minPortStr += alphabet[n];
-            }
-            foreach (char num in maxPortArr)
-            {
-                int n = int.Parse(num.ToString());
-                maxPortStr += alphabet[n];
-            }
+
+            minPortStr += minPortArr.Select(x => alphabet[int.Parse(x.ToString())]);
+            maxPortStr += maxPortArr.Select(x => alphabet[int.Parse(x.ToString())]);
 
             #endregion portConversionToLetters
 
-            this.Id = $"{ipConverted}ctpr{minPortStr}{maxPortStr}{accountId}";
+            Id = $"{ipConverted}ctpr{minPortStr}{maxPortStr}{accountId}";
 
             #endregion userId
         }
 
         public UserId(string userIdStr)
         {
-            this.Id = userIdStr;
+            Id = userIdStr;
 
-            char[] alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
             #region IPAddress
 
@@ -97,23 +86,23 @@ namespace The_Project.Accounts
 
             #endregion IPAddress
 
-            this.Ip = new(octetBytes);
+            Ip = new IPAddress(octetBytes);
 
             #region PortRange
 
-            string ctpr = userIdStr.Split("ctpr")[1].Substring(0, 10);
-            string minPortStr = ctpr.Substring(0, 5);
-            string maxPortStr = ctpr.Substring(5, 5);
+            string ctpr = userIdStr.Split("ctpr")[1][..10];
+            string minPortStr = ctpr[..5];
+            string maxPortStr = ctpr[5..10];
 
             minPortStr = string.Concat(minPortStr.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
             maxPortStr = string.Concat(maxPortStr.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
 
             #endregion PortRange
 
-            this.MinPort = int.Parse(minPortStr);
-            this.MaxPort = int.Parse(maxPortStr);
+            MinPort = int.Parse(minPortStr);
+            MaxPort = int.Parse(maxPortStr);
 
-            this.AccountId = userIdStr.Split("ctpr")[1].Substring(10, 3);
+            AccountId = userIdStr.Split("ctpr")[1].Substring(10, 3);
         }
     }
 }

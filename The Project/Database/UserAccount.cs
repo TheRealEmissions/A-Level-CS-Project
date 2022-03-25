@@ -14,8 +14,8 @@ namespace The_Project.Database
 
         public UserAccount(SqliteConnection sqliteConnection, Tables.Tables tables)
         {
-            this._sqliteConnection = sqliteConnection;
-            this._tables = tables;
+            _sqliteConnection = sqliteConnection;
+            _tables = tables;
         }
 
         public bool ComparePassword(Account account, string passwordHash)

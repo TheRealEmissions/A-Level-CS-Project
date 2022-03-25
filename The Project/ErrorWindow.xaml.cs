@@ -16,14 +16,14 @@ namespace The_Project
 
         public ErrorWindow SetError(string error)
         {
-            this._error = error;
+            _error = error;
             TxtblockError.Text = error;
             return this;
         }
 
         public ErrorWindow Initialize()
         {
-            this.Show();
+            Show();
             return this;
         }
     }

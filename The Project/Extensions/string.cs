@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace The_Project.Extensions
@@ -43,9 +44,10 @@ namespace The_Project.Extensions
             return newArr;
         }
 
-        private static string MergeString(IList<IList<string>> arr, char separator)
+        private static string MergeString(IEnumerable<IList<string>> arr, char separator)
         {
-            ParallelQuery<List<string>> strings = arr.AsParallel().AsOrdered()
+            List<IList<string>> listedArr = arr.ToList();
+            ParallelQuery<List<string>> strings = listedArr.AsParallel().AsOrdered()
                 .Select(x => new List<string> { string.Join(separator, x) });
 
             int stringsCount = strings.Count();

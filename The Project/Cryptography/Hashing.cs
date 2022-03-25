@@ -70,7 +70,7 @@ namespace The_Project.Cryptography
                 // splits into 32 bit chunks (16 original entries)
                 List<BitArray> chunk32Bit = SplitIntoChunks(chunk, 32); // 16 entries
                 // adds 48 more 32 bit chunks (initialised to 0)
-                chunk32Bit.AddRange(collection: Enumerable.Repeat(new BitArray(32), 48));
+                chunk32Bit.AddRange(Enumerable.Repeat(new BitArray(32), 48));
                 // loop to extend original 16 entries into the other 48 entries
                 for (int j = 16; j < 64; j++)
                 {
@@ -87,14 +87,14 @@ namespace The_Project.Cryptography
                                                       .Add(s1);
                 }
 
-                BitArray primeHash0Bits = new(bytes: BitConverter.GetBytes(_primeHash0));
-                BitArray primeHash1Bits = new(bytes: BitConverter.GetBytes(_primeHash1));
-                BitArray primeHash2Bits = new(bytes: BitConverter.GetBytes(_primeHash2));
-                BitArray primeHash3Bits = new(bytes: BitConverter.GetBytes(_primeHash3));
-                BitArray primeHash4Bits = new(bytes: BitConverter.GetBytes(_primeHash4));
-                BitArray primeHash5Bits = new(bytes: BitConverter.GetBytes(_primeHash5));
-                BitArray primeHash6Bits = new(bytes: BitConverter.GetBytes(_primeHash6));
-                BitArray primeHash7Bits = new(bytes: BitConverter.GetBytes(_primeHash7));
+                BitArray primeHash0Bits = new(BitConverter.GetBytes(_primeHash0));
+                BitArray primeHash1Bits = new(BitConverter.GetBytes(_primeHash1));
+                BitArray primeHash2Bits = new(BitConverter.GetBytes(_primeHash2));
+                BitArray primeHash3Bits = new(BitConverter.GetBytes(_primeHash3));
+                BitArray primeHash4Bits = new(BitConverter.GetBytes(_primeHash4));
+                BitArray primeHash5Bits = new(BitConverter.GetBytes(_primeHash5));
+                BitArray primeHash6Bits = new(BitConverter.GetBytes(_primeHash6));
+                BitArray primeHash7Bits = new(BitConverter.GetBytes(_primeHash7));
 
                 for (int j = 0; j < 64; j++)
                 {
@@ -125,14 +125,14 @@ namespace The_Project.Cryptography
                     primeHash0Bits = temp1.Add(temp2);
                 }
 
-                BitArray temph0 = new BitArray(bytes: BitConverter.GetBytes(_primeHash0)).Add(primeHash0Bits);
-                BitArray temph1 = new BitArray(bytes: BitConverter.GetBytes(_primeHash1)).Add(primeHash1Bits);
-                BitArray temph2 = new BitArray(bytes: BitConverter.GetBytes(_primeHash2)).Add(primeHash2Bits);
-                BitArray temph3 = new BitArray(bytes: BitConverter.GetBytes(_primeHash3)).Add(primeHash3Bits);
-                BitArray temph4 = new BitArray(bytes: BitConverter.GetBytes(_primeHash4)).Add(primeHash4Bits);
-                BitArray temph5 = new BitArray(bytes: BitConverter.GetBytes(_primeHash5)).Add(primeHash5Bits);
-                BitArray temph6 = new BitArray(bytes: BitConverter.GetBytes(_primeHash6)).Add(primeHash6Bits);
-                BitArray temph7 = new BitArray(bytes: BitConverter.GetBytes(_primeHash7)).Add(primeHash7Bits);
+                BitArray temph0 = new BitArray(BitConverter.GetBytes(_primeHash0)).Add(primeHash0Bits);
+                BitArray temph1 = new BitArray(BitConverter.GetBytes(_primeHash1)).Add(primeHash1Bits);
+                BitArray temph2 = new BitArray(BitConverter.GetBytes(_primeHash2)).Add(primeHash2Bits);
+                BitArray temph3 = new BitArray(BitConverter.GetBytes(_primeHash3)).Add(primeHash3Bits);
+                BitArray temph4 = new BitArray(BitConverter.GetBytes(_primeHash4)).Add(primeHash4Bits);
+                BitArray temph5 = new BitArray(BitConverter.GetBytes(_primeHash5)).Add(primeHash5Bits);
+                BitArray temph6 = new BitArray(BitConverter.GetBytes(_primeHash6)).Add(primeHash6Bits);
+                BitArray temph7 = new BitArray(BitConverter.GetBytes(_primeHash7)).Add(primeHash7Bits);
 
                 _primeHash0 = temph0.ToUInt32();
                 _primeHash1 = temph1.ToUInt32();
@@ -144,10 +144,10 @@ namespace The_Project.Cryptography
                 _primeHash7 = temph7.ToUInt32();
             }
 
-            return string.Concat(values: (new []{ _primeHash0, _primeHash1, _primeHash2, _primeHash3, _primeHash4, _primeHash5, _primeHash6, _primeHash7 }).AsParallel()
+            return string.Concat(new[] { _primeHash0, _primeHash1, _primeHash2, _primeHash3, _primeHash4, _primeHash5, _primeHash6, _primeHash7 }.AsParallel()
                 .AsOrdered()
                 .WithDegreeOfParallelism(Environment.ProcessorCount)
-                .Select(x => x.ToString("X").PadLeft(8, '0')));
+                .Select(static x => x.ToString("X").PadLeft(8, '0')));
         }
 
         private static List<BitArray> SplitIntoChunks(BitArray arr, int bits = 512)
@@ -160,8 +160,8 @@ namespace The_Project.Cryptography
             int originalLength = arr.Length / 8;
             for (int i = 0; i < originalLength; i += bits / 8)
             {
-                BitArray bitArray = new(bytes: buffer[i..(i + (bits / 8))]);
-                bitArrayList.Add(item: bitArray);
+                BitArray bitArray = new(buffer[i..(i + (bits / 8))]);
+                bitArrayList.Add(bitArray);
             }
             return bitArrayList;
         }
@@ -171,28 +171,28 @@ namespace The_Project.Cryptography
             int originalLength = arr.Length;
 
             arr.Length += 1;
-            arr.Set(index: arr.Length - 1, true);
+            arr.Set(arr.Length - 1, true);
 
             int i = 0;
             while ((originalLength + 1 + i + 64) % 512 != 0)
             {
                 arr.Length += 1;
-                arr.Set(index: arr.Length - 1, false);
+                arr.Set(arr.Length - 1, false);
                 i++;
             }
 
-            byte[] int64Bytes = BitConverter.GetBytes(value: Convert.ToUInt64(originalLength));
+            byte[] int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(originalLength));
             if (BitConverter.IsLittleEndian)
             {
-                Array.Reverse(array: int64Bytes);
+                Array.Reverse(int64Bytes);
             }
 
-            BitArray messageLengthArr = new(bytes: int64Bytes);
+            BitArray messageLengthArr = new(int64Bytes);
 
             foreach (bool b in messageLengthArr)
             {
                 arr.Length += 1;
-                arr.Set(index: arr.Length - 1, value: b);
+                arr.Set(arr.Length - 1, b);
             }
 
             return arr;

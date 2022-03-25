@@ -23,7 +23,7 @@ namespace The_Project
 
         public MainWindow()
         {
-            Handler = new();
+            Handler = new MessagingHandler();
             SqliteConnection = Handler.Connection;
             Tables = Handler.Tables;
 
@@ -61,11 +61,14 @@ namespace The_Project
             {
                 BtnLogin.IsEnabled = true;
                 Debug("Login Button Enabled");
-                if (TxtinputConfpswd.Password.Length > 0 && TxtinputConfpswd.Password == TxtinputPswd.Password)
+
+                if (TxtinputConfpswd.Password.Length <= 0 || TxtinputConfpswd.Password != TxtinputPswd.Password)
                 {
-                    BtnRegister.IsEnabled = true;
-                    Debug("Register Button Enabled");
+                    return;
                 }
+
+                BtnRegister.IsEnabled = true;
+                Debug("Register Button Enabled");
             }
             else
             {
@@ -122,7 +125,7 @@ namespace The_Project
                 _ = new ErrorWindow().SetError(exception.Message).Initialize();
             }
 
-            this.Content = new UserConnectionPage(this);
+            Content = new UserConnectionPage(this);
         }
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
@@ -146,7 +149,7 @@ namespace The_Project
             Debug("FOUND ACCOUNT!");
 
             UserConnectionPage userConnectionPage = new(this);
-            this.Content = userConnectionPage;
+            Content = userConnectionPage;
         }
 
         public void DisableAllButtons()

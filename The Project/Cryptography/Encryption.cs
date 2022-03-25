@@ -98,7 +98,6 @@ namespace The_Project.Cryptography
 
     public class Encryption
     {
-
         private readonly BigInteger _phi;
 
         // find _eInteger such that _eInteger > 1, _eInteger < _phi
@@ -130,9 +129,9 @@ namespace The_Project.Cryptography
         {
             BigInteger d = (1 + _phi) / _eInteger;
             int i = 1;
-            while (_eInteger * d % _phi != (1 % _phi))
+            while (_eInteger * d % _phi != 1 % _phi)
             {
-                d = (1 + ((i + 1) * _phi)) / _eInteger;
+                d = (1 + (i + 1) * _phi) / _eInteger;
                 i++;
             }
             return d;

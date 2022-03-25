@@ -9,15 +9,15 @@ namespace The_Project.Extensions
         {
             if (arr.Count <= 1)
             {
-                return new List<IList<T>>() {arr};
+                return new List<IList<T>> { arr };
             }
 
             List<IList<T>> newArr = new();
             for (int i = 0; i <= arr.Count - 1; i += 2)
             {
-                newArr.Add(arr.Count - 1 <= i
-                    ? new List<T>() {arr.ElementAt(i)}
-                    : new List<T>() {arr.ElementAt(i), arr.ElementAt(i + 1)});
+                newArr.Add(i >= arr.Count - 1
+                    ? new List<T> { arr.ElementAt(i) }
+                    : new List<T> { arr.ElementAt(i), arr.ElementAt(i + 1) });
             }
 
             return newArr;

@@ -21,11 +21,11 @@ namespace The_Project.Networking
 
         public Listener(UserId userId, LoggingWindow? loggingWindow = null)
         {
-            this._loggingWindow = loggingWindow;
+            _loggingWindow = loggingWindow;
             Debug.WriteLine(loggingWindow);
             loggingWindow?.Debug("Initialising Listener!");
             Port = GeneratePort(userId.MinPort, userId.MaxPort);
-            Server = new(IPAddress.Parse("127.0.0.1"), Port);
+            Server = new TcpListener(Utils.GetLocalIpAddress(), Port);
             Server.Start();
         }
 
@@ -67,17 +67,14 @@ namespace The_Project.Networking
                         if (accountIdBuffer == accountId)
                         {
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Verified account ID! Confirming connection..."));
-                            networkStream.Write(new BitArray(new []{ true, true, true, true, true, true, true, true }).ToByteArray());
-                            recipientConnection = new(tcpClient);
+                            networkStream.Write(new BitArray(new[] { true, true, true, true, true, true, true, true }).ToByteArray());
+                            recipientConnection = new RecipientConnection(tcpClient);
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Connection established!"));
                             break;
                         }
-                        else
-                        {
-                            currentDispatcher.Invoke(() => _loggingWindow?.Debug("Account ID does not match! Terminating connection."));
-                            networkStream.Write(new byte[1]);
-                            tcpClient.Close();
-                        }
+                        currentDispatcher.Invoke(() => _loggingWindow?.Debug("Account ID does not match! Terminating connection."));
+                        networkStream.Write(new byte[1]);
+                        tcpClient.Close();
                     }
                     Server.Stop();
                 }

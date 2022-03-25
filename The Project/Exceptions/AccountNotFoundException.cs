@@ -13,7 +13,7 @@ namespace The_Project.Exceptions
 
         public AccountNotFoundException(string type) : this()
         {
-            this.Type = type;
+            Type = type;
         }
     }
 }

@@ -21,13 +21,13 @@ namespace The_Project.Networking
 
         public RecipientConnection(LoggingWindow? loggingWindow = null)
         {
-            this.LoggingWindow = loggingWindow;
+            LoggingWindow = loggingWindow;
         }
 
         public RecipientConnection(TcpClient tcpClient, LoggingWindow? loggingWindow = null)
         {
-            this.TcpClient = tcpClient;
-            this.LoggingWindow = loggingWindow;
+            TcpClient = tcpClient;
+            LoggingWindow = loggingWindow;
         }
 
         public async Task<bool> ConnectTo(UserId userId)
@@ -87,7 +87,7 @@ namespace The_Project.Networking
 
         public async Task<TcpClient?> CreateConnection(IPAddress ipAddress, int port, string accountId, Dispatcher dispatcher)
         {
-            TcpClient? tcpClient = new();
+            TcpClient tcpClient = new();
 
             try
             {
@@ -97,11 +97,11 @@ namespace The_Project.Networking
                 Task timeoutTask = Task.Delay(20000);
                 Task connectionTask = tcpClient.ConnectAsync(ipAddress, port);
 
-                Task? completedTask = await Task.WhenAny(timeoutTask, connectionTask);
-                if (completedTask is null || completedTask == timeoutTask)
+                Task completedTask = await Task.WhenAny(timeoutTask, connectionTask);
+                if (completedTask == timeoutTask)
                 {
                     Debug.WriteLine(
-                        completedTask is null ? "completedTask is null" : $"timeout reached for {ipAddress}:{port}");
+                        $"timeout reached for {ipAddress}:{port}");
                     throw new CreateConnectionException("No task completed in Create Connection!");
                 }
             }
@@ -123,10 +123,7 @@ namespace The_Project.Networking
                 return tcpClient;
             }
 
-            dispatcher.Invoke(() =>
-                LoggingWindow?.Debug(
-                    $"Connection {tcpClient switch { TcpClient client => $"success {client}", null => "failed" }}"));
-            Debug.WriteLine($"Connection {tcpClient switch { TcpClient client => $"success {client}", null => "failed" }}");
+            Debug.WriteLine($"Connection {(tcpClient.Connected ? "success" : "failed")}");
 
             /*throw new ConnectionRefusedException("tcpClient refused connection");*/
             return null;

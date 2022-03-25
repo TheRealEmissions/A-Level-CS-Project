@@ -11,7 +11,7 @@ namespace The_Project.Database.Tables
 
         public Messages(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
-            this._sqliteConnection = sqliteConnection;
+            _sqliteConnection = sqliteConnection;
             //CreateTable();
         }
 
@@ -25,11 +25,11 @@ namespace The_Project.Database.Tables
 
             public Schema(string userAccountId, string refAccountId, int timestamp, string message, bool received)
             {
-                this.UserAccountId = userAccountId;
-                this.RefAccountId = refAccountId;
-                this.Timestamp = new DateTime(timestamp);
-                this.Message = message;
-                this.Received = received;
+                UserAccountId = userAccountId;
+                RefAccountId = refAccountId;
+                Timestamp = new DateTime(timestamp);
+                Message = message;
+                Received = received;
             }
         }
 

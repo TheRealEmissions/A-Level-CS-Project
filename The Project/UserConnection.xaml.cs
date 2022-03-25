@@ -21,11 +21,11 @@ namespace The_Project
 
         public UserConnectionPage(MainWindow mainWindow)
         {
-            this._mainWindow = mainWindow;
-            this.Listener = new(mainWindow.Handler.UserAccount.ToUserId(), mainWindow.DebugWindow);
+            _mainWindow = mainWindow;
+            Listener = new Listener(mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), mainWindow.DebugWindow);
             InitializeComponent();
 
-            TxtblockUserId.Text = mainWindow.Handler.UserAccount.ToUserId().Id;
+            TxtblockUserId.Text = mainWindow.Handler.UserAccount?.ToUserId().Id;
             TxtblockPort.Text += Listener.Port.ToString();
             TxtinputUserid.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_userid_MouseLeftButtonDown), true);
 
@@ -34,8 +34,8 @@ namespace The_Project
 
         public async Task HandleConnection()
         {
-            Task<RecipientConnection> recipientConnection = Listener.ListenAndConnect(_mainWindow.Handler.UserAccount.AccountId);
-            this.RecipientConnection = await recipientConnection;
+            Task<RecipientConnection> recipientConnection = Listener.ListenAndConnect(_mainWindow.Handler.UserAccount?.AccountId ?? "NO_ACCOUNT");
+            RecipientConnection = await recipientConnection;
 
             // accept/reject connection
             // if accepted, continue
@@ -46,15 +46,14 @@ namespace The_Project
             }
             catch (RejectConnectionException)
             {
-                this.Content = _mainWindow;
+                Content = _mainWindow;
             }
-
         }
 
         public void TerminateConnection()
         {
-            RecipientConnection.TcpClient.Close();
-            this.Content = new UserConnectionPage(_mainWindow);
+            RecipientConnection.TcpClient?.Close();
+            Content = new UserConnectionPage(_mainWindow);
         }
 
         private void Txtinput_userid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -24,9 +24,9 @@ namespace The_Project.Database.Tables
 
             public Schema(string username, string password, string accountId)
             {
-                this.Username = username;
-                this.Password = password;
-                this.AccountId = accountId;
+                Username = username;
+                Password = password;
+                AccountId = accountId;
             }
         }
 
@@ -62,15 +62,16 @@ namespace The_Project.Database.Tables
                 return null;
             }
 
-            if (dataReader.Read())
+            if (!dataReader.Read())
             {
-                object[] rowColumns = new object[3];
-                dataReader.GetValues(rowColumns);
-
-                Schema schema = new(username: rowColumns[0].ToString(), password: rowColumns[1].ToString(), accountId: rowColumns[2].ToString());
-                return schema;
+                return null;
             }
-            return null;
+
+            object[] rowColumns = new object[3];
+            _ = dataReader.GetValues(rowColumns);
+
+            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return schema;
         }
 
         public bool CreateAccountEntry(string username, string passwordHash, string accountId)
