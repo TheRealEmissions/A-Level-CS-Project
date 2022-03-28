@@ -68,7 +68,7 @@ namespace The_Project.Networking
                         {
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Verified account ID! Confirming connection..."));
                             networkStream.Write(new BitArray(new[] { true, true, true, true, true, true, true, true }).ToByteArray());
-                            recipientConnection = new RecipientConnection(tcpClient);
+                            recipientConnection = new RecipientConnection(tcpClient, _loggingWindow);
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Connection established!"));
                             break;
                         }

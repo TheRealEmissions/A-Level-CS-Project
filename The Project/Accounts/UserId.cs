@@ -34,7 +34,7 @@ namespace The_Project.Accounts
             int pos = 0;
             foreach (string octet in octets)
             {
-                ipConverted += octet.Select(x => alphabet[int.Parse(x.ToString())]);
+                ipConverted += string.Join(null, octet.Select(x => alphabet[int.Parse(x.ToString())]));
                 if (alphabet[pos] == 'D')
                 {
                     continue;
@@ -53,8 +53,8 @@ namespace The_Project.Accounts
             char[] maxPortArr = maxPort.ToString().ToCharArray();
             string maxPortStr = string.Empty;
 
-            minPortStr += minPortArr.Select(x => alphabet[int.Parse(x.ToString())]);
-            maxPortStr += maxPortArr.Select(x => alphabet[int.Parse(x.ToString())]);
+            minPortStr += string.Join(null, minPortArr.Select(x => alphabet[int.Parse(x.ToString())]));
+            maxPortStr += string.Join(null, maxPortArr.Select(x => alphabet[int.Parse(x.ToString())]));
 
             #endregion portConversionToLetters
 
