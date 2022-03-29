@@ -42,7 +42,15 @@ namespace The_Project
             // if rejected, terminate connection
             try
             {
-                ConnectionAcceptWindow connectionAcceptWindow = new(this, ((IPEndPoint)recipientConnection.Result.TcpClient.GetStream().Socket.RemoteEndPoint).Address);
+                ConnectionAcceptWindow connectionAcceptWindow = new(this,
+                    ((IPEndPoint) recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint)?.Address);
+                await Task.Delay(10000);
+                if (!connectionAcceptWindow.ConnectionAccepted)
+                {
+                    throw new ConnectionDeclinedException("Connection declined by user or timed out");
+                }
+                connectionAcceptWindow.Close();
+                _mainWindow.Content = new MessagePage(_mainWindow.Handler.UserAccount.ToUserId(), ((IPEndPoint)recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint)?.Address);
             }
             catch (RejectConnectionException)
             {

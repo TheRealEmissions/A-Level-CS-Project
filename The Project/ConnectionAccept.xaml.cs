@@ -2,6 +2,7 @@
 using System.Windows;
 using The_Project.Exceptions;
 
+#nullable enable
 namespace The_Project
 {
     /// <summary>
@@ -11,12 +12,19 @@ namespace The_Project
     {
         private readonly UserConnectionPage _userConnectionWindow;
 
-        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress ipAddress)
+        public bool ConnectionAccepted;
+
+        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress)
         {
-            _userConnectionWindow = userConnectionWindow;
-            TxtblockIpAddress.Text = ipAddress.ToString();
+            if (ipAddress is null)
+            {
+                throw new CreateConnectionException("ip address not found for recipient");
+            }
 
             InitializeComponent();
+
+            _userConnectionWindow = userConnectionWindow;
+            TxtblockIpAddress.Text = ipAddress.ToString();
 
             try
             {

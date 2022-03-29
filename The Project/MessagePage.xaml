@@ -1,0 +1,25 @@
+﻿<Page x:Class="The_Project.MessagePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:The_Project"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MessagePage">
+
+    <Grid Background="White">
+        <TextBox Text="Message Content" Name="TxtMsgContent"  TextWrapping="Wrap" Margin="22,393,112,10"/>
+        <Button Content="Send" Name="BtnSend" Margin="693,393,18,10"/>
+        <ListView Height="350" Name="ListviewMessages" VerticalAlignment="Top" Margin="22,32,18,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Content="Terminate Connection" Name="BtnTerminateConnection" Margin="656,2,18,421" Foreground="#FFFF0303"/>
+        <Button Content="Set Nickname" x:Name="BtnSetNickname" Margin="520,2,154,421"/>
+        <TextBlock Text="User" Name="TxtblockUser" TextWrapping="Wrap" Margin="34,8,622,417"/>
+    </Grid>
+</Page>

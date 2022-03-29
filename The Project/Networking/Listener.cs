@@ -60,11 +60,11 @@ namespace The_Project.Networking
 
                     // check account id
                     NetworkStream networkStream = tcpClient.GetStream();
-                    while (networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
+                    while (networkStream.CanRead && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
                     {
                         accountIdBuffer = Encoding.UTF8.GetString(bytesBuffer);
                         // verify account id
-                        if (accountIdBuffer == accountId)
+                        if (accountIdBuffer.Substring(0, 3) == accountId)
                         {
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Verified account ID! Confirming connection..."));
                             networkStream.Write(new BitArray(new[] { true, true, true, true, true, true, true, true }).ToByteArray());
