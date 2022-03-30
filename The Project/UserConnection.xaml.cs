@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,7 +33,8 @@ namespace The_Project
             _ = HandleConnection();
         }
 
-        public async Task HandleConnection()
+#nullable enable
+        public async Task<RecipientConnection?> HandleConnection()
         {
             Task<RecipientConnection> recipientConnection = Listener.ListenAndConnect(_mainWindow.Handler.UserAccount?.AccountId ?? "NO_ACCOUNT");
             RecipientConnection = await recipientConnection;
@@ -42,20 +44,26 @@ namespace The_Project
             // if rejected, terminate connection
             try
             {
+                CancellationTokenSource cancelToken = new CancellationTokenSource();
+                Task delayedTask = Task.Delay(10000, cancelToken.Token);
                 ConnectionAcceptWindow connectionAcceptWindow = new(this,
-                    ((IPEndPoint) recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint)?.Address);
-                await Task.Delay(10000);
+                    (recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address ?? Utils.GetLocalIpAddress(), delayedTask, cancelToken);
+
+                await delayedTask;
+
                 if (!connectionAcceptWindow.ConnectionAccepted)
                 {
-                    throw new ConnectionDeclinedException("Connection declined by user or timed out");
+                    throw new RejectConnectionException();
                 }
+
                 connectionAcceptWindow.Close();
-                _mainWindow.Content = new MessagePage(_mainWindow.Handler.UserAccount.ToUserId(), ((IPEndPoint)recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint)?.Address);
+                _mainWindow.Content = new MessagePage(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), (recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address, _mainWindow.Handler.Recipient, _mainWindow);
             }
             catch (RejectConnectionException)
             {
-                Content = _mainWindow;
+                Content = _mainWindow.Content;
             }
+            return RecipientConnection;
         }
 
         public void TerminateConnection()

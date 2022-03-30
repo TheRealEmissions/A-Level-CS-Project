@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
+using The_Project.Cryptography;
 using The_Project.Database.Tables;
 using The_Project.Exceptions;
 
@@ -13,6 +14,9 @@ namespace The_Project.Accounts
         public string AccountId { get; private set; } = string.Empty;
         public int MinPort { get; private set; }
         public int MaxPort { get; private set; }
+
+        public PublicKey PublicKey { get; private set; }
+        internal PrivateKey PrivateKey { get; private set; }
 
         private readonly Tables _tables;
 
@@ -36,6 +40,16 @@ namespace The_Project.Accounts
                 throw new PasswordHashMismatchException();
             }
             Register(username, passwordHash, connection);
+        }
+
+        public void SetPublicKey(PublicKey publicKey)
+        {
+            PublicKey = publicKey;
+        }
+
+        public void SetPrivateKey(PrivateKey privateKey)
+        {
+            PrivateKey = privateKey;
         }
 
         private void Login(string username, string passwordHash, SqliteConnection connection)

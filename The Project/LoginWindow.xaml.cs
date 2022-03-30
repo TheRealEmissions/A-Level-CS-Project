@@ -21,11 +21,16 @@ namespace The_Project
         public SqliteConnection? SqliteConnection { get; }
         public Database.Tables.Tables Tables { get; }
 
+        public Encryption EncryptionKeys { get; } = new();
+
         public MainWindow()
         {
             Handler = new MessagingHandler();
             SqliteConnection = Handler.Connection;
             Tables = Handler.Tables;
+
+            Handler.UserAccount?.SetPublicKey(EncryptionKeys.PublicKey);
+            Handler.UserAccount?.SetPrivateKey(EncryptionKeys.PrivateKey);
 
             //new Tables(SqliteConnection).GetAndCreateAllTables();
 

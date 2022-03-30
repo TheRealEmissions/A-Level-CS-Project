@@ -19,6 +19,8 @@ namespace The_Project.Networking
         public TcpClient? TcpClient { get; set; }
         private LoggingWindow? LoggingWindow { get; }
 
+        public bool ConnectionVerified { get; set; }
+
         public RecipientConnection(LoggingWindow? loggingWindow = null)
         {
             LoggingWindow = loggingWindow;

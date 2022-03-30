@@ -1,4 +1,6 @@
 ﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using The_Project.Exceptions;
 
@@ -14,8 +16,13 @@ namespace The_Project
 
         public bool ConnectionAccepted;
 
-        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress)
+        private Task _delayedTask;
+        private readonly CancellationTokenSource _cancelToken;
+
+        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, Task delayedTask, CancellationTokenSource cancelToken)
         {
+            _delayedTask = delayedTask;
+            _cancelToken = cancelToken;
             if (ipAddress is null)
             {
                 throw new CreateConnectionException("ip address not found for recipient");
@@ -38,7 +45,7 @@ namespace The_Project
 
         private void Btn_RejectConnection_Click(object sender, RoutedEventArgs e)
         {
-            throw new RejectConnectionException();
+            _cancelToken.Cancel();
         }
 
         /*        public void ConnectionResponse(object sender, RoutedEventArgs e)

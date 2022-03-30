@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace The_Project
+﻿namespace The_Project
 {
     /// <summary>
     /// Interaction logic for ErrorWindow.xaml

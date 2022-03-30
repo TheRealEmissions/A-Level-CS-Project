@@ -1,37 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using The_Project.Accounts;
+using The_Project.Cryptography;
+using The_Project.Events;
 
 namespace The_Project
 {
+
     /// <summary>
     /// Interaction logic for MessagePage.xaml
     /// </summary>
-    public partial class MessagePage : Page
+    public partial class MessagePage
     {
-        private UserId SelfUserId;
-        private IPAddress RecipientIpAddress;
-        public MessagePage(UserId selfUserId, IPAddress recipientIpAddress)
+        private UserId _selfUserId;
+        private IPAddress _recipientIpAddress;
+        private readonly Recipient _recipient;
+        private readonly MainWindow _mainWindow;
+
+        public event EventHandler<MessageReceivedEventArgs> MessageReceived;
+        public MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient, MainWindow mainWindow)
         {
-            SelfUserId = selfUserId;
-            RecipientIpAddress = recipientIpAddress;
+            _selfUserId = selfUserId;
+            _recipientIpAddress = recipientIpAddress;
+            _recipient = recipient;
+            _mainWindow = mainWindow;
+
+            MessageReceived += MessageReceivedFromRecipient;
 
             InitializeComponent();
 
             TxtblockUser.Text = recipientIpAddress.ToString();
+        }
+
+        public virtual void OnMessageReceived(MessageReceivedEventArgs e)
+        {
+            MessageReceived?.Invoke(this, e);
+        }
+
+        private void UpdateMessagesList(string text, bool received)
+        {
+            ListBoxItem listBoxItem = new()
+            {
+                Content = !received
+                    ? $"Me: {text}"
+                    : $"{_recipient.Nickname ?? "Them"}: {text}"
+            };
+            _ = ListboxMessages.Items.Add(listBoxItem);
+        }
+
+
+
+        private void BtnTerminateConnection_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            _recipient.Connection.TcpClient?.Close();
+            _recipient.Connection.TcpClient = null;
+            Content = new UserConnectionPage(_mainWindow).Content;
+        }
+
+        private void BtnSend_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (TxtMsgContent.Text == "Message Content")
+            {
+                return;
+            }
+
+            _recipient.Send(TxtMsgContent.Text);
+            UpdateMessagesList(TxtMsgContent.Text, false);
+        }
+
+        private void MessageReceivedFromRecipient(object sender, MessageReceivedEventArgs e)
+        {
+            // update db
+            // update message list
+            UpdateMessagesList(e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey), true);
         }
     }
 }

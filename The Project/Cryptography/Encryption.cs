@@ -104,8 +104,8 @@ namespace The_Project.Cryptography
         // _eInteger is co-prime to _phi
         private readonly BigInteger _eInteger = 65537;//new BigInteger(2).GetCoprime(_phi);
 
-        public PublicKey PublicKeyKey { get; }
-        public PrivateKey PrivateKeyKey { get; }
+        public PublicKey PublicKey { get; }
+        public PrivateKey PrivateKey { get; }
 
         public Encryption()
         {
@@ -115,14 +115,14 @@ namespace The_Project.Cryptography
             _phi = (xInteger - 1) * (yInteger - 1);
             BigInteger dInteger = GetD();
 
-            PublicKeyKey = new PublicKey(nInteger, _eInteger);
-            PrivateKeyKey = new PrivateKey(nInteger, dInteger);
+            PublicKey = new PublicKey(nInteger, _eInteger);
+            PrivateKey = new PrivateKey(nInteger, dInteger);
         }
 
         public Encryption(PublicKey publicKey, PrivateKey privateKey)
         {
-            PublicKeyKey = publicKey;
-            PrivateKeyKey = privateKey;
+            PublicKey = publicKey;
+            PrivateKey = privateKey;
         }
 
         private BigInteger GetD()
