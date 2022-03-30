@@ -70,6 +70,7 @@ namespace The_Project.Networking
                                 break;
                             }
                             recipient.Connection.ConnectionVerified = true;
+                            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new ConnectionVerifiedPacket()));
                             await recipient.SendPublicKey(userAccount.PublicKey);
                             break;
                         case PacketIdentifier.Packet.Exception:

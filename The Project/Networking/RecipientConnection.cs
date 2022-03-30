@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using The_Project.Accounts;
 using The_Project.Exceptions;
 using The_Project.Extensions;
+using The_Project.Networking.Packets;
 
 #nullable enable
 
@@ -122,7 +124,7 @@ namespace The_Project.Networking
                 dispatcher.Invoke(() => LoggingWindow?.Debug("Connected to client!"));
                 Debug.WriteLine("Connected to client!");
                 dispatcher.Invoke(() => LoggingWindow?.Debug("Verifying account ID with connected client"));
-                tcpClient.GetStream().Write(Encoding.UTF8.GetBytes(accountId));
+                await tcpClient.GetStream().WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new AccountIdVerificationPacket {A = accountId}));
                 return tcpClient;
             }
 

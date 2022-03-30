@@ -57,7 +57,11 @@ namespace The_Project
                 }
 
                 connectionAcceptWindow.Close();
-                _mainWindow.Content = new MessagePage(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), (recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address, _mainWindow.Handler.Recipient, _mainWindow);
+                MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
+                    (recipientConnection.Result.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
+                    _mainWindow.Handler.Recipient, _mainWindow);
+                _mainWindow.Content = messagePage;
+                await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient, messagePage);
             }
             catch (RejectConnectionException)
             {

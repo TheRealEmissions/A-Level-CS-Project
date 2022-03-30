@@ -60,6 +60,11 @@ namespace The_Project
 
         private void BtnSend_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (TxtMsgContent.Text.Length <= 0)
+            {
+                return;
+            }
+
             if (TxtMsgContent.Text == "Message Content")
             {
                 return;
