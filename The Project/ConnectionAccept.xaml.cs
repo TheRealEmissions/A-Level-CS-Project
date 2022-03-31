@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using The_Project.Events;
 using The_Project.Exceptions;
 
 #nullable enable
@@ -14,15 +16,11 @@ namespace The_Project
     {
         private readonly UserConnectionPage _userConnectionWindow;
 
-        public bool ConnectionAccepted;
+        private readonly EventHandler<ConnectionAcceptedEventArgs> _connectionAccepted;
+        private readonly EventHandler<ConnectionDeclinedEventArgs> _connectionDeclined;
 
-        private Task _delayedTask;
-        private readonly CancellationTokenSource _cancelToken;
-
-        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, Task delayedTask, CancellationTokenSource cancelToken)
+        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler, EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
         {
-            _delayedTask = delayedTask;
-            _cancelToken = cancelToken;
             if (ipAddress is null)
             {
                 throw new CreateConnectionException("ip address not found for recipient");
@@ -32,6 +30,8 @@ namespace The_Project
 
             _userConnectionWindow = userConnectionWindow;
             TxtblockIpAddress.Text = ipAddress.ToString();
+            _connectionAccepted = connectionAcceptedEventHandler;
+            _connectionDeclined = connectionDeclinedEventHandler;
 
             try
             {
@@ -45,7 +45,14 @@ namespace The_Project
 
         private void Btn_RejectConnection_Click(object sender, RoutedEventArgs e)
         {
-            _cancelToken.Cancel();
+            Close();
+            _connectionDeclined.Invoke(this, new ConnectionDeclinedEventArgs());
+        }
+
+        private void BtnAcceptConnection_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+            _connectionAccepted.Invoke(this, new ConnectionAcceptedEventArgs());
         }
 
         /*        public void ConnectionResponse(object sender, RoutedEventArgs e)

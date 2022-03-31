@@ -22,14 +22,19 @@ namespace The_Project.Networking
         private LoggingWindow? LoggingWindow { get; }
 
         public bool ConnectionVerified { get; set; }
+        public bool ConnectionAccepted { get; set; }
 
-        public RecipientConnection(LoggingWindow? loggingWindow = null)
+        private MainWindow MainWindow { get; }
+
+        public RecipientConnection(MainWindow mainWindow, LoggingWindow? loggingWindow = null)
         {
+            MainWindow = mainWindow;
             LoggingWindow = loggingWindow;
         }
 
-        public RecipientConnection(TcpClient tcpClient, LoggingWindow? loggingWindow = null)
+        public RecipientConnection(TcpClient tcpClient, MainWindow mainWindow, LoggingWindow? loggingWindow = null)
         {
+            MainWindow = mainWindow;
             TcpClient = tcpClient;
             LoggingWindow = loggingWindow;
         }

@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using The_Project.Cryptography;
@@ -12,12 +13,18 @@ namespace The_Project.Accounts
     {
         public RecipientConnection Connection { get; }
         public PublicKey PublicKey { get; set; }
+        public bool PublicKeyStored { get; set; }
         public string? Nickname { get; set; }
 
         public Recipient(RecipientConnection connection, PublicKey publicKey)
         {
             Connection = connection;
             PublicKey = publicKey;
+        }
+
+        public Recipient(RecipientConnection connection)
+        {
+            Connection = connection;
         }
 
         /**
@@ -27,7 +34,8 @@ namespace The_Project.Accounts
         public void Send(string text)
         {
             string cipherText = text.Encrypt(PublicKey);
-            Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new MessagePacket { M = cipherText }));
+            Debug.WriteLine("Sending message");
+            Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet {Data = new MessagePacket { M = cipherText }, T = (int)PacketIdentifier.Packet.Message}));
         }
 
         public async Task SendPublicKey(PublicKey publicKey)
@@ -37,9 +45,12 @@ namespace The_Project.Accounts
                 return;
             }
 
+            Debug.Write("Sending public key");
             await Connection.TcpClient.GetStream()
-                .WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new PublicKeyPacket
-                { E = publicKey.E, N = publicKey.N }));
+                .WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new Packet
+                {
+                    Data = new PublicKeyPacket
+                { E = publicKey.E, N = publicKey.N }, T = (int)PacketIdentifier.Packet.PublicKey}));
         }
     }
 }

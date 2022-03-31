@@ -11,7 +11,7 @@
             <ColumnDefinition Width="9*" />
             <ColumnDefinition Width="791*" />
         </Grid.ColumnDefinitions>
-        <Button Name="BtnAcceptConnection" Content="Accept" Margin="50,92,200,36" Background="#FF38EB5B" Grid.Column="1" />
+        <Button Name="BtnAcceptConnection" Content="Accept" Margin="50,92,200,36" Background="#FF38EB5B" Grid.Column="1" Click="BtnAcceptConnection_Click" />
         <Button Name="BtnRejectConnection" Content="Reject" Margin="198,92,52,36" Background="#FFF47272" Grid.Column="1" />
         <TextBlock Text="Accept sqliteConnection From:" TextWrapping="Wrap" Margin="84,10,88,136" FontSize="20px" TextAlignment="Center" Grid.Column="1" />
         <TextBlock Name="TxtblockIpAddress" Text="ipAddress pending..." TextWrapping="Wrap" Margin="84,48,88,98" FontSize="18px" TextAlignment="Center" Grid.Column="1" />
