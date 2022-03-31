@@ -95,22 +95,29 @@ namespace The_Project.Networking
                             Debug.WriteLine("Connection Verified");
                             if (recipient.Connection.ConnectionVerified && !recipient.Connection.ConnectionAccepted)
                             {
+                                Debug.WriteLine("Connection is already verified (accepted is false)");
                                 break;
                             }
 
                             if (recipient.Connection.ConnectionAccepted && recipient.Connection.ConnectionVerified)
                             {
+                                Debug.WriteLine("Connection is accepted & verified");
                                 break;
                             }
+                            Debug.WriteLine("verified connection");
                             recipient.Connection.ConnectionVerified = true;
                             if (connectionVerifiedPacket?.A ?? false)
                             {
+                                Debug.WriteLine("Connection accepted");
                                 recipient.Connection.ConnectionAccepted = true;
                             }
+
+                            bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
                             Debug.WriteLine("Returning connection verified packet");
-                            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet { Data = new ConnectionVerifiedPacket { A = connectionVerifiedPacket?.A ?? false }, T = (int)PacketIdentifier.Packet.ConnectionVerified }));
+                            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet { Data = new ConnectionVerifiedPacket { A = connectionAccepted }, T = (int)PacketIdentifier.Packet.ConnectionVerified }));
                             if (connectionVerifiedPacket?.A ?? false)
                             {
+                                Debug.WriteLine("Sending public key");
                                 await recipient.SendPublicKey(userAccount.PublicKey);
                             }
                             break;
