@@ -2,7 +2,8 @@
 
 namespace The_Project.Exceptions
 {
-    internal class RejectConnectionException : Exception
+    [Serializable]
+    internal sealed class RejectConnectionException : Exception
     {
         public RejectConnectionException() : base("REJECT CONNECTION")
         {

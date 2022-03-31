@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -16,30 +15,30 @@ using The_Project.Networking.Packets;
 
 namespace The_Project.Networking
 {
-    public class RecipientConnection
+    public sealed class RecipientConnection
     {
-        public TcpClient? TcpClient { get; set; }
+        internal TcpClient? TcpClient { get; set; }
         private LoggingWindow? LoggingWindow { get; }
 
-        public bool ConnectionVerified { get; set; }
-        public bool ConnectionAccepted { get; set; }
+        internal bool ConnectionVerified { get; set; }
+        internal bool ConnectionAccepted { get; set; }
 
         private MainWindow MainWindow { get; }
 
-        public RecipientConnection(MainWindow mainWindow, LoggingWindow? loggingWindow = null)
+        internal RecipientConnection(MainWindow mainWindow, LoggingWindow? loggingWindow = null)
         {
             MainWindow = mainWindow;
             LoggingWindow = loggingWindow;
         }
 
-        public RecipientConnection(TcpClient tcpClient, MainWindow mainWindow, LoggingWindow? loggingWindow = null)
+        internal RecipientConnection(TcpClient tcpClient, MainWindow mainWindow, LoggingWindow? loggingWindow = null)
         {
             MainWindow = mainWindow;
             TcpClient = tcpClient;
             LoggingWindow = loggingWindow;
         }
 
-        public async Task<bool> ConnectTo(UserId userId)
+        internal async Task<bool> ConnectTo(UserId userId)
         {
             Dispatcher currentDispatcher = Dispatcher.CurrentDispatcher;
 
@@ -95,7 +94,7 @@ namespace The_Project.Networking
                     return tcpClient is null;
                 }*/
 
-        public async Task<TcpClient?> CreateConnection(IPAddress ipAddress, int port, string accountId, Dispatcher dispatcher)
+        private async Task<TcpClient?> CreateConnection(IPAddress ipAddress, int port, string accountId, Dispatcher dispatcher)
         {
             TcpClient tcpClient = new();
 

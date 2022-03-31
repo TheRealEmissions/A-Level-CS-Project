@@ -1,6 +1,6 @@
 ﻿namespace The_Project.Networking.Packets.Interfaces
 {
-    public interface IPacket
+    internal interface IPacket
     {
         public int T { get; set; }
     }

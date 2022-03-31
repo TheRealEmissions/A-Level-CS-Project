@@ -2,9 +2,9 @@
 
 namespace The_Project.Extensions
 {
-    public static class BigIntegerExtensions
+    internal static class BigIntegerExtensions
     {
-        public static BigInteger GetCoprime(this BigInteger x, BigInteger y)
+        private static BigInteger GetCoprime(this BigInteger x, BigInteger y)
         {
             while (x < y)
             {
@@ -18,7 +18,7 @@ namespace The_Project.Extensions
             return x;
         }
 
-        public static BigInteger GreatestCommonDivider(this BigInteger a, BigInteger b)
+        private static BigInteger GreatestCommonDivider(this BigInteger a, BigInteger b)
         {
             BigInteger temp = a % b;
             return temp == 0 ? b : b.GreatestCommonDivider(temp);

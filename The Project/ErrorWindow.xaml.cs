@@ -3,23 +3,23 @@
     /// <summary>
     /// Interaction logic for ErrorWindow.xaml
     /// </summary>
-    public partial class ErrorWindow
+    public sealed partial class ErrorWindow
     {
         private string _error;
 
-        public ErrorWindow()
+        internal ErrorWindow()
         {
             InitializeComponent();
         }
 
-        public ErrorWindow SetError(string error)
+        internal ErrorWindow SetError(string error)
         {
             _error = error;
             TxtblockError.Text = error;
             return this;
         }
 
-        public ErrorWindow Initialize()
+        internal ErrorWindow Initialize()
         {
             Show();
             return this;

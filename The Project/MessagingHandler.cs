@@ -5,9 +5,9 @@ using The_Project.Database;
 
 namespace The_Project
 {
-    public class MessagingHandler : Sql
+    internal sealed class MessagingHandler : Sql
     {
-        public Account? UserAccount { get; set; }
-        public Recipient? Recipient { get; set; }
+        internal Account? UserAccount { get; set; }
+        internal Recipient? Recipient { get; set; }
     }
 }

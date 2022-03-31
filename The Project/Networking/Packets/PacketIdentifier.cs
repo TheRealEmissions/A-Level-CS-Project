@@ -1,8 +1,8 @@
 ﻿namespace The_Project.Networking.Packets
 {
-    public static class PacketIdentifier
+    internal static class PacketIdentifier
     {
-        public enum Packet
+        internal enum Packet
         {
             AccountIdVerification,
             PublicKey,

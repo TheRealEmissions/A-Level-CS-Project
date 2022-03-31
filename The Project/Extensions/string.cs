@@ -46,10 +46,10 @@ namespace The_Project.Extensions
         private static string MergeString(IEnumerable<IList<string>> arr, char separator)
         {
             List<IList<string>> listedArr = arr.ToList();
-            ParallelQuery<List<string>> strings = listedArr.AsParallel().AsOrdered()
-                .Select(x => new List<string> { string.Join(separator, x) });
+            List<List<string>> strings = listedArr.AsParallel().AsOrdered()
+                .Select(x => new List<string> { string.Join(separator, x) }).ToList();
 
-            int stringsCount = strings.Count();
+            int stringsCount = strings.Count;
             IList<string> stringElement0 = strings.ElementAt(0);
 
             if (stringsCount == 1)

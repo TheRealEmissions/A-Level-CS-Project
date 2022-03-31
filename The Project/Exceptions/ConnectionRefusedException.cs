@@ -2,7 +2,7 @@
 
 namespace The_Project.Exceptions
 {
-    public class ConnectionRefusedException : Exception
+    internal sealed class ConnectionRefusedException : Exception
     {
         public ConnectionRefusedException(string response) : base(response)
         {

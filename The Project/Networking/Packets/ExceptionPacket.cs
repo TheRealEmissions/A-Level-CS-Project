@@ -2,7 +2,7 @@
 
 namespace The_Project.Networking.Packets
 {
-    public class ExceptionPacket : IPacket
+    internal sealed class ExceptionPacket : IPacket
     {
 
         public int T { get; set; } = 3;

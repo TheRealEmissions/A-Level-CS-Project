@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace The_Project.Extensions
 {
-    public static class Array<T>
+    internal static class Array<T>
     {
-        public static List<IList<T>> SplitArr(IList<T> arr)
+        internal static List<IList<T>> SplitArr(IList<T> arr)
         {
             if (arr.Count <= 1)
             {

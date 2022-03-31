@@ -6,12 +6,12 @@ using The_Project.Database.Tables.Interfaces;
 
 namespace The_Project.Database
 {
-    public class Sql
+    internal class Sql
     {
-        public SqliteConnection Connection { get; }
-        public Tables.Tables Tables { get; }
+        internal SqliteConnection Connection { get; }
+        internal Tables.Tables Tables { get; }
 
-        public Sql()
+        protected Sql()
         {
             Connection = Start();
             Tables = new Tables.Tables(Connection);

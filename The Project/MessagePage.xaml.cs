@@ -11,7 +11,7 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for MessagePage.xaml
     /// </summary>
-    public partial class MessagePage
+    public sealed partial class MessagePage
     {
         private UserId _selfUserId;
         private IPAddress _recipientIpAddress;
@@ -19,7 +19,7 @@ namespace The_Project
         private readonly MainWindow _mainWindow;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        public MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient, MainWindow mainWindow)
+        internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient, MainWindow mainWindow)
         {
             _selfUserId = selfUserId;
             _recipientIpAddress = recipientIpAddress;
@@ -33,7 +33,7 @@ namespace The_Project
             TxtblockUser.Text = recipientIpAddress.ToString();
         }
 
-        public virtual void OnMessageReceived(MessageReceivedEventArgs e)
+        internal void OnMessageReceived(MessageReceivedEventArgs e)
         {
             MessageReceived?.Invoke(this, e);
         }

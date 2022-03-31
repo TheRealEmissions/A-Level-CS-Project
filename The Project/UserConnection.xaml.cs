@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,16 +16,16 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for UserConnection.xaml
     /// </summary>
-    public partial class UserConnectionPage
+    public sealed partial class UserConnectionPage
     {
         private readonly MainWindow _mainWindow;
         private Listener Listener { get; }
-        protected RecipientConnection RecipientConnection { get; private set; }
+        private RecipientConnection RecipientConnection { get; set; }
 
         public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
         public event EventHandler<ConnectionDeclinedEventArgs> ConnectionDeclined;
 
-        public UserConnectionPage(MainWindow mainWindow)
+        internal UserConnectionPage(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             Listener = new Listener(mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), mainWindow,
@@ -66,7 +64,7 @@ namespace The_Project
         }
 
 #nullable enable
-        public async Task HandleConnection()
+        private async Task HandleConnection()
         {
             Task<RecipientConnection?> recipientConnection =
                 Listener.ListenAndConnect(_mainWindow.Handler.UserAccount?.AccountId ?? "NO_ACCOUNT");
@@ -85,7 +83,7 @@ namespace The_Project
                 ConnectionDeclined);
         }
 
-        public void TerminateConnection()
+        private void TerminateConnection()
         {
             RecipientConnection.TcpClient?.Close();
             Content = new UserConnectionPage(_mainWindow);
@@ -93,7 +91,10 @@ namespace The_Project
 
         private void Txtinput_userid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (TxtinputUserid.Text is "Input User ID") TxtinputUserid.Text = string.Empty;
+            if (TxtinputUserid.Text is "Input User ID")
+            {
+                TxtinputUserid.Text = string.Empty;
+            }
         }
 
         private void Txtinput_userid_TextChanged(object sender, TextChangedEventArgs e)

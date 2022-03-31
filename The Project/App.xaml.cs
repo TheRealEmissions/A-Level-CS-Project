@@ -1,5 +1,4 @@
-﻿using System.Windows;
-
+﻿
 #nullable enable
 
 namespace The_Project
@@ -7,7 +6,7 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public sealed partial class App
     {
     }
 }

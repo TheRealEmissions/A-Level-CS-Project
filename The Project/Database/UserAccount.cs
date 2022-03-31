@@ -7,12 +7,12 @@ using The_Project.Exceptions;
 
 namespace The_Project.Database
 {
-    public class UserAccount : IDatabaseUserAccount
+    internal sealed class UserAccount : IDatabaseUserAccount
     {
         private readonly SqliteConnection _sqliteConnection;
         private readonly Tables.Tables _tables;
 
-        public UserAccount(SqliteConnection sqliteConnection, Tables.Tables tables)
+        internal UserAccount(SqliteConnection sqliteConnection, Tables.Tables tables)
         {
             _sqliteConnection = sqliteConnection;
             _tables = tables;

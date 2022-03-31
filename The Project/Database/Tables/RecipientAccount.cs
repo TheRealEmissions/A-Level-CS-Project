@@ -5,11 +5,11 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class RecipientAccount : MustConstructWith<SqliteConnection>, ISqlTable
+    public sealed class RecipientAccount : MustConstructWith<SqliteConnection>, ISqlTable
     {
         private readonly SqliteConnection _sqliteConnection;
 
-        public RecipientAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
+        internal RecipientAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
             _sqliteConnection = sqliteConnection;
             //CreateTable();
@@ -17,11 +17,11 @@ namespace The_Project.Database.Tables
 
         public struct Schema
         {
-            public string Nickname { get; }
-            public string AccountId { get; }
-            public string RefAccountId { get; }
+            private string Nickname { get; }
+            private string AccountId { get; }
+            private string RefAccountId { get; }
 
-            public Schema(string nickname, string accountId, string refAccountId)
+            internal Schema(string nickname, string accountId, string refAccountId)
             {
                 Nickname = nickname;
                 AccountId = accountId;
@@ -48,7 +48,7 @@ namespace The_Project.Database.Tables
             sqliteCommand.ExecuteNonQuery();
         }
 
-        public bool CreateAccountEntry(string nickname, string accountId, string refAccountId)
+        internal bool CreateAccountEntry(string nickname, string accountId, string refAccountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ($NICKNAME, $ACCOUNTID, $REFACCOUNTID)";
@@ -59,7 +59,7 @@ namespace The_Project.Database.Tables
             return rows > 0;
         }
 
-        public bool CreateAccountEntry(string accountId, string refAccountId)
+        internal bool CreateAccountEntry(string accountId, string refAccountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (account_id, ref_account_id) VALUES ($ACCOUNTID, $REFACCOUNTID)";
@@ -69,7 +69,7 @@ namespace The_Project.Database.Tables
             return rows > 0;
         }
 
-        public Schema? GetAccountEntry(string nickname, UserId refUserId)
+        internal Schema? GetAccountEntry(string nickname, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -99,7 +99,7 @@ namespace The_Project.Database.Tables
             return schema;
         }
 
-        public Schema? GetAccountEntry(UserId userId, UserId refUserId)
+        internal Schema? GetAccountEntry(UserId userId, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -129,7 +129,7 @@ namespace The_Project.Database.Tables
             return schema;
         }
 
-        public void UpdateNickname(string nickname, UserId userId, UserId refUserId)
+        internal void UpdateNickname(string nickname, UserId userId, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"

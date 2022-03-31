@@ -3,16 +3,16 @@ using System.Collections;
 
 namespace The_Project.Extensions
 {
-    public static class BitArrayExtension
+    internal static class BitArrayExtension
     {
-        public static BitArray SafeRightShift(this BitArray bitArray, int bits)
+        internal static BitArray SafeRightShift(this BitArray bitArray, int bits)
         {
             BitArray tempArr = new(bitArray);
             tempArr.RightShift(bits);
             return tempArr;
         }
 
-        public static BitArray SafeLeftShift(this BitArray bitArray, int bits)
+        private static BitArray SafeLeftShift(this BitArray bitArray, int bits)
         {
             BitArray tempArr = new(bitArray);
             tempArr.LeftShift(bits);

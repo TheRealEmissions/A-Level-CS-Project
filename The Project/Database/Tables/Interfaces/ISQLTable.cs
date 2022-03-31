@@ -1,6 +1,6 @@
 ﻿namespace The_Project.Database.Tables.Interfaces
 {
-    public interface ISqlTable
+    internal interface ISqlTable
     {
         public void CreateTable();
     }

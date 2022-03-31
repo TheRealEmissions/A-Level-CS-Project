@@ -2,9 +2,10 @@
 
 namespace The_Project.Exceptions
 {
-    public class AccountCreationException : Exception
+    [Serializable]
+    internal sealed class AccountCreationException : Exception
     {
-        public string Type { get; }
+        private string Type { get; }
 
         public AccountCreationException(string type) : base(type)
         {

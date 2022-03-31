@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace The_Project.Events
 {
-    public class ConnectionDeclinedEventArgs : EventArgs
+    public sealed class ConnectionDeclinedEventArgs : EventArgs
     {
     }
 }

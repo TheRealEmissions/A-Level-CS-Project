@@ -3,7 +3,7 @@ using System.Net;
 
 namespace The_Project.Networking
 {
-    public class Utils
+    internal static class Utils
     {
         public static IPAddress GetLocalIpAddress()
         {

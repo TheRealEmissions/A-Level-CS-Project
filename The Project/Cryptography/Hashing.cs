@@ -14,11 +14,11 @@ namespace The_Project.Cryptography
      * IRREVERSIBLE
      */
 
-    public class Hashing
+    internal sealed class Hashing
     {
         private readonly MainWindow _mainWindow;
 
-        public Hashing(MainWindow window)
+        internal Hashing(MainWindow window)
         {
             _mainWindow = window;
         }

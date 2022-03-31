@@ -8,20 +8,20 @@ using The_Project.Exceptions;
 
 namespace The_Project.Accounts
 {
-    public class Account
+    public sealed class Account
     {
-        public string Username { get; set; }
-        public string AccountId { get; private set; } = string.Empty;
-        public int MinPort { get; private set; }
-        public int MaxPort { get; private set; }
+        internal string Username { get; }
+        internal string AccountId { get; private set; } = string.Empty;
+        private int MinPort { get; set; }
+        private int MaxPort { get; set; }
 
-        public PublicKey PublicKey { get; private set; }
-        internal PrivateKey PrivateKey { get; private set; }
+        internal PublicKey PublicKey { get; private set; }
+        private PrivateKey PrivateKey { get; set; }
 
         private readonly Tables _tables;
 
         // login into account and retrieve details
-        public Account(string username, string passwordHash, SqliteConnection connection, Tables tables)
+        internal Account(string username, string passwordHash, SqliteConnection connection, Tables tables)
         {
             Username = username;
             _tables = tables;
@@ -30,7 +30,7 @@ namespace The_Project.Accounts
         }
 
         // register new account
-        public Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection, Tables tables)
+        internal Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection, Tables tables)
         {
             Username = username;
             _tables = tables;
@@ -42,12 +42,12 @@ namespace The_Project.Accounts
             Register(username, passwordHash, connection);
         }
 
-        public void SetPublicKey(PublicKey publicKey)
+        internal void SetPublicKey(PublicKey publicKey)
         {
             PublicKey = publicKey;
         }
 
-        public void SetPrivateKey(PrivateKey privateKey)
+        internal void SetPrivateKey(PrivateKey privateKey)
         {
             PrivateKey = privateKey;
         }
@@ -99,7 +99,7 @@ namespace The_Project.Accounts
             return accountId;
         }
 
-        public UserId ToUserId()
+        internal UserId ToUserId()
         {
             UserId userId = new(Networking.Utils.GetLocalIpAddress(), MinPort, MaxPort, AccountId);
             return userId;

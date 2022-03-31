@@ -2,7 +2,7 @@
 
 namespace The_Project.Networking.Packets
 {
-    public class MessagePacket : IPacket
+    public sealed class MessagePacket : IPacket
     {
         // packet type (2)
         public int T { get; set; } = 2;

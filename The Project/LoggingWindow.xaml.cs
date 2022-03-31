@@ -6,16 +6,16 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for LoggingWindow.xaml
     /// </summary>
-    public partial class LoggingWindow
+    public sealed partial class LoggingWindow
     {
         private readonly List<string> _outputLog = new();
 
-        public LoggingWindow()
+        internal LoggingWindow()
         {
             InitializeComponent();
         }
 
-        public void Debug(string text)
+        internal void Debug(string text)
         {
             _outputLog.Add(text);
             if (_outputLog.Count > 100)

@@ -7,16 +7,16 @@ namespace The_Project.Accounts
 {
     public struct UserId
     {
-        public IPAddress Ip { get; }
-        public int MinPort { get; }
-        public int MaxPort { get; }
-        public string AccountId { get; }
+        internal IPAddress Ip { get; }
+        internal int MinPort { get; }
+        internal int MaxPort { get; }
+        internal string AccountId { get; }
 
-        public static Regex Regex { get; } = new(@"\A[A-J]{1,3}a[A-J]{1,3}b[A-J]{1,3}c[A-J]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}$");
+        internal static Regex Regex { get; } = new(@"\A[A-J]{1,3}a[A-J]{1,3}b[A-J]{1,3}c[A-J]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}$");
 
-        public string Id { get; }
+        internal string Id { get; }
 
-        public UserId(IPAddress ip, int minPort, int maxPort, string accountId)
+        internal UserId(IPAddress ip, int minPort, int maxPort, string accountId)
         {
             char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
 
@@ -63,7 +63,7 @@ namespace The_Project.Accounts
             #endregion userId
         }
 
-        public UserId(string userIdStr)
+        internal UserId(string userIdStr)
         {
             Id = userIdStr;
 

@@ -13,15 +13,15 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public sealed partial class MainWindow
     {
-        public LoggingWindow DebugWindow { get; } = new();
+        internal LoggingWindow DebugWindow { get; } = new();
 
-        public MessagingHandler Handler { get; }
-        public SqliteConnection? SqliteConnection { get; }
-        public Database.Tables.Tables Tables { get; }
+        internal MessagingHandler Handler { get; }
+        private SqliteConnection? SqliteConnection { get; }
+        private Database.Tables.Tables Tables { get; }
 
-        public Encryption EncryptionKeys { get; } = new();
+        internal Encryption EncryptionKeys { get; } = new();
 
         public MainWindow()
         {
@@ -50,7 +50,7 @@ namespace The_Project
             TxtinputConfpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
         }
 
-        public void Debug(string text)
+        internal void Debug(string text)
         {
             DebugWindow.Debug(text);
         }
@@ -157,7 +157,7 @@ namespace The_Project
             Content = userConnectionPage;
         }
 
-        public void DisableAllButtons()
+        private void DisableAllButtons()
         {
             BtnLogin.IsEnabled = false;
             BtnRegister.IsEnabled = false;
@@ -179,7 +179,7 @@ namespace The_Project
             TxtinputConfpswd.Password = string.Empty;
         }
 
-        public void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)
+        internal void Btn_DebugWindow_Click(object sender, RoutedEventArgs e)
         {
             if (DebugWindow.IsActive)
             {

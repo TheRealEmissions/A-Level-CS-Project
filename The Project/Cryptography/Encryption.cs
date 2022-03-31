@@ -10,13 +10,13 @@ using The_Project.Extensions;
 
 namespace The_Project.Cryptography
 {
-    public struct PublicKey
+    internal struct PublicKey
     {
         // N is such a number in the public key which is two arbitrarily large random prime numbers multiplied together
-        public BigInteger N { get; }
+        internal BigInteger N { get; }
 
         // E is the exponent of the public key for which the data needing to be encrypted should be raised to
-        public BigInteger E { get; }
+        internal BigInteger E { get; }
 
         /**
          * Creation of public key
@@ -25,20 +25,20 @@ namespace The_Project.Cryptography
          * Parameter e is the exponent which is default 65537 as standard in RSA PKCS
          */
 
-        public PublicKey(BigInteger n, BigInteger? e = null)
+        internal PublicKey(BigInteger n, BigInteger? e = null)
         {
             N = n;
             E = e ?? 65537;
         }
     }
 
-    public struct PrivateKey
+    internal struct PrivateKey
     {
         // Similarly to the public key, N is the same two arbitrarily large random prime numbers multiplied together
-        public BigInteger N { get; }
+        internal BigInteger N { get; }
 
         // D is the "secret exponent" of the exponent of which the encrypted data is raised to to return it to its original state
-        public BigInteger D { get; }
+        internal BigInteger D { get; }
 
         /**
          * Creation of private key
@@ -47,7 +47,7 @@ namespace The_Project.Cryptography
          * Parameter d represents the "secret exponent"
          */
 
-        public PrivateKey(BigInteger n, BigInteger d)
+        internal PrivateKey(BigInteger n, BigInteger d)
         {
             N = n;
             D = d;
@@ -58,9 +58,9 @@ namespace The_Project.Cryptography
      * Class used to add "Encrypt" and "Decrypt" extension methods to string
      */
 
-    public static class EncryptionExtensions
+    internal static class EncryptionExtensions
     {
-        public static string Encrypt(this string s, PublicKey key)
+        internal static string Encrypt(this string s, PublicKey key)
         {
             // Convert string to array of bytes using UTF8
             byte[] stringBytes = Encoding.UTF8.GetBytes(s);
@@ -79,7 +79,7 @@ namespace The_Project.Cryptography
             return string.Join('-', ciphered);
         }
 
-        public static string Decrypt(this string s, PrivateKey key)
+        internal static string Decrypt(this string s, PrivateKey key)
         {
             /**
              * PARALLELISED FOR EFFICIENCY USING PLINQ
@@ -96,7 +96,7 @@ namespace The_Project.Cryptography
         }
     }
 
-    public class Encryption
+    internal sealed class Encryption
     {
         private readonly BigInteger _phi;
 
@@ -104,10 +104,10 @@ namespace The_Project.Cryptography
         // _eInteger is co-prime to _phi
         private readonly BigInteger _eInteger = 65537;//new BigInteger(2).GetCoprime(_phi);
 
-        public PublicKey PublicKey { get; }
-        public PrivateKey PrivateKey { get; }
+        internal PublicKey PublicKey { get; }
+        internal PrivateKey PrivateKey { get; }
 
-        public Encryption()
+        internal Encryption()
         {
             BigInteger xInteger = GeneratePrime();
             BigInteger yInteger = GeneratePrime();

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using The_Project.Events;
 using The_Project.Exceptions;
@@ -12,14 +10,14 @@ namespace The_Project
     /// <summary>
     /// Interaction logic for ConnectionAccept.xaml
     /// </summary>
-    public partial class ConnectionAcceptWindow
+    public sealed partial class ConnectionAcceptWindow
     {
         private readonly UserConnectionPage _userConnectionWindow;
 
         private readonly EventHandler<ConnectionAcceptedEventArgs> _connectionAccepted;
         private readonly EventHandler<ConnectionDeclinedEventArgs> _connectionDeclined;
 
-        public ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler, EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
+        internal ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler, EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
         {
             if (ipAddress is null)
             {

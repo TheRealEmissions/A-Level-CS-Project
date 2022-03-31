@@ -5,7 +5,7 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class Messages : MustConstructWith<SqliteConnection>, ISqlTable
+    internal sealed class Messages : MustConstructWith<SqliteConnection>, ISqlTable
     {
         private readonly SqliteConnection _sqliteConnection;
 

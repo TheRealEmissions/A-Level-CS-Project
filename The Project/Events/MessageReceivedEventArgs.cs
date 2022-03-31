@@ -2,8 +2,8 @@
 
 namespace The_Project.Events
 {
-    public class MessageReceivedEventArgs : EventArgs
+    public sealed class MessageReceivedEventArgs : EventArgs
     {
-        public string Ciphertext { get; init; }
+        internal string Ciphertext { get; init; }
     }
 }

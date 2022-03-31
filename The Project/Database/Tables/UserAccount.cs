@@ -6,11 +6,11 @@ using The_Project.Extensions;
 
 namespace The_Project.Database.Tables
 {
-    public class UserAccount : MustConstructWith<SqliteConnection>, ISqlTable
+    internal sealed class UserAccount : MustConstructWith<SqliteConnection>, ISqlTable
     {
         private readonly SqliteConnection _sqliteConnection;
 
-        public UserAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
+        internal UserAccount(SqliteConnection sqliteConnection) : base(sqliteConnection)
         {
             _sqliteConnection = sqliteConnection;
             //CreateTable();
@@ -18,11 +18,11 @@ namespace The_Project.Database.Tables
 
         public struct Schema
         {
-            public string Username { get; }
-            public string Password { get; }
-            public string AccountId { get; }
+            private string Username { get; }
+            internal string Password { get; }
+            internal string AccountId { get; }
 
-            public Schema(string username, string password, string accountId)
+            internal Schema(string username, string password, string accountId)
             {
                 Username = username;
                 Password = password;
@@ -45,7 +45,7 @@ namespace The_Project.Database.Tables
             sqliteCommand.ExecuteNonQuery();
         }
 
-        public Schema? GetAccountEntry(string username)
+        internal Schema? GetAccountEntry(string username)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -74,7 +74,7 @@ namespace The_Project.Database.Tables
             return schema;
         }
 
-        public bool CreateAccountEntry(string username, string passwordHash, string accountId)
+        internal bool CreateAccountEntry(string username, string passwordHash, string accountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
@@ -85,7 +85,7 @@ namespace The_Project.Database.Tables
             return rows > 0;
         }
 
-        public bool UpdatePasswordInEntry(string accountId, string password)
+        internal bool UpdatePasswordInEntry(string accountId, string password)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"UPDATE useraccounts SET password = $PASSWORD WHERE account_id = $ACCOUNTID";

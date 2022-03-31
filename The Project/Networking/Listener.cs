@@ -9,21 +9,20 @@ using The_Project.Accounts;
 using The_Project.Cryptography;
 using The_Project.Events;
 using The_Project.Networking.Packets;
-using The_Project.Networking.Packets.Interfaces;
 
 #nullable enable
 
 namespace The_Project.Networking
 {
-    public class Listener
+    internal sealed class Listener
     {
-        public TcpListener Server { get; }
-        public int Port { get; }
+        private TcpListener Server { get; }
+        internal int Port { get; }
         private readonly LoggingWindow? _loggingWindow;
         private readonly MainWindow _mainWindow;
         private readonly UserId _userId;
 
-        public Listener(UserId userId, MainWindow mainWindow, LoggingWindow? loggingWindow = null)
+        internal Listener(UserId userId, MainWindow mainWindow, LoggingWindow? loggingWindow = null)
         {
             _loggingWindow = loggingWindow;
             _mainWindow = mainWindow;

@@ -2,7 +2,8 @@
 
 namespace The_Project.Exceptions
 {
-    internal class PasswordHashMismatchException : Exception
+    [Serializable]
+    internal sealed class PasswordHashMismatchException : Exception
     {
         public PasswordHashMismatchException() : base("ACCOUNT CREATION")
         {

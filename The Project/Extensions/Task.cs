@@ -8,9 +8,9 @@ using The_Project.Exceptions;
 
 namespace The_Project.Extensions
 {
-    public static class TaskExtension
+    internal static class TaskExtension
     {
-        public static async Task<T> FirstSuccessAsync<T>(this IList<Task<T?>> tasks)
+        internal static async Task<T> FirstSuccessAsync<T>(this IList<Task<T?>> tasks)
         {
             Debug.WriteLine($"task list count -> {tasks.Count}");
             List<Task<T?>> taskList = new(tasks);

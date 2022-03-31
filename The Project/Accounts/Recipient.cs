@@ -9,12 +9,12 @@ using The_Project.Networking.Packets;
 #nullable enable
 namespace The_Project.Accounts
 {
-    public class Recipient
+    internal sealed class Recipient
     {
-        public RecipientConnection Connection { get; }
-        public PublicKey PublicKey { get; set; }
-        public bool PublicKeyStored { get; set; }
-        public string? Nickname { get; set; }
+        internal RecipientConnection Connection { get; }
+        internal PublicKey PublicKey { get; set; }
+        internal bool PublicKeyStored { get; set; }
+        internal string? Nickname { get; set; }
 
         public Recipient(RecipientConnection connection, PublicKey publicKey)
         {
@@ -22,7 +22,7 @@ namespace The_Project.Accounts
             PublicKey = publicKey;
         }
 
-        public Recipient(RecipientConnection connection)
+        internal Recipient(RecipientConnection connection)
         {
             Connection = connection;
         }
@@ -31,14 +31,14 @@ namespace The_Project.Accounts
          * Send a message to the recipient
          */
 
-        public void Send(string text)
+        internal void Send(string text)
         {
             string cipherText = text.Encrypt(PublicKey);
             Debug.WriteLine("Sending message");
-            Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet {Data = new MessagePacket { M = cipherText }, T = (int)PacketIdentifier.Packet.Message}));
+            Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet { Data = new MessagePacket { M = cipherText }, T = (int)PacketIdentifier.Packet.Message }));
         }
 
-        public async Task SendPublicKey(PublicKey publicKey)
+        internal async Task SendPublicKey(PublicKey publicKey)
         {
             if (Connection.TcpClient is null)
             {
@@ -50,7 +50,9 @@ namespace The_Project.Accounts
                 .WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new Packet
                 {
                     Data = new PublicKeyPacket
-                { E = publicKey.E, N = publicKey.N }, T = (int)PacketIdentifier.Packet.PublicKey}));
+                    { E = publicKey.E, N = publicKey.N },
+                    T = (int)PacketIdentifier.Packet.PublicKey
+                }));
         }
     }
 }
