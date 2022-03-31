@@ -52,14 +52,17 @@ namespace The_Project
 
         private void OnConnectionAccepted(object sender, ConnectionAcceptedEventArgs e)
         {
+            Debug.WriteLine("Sending connection accepted packet!");
             RecipientConnection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet
             {
                 Data = new ConnectionVerifiedPacket { A = true },
                 T = (int)PacketIdentifier.Packet.ConnectionVerified
             }));
+            Debug.WriteLine("Sent connection accepted packet");
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                 _mainWindow.Handler.Recipient, _mainWindow);
+            Debug.WriteLine("Launching message page");
             _mainWindow.Content = messagePage;
             if (_mainWindow.Handler.UserAccount is not null && _mainWindow.Handler.Recipient is not null)
             {

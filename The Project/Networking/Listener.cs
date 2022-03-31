@@ -93,12 +93,12 @@ namespace The_Project.Networking
                                 /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
                                     .GetString());*/
                             Debug.WriteLine("Connection Verified");
-                            if (recipient.Connection.ConnectionVerified)
+                            if (recipient.Connection.ConnectionVerified && !recipient.Connection.ConnectionAccepted)
                             {
                                 break;
                             }
 
-                            if (recipient.Connection.ConnectionAccepted)
+                            if (recipient.Connection.ConnectionAccepted && recipient.Connection.ConnectionVerified)
                             {
                                 break;
                             }
