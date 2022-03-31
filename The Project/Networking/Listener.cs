@@ -49,6 +49,7 @@ namespace The_Project.Networking
                 while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length)) != 0)
                 {
                     Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray());
+                    Debug.WriteLine(packetBuffer?.Data);
                     if (packetBuffer is null)
                     {
                         continue;
@@ -60,8 +61,9 @@ namespace The_Project.Networking
                             {
                                 return;
                             }
-                            PublicKeyPacket? publicKeyPacket =
-                                JsonSerializer.Deserialize<PublicKeyPacket>(((JsonElement)packetBuffer.Data).GetString());
+
+                            PublicKeyPacket? publicKeyPacket = packetBuffer.Data as PublicKeyPacket;
+                                /*JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data);*/
                             Debug.WriteLine("\\/ Public Key \\/");
                             Debug.WriteLine(publicKeyPacket);
                             if (publicKeyPacket is null)
@@ -76,9 +78,9 @@ namespace The_Project.Networking
                             break;
                         case PacketIdentifier.Packet.Message:
                             Debug.WriteLine("Received Message");
-                            MessagePacket? messagePacket =
-                                JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
-                                    .GetString());
+                            MessagePacket? messagePacket = packetBuffer.Data as MessagePacket;
+                                /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
+                                    .GetString());*/
                             Debug.WriteLine("\\/ Message Packet \\/");
                             messagePage?.OnMessageReceived(new MessageReceivedEventArgs { Ciphertext = messagePacket?.M });
                             break;
@@ -87,8 +89,9 @@ namespace The_Project.Networking
                             break;
                         case PacketIdentifier.Packet.ConnectionVerified:
                             ConnectionVerifiedPacket? connectionVerifiedPacket =
-                                JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
-                                    .GetString());
+                                packetBuffer.Data as ConnectionVerifiedPacket;
+                                /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
+                                    .GetString());*/
                             Debug.WriteLine("Connection Verified");
                             if (recipient.Connection.ConnectionVerified)
                             {
