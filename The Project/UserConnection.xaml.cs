@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -53,14 +54,18 @@ namespace The_Project
         {
             RecipientConnection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet
             {
-                Data = new ConnectionVerifiedPacket {A = true}, T = (int) PacketIdentifier.Packet.ConnectionVerified
+                Data = new ConnectionVerifiedPacket { A = true },
+                T = (int)PacketIdentifier.Packet.ConnectionVerified
             }));
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                 _mainWindow.Handler.Recipient, _mainWindow);
             _mainWindow.Content = messagePage;
             if (_mainWindow.Handler.UserAccount is not null && _mainWindow.Handler.Recipient is not null)
+            {
+                Debug.WriteLine("polling starting");
                 _ = Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient, messagePage);
+            }
         }
 
 #nullable enable
@@ -69,6 +74,7 @@ namespace The_Project
             Task<RecipientConnection?> recipientConnection =
                 Listener.ListenAndConnect(_mainWindow.Handler.UserAccount?.AccountId ?? "NO_ACCOUNT");
             RecipientConnection = await recipientConnection;
+            Debug.WriteLine(RecipientConnection);
 
             _mainWindow.Handler.Recipient = new Recipient(RecipientConnection);
 
@@ -81,6 +87,7 @@ namespace The_Project
                 Utils.GetLocalIpAddress(),
                 ConnectionAccepted,
                 ConnectionDeclined);
+            connectionAcceptWindow.Show();
         }
 
         private void TerminateConnection()
@@ -124,7 +131,19 @@ namespace The_Project
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                         _mainWindow.Handler.Recipient, _mainWindow);
-                    await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient, messagePage);
+                    try
+                    {
+                        await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                            messagePage);
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.WriteLine(exception);
+                        Debug.WriteLine(exception.Message);
+                        Debug.WriteLine(exception.Data);
+                        Debug.WriteLine(exception.StackTrace);
+                    }
+
                     /*                    if (!Connected)
                                         {
                                             throw new ConnectionRefusedException("Could not connect!");

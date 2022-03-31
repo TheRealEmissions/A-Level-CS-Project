@@ -19,15 +19,15 @@ namespace The_Project
 
         internal ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler, EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
         {
-            if (ipAddress is null)
+            /*if (ipAddress is null)
             {
                 throw new CreateConnectionException("ip address not found for recipient");
-            }
+            }*/
 
             InitializeComponent();
 
             _userConnectionWindow = userConnectionWindow;
-            TxtblockIpAddress.Text = ipAddress.ToString();
+            TxtblockIpAddress.Text = ipAddress?.ToString();
             _connectionAccepted = connectionAcceptedEventHandler;
             _connectionDeclined = connectionDeclinedEventHandler;
 
