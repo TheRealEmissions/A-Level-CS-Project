@@ -48,7 +48,7 @@ namespace The_Project.Networking
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
                 while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length)) != 0)
                 {
-                    Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray());
+                    Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 1024});
                     Debug.WriteLine(packetBuffer?.Data);
                     if (packetBuffer is null)
                     {

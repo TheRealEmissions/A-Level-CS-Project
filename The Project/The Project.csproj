@@ -5,7 +5,8 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>The_Project</RootNamespace>
     <UseWPF>true</UseWPF>
-    <StartupObject>The_Project.App</StartupObject>
+    <StartupObject></StartupObject>
+    <UseWindowsForms>False</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
