@@ -52,7 +52,6 @@ namespace The_Project.Networking
                     Debug.WriteLine("Bytes:");
                     Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
                     Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 1024});
-                    Debug.WriteLine(packetBuffer?.Data);
                     if (packetBuffer is null)
                     {
                         continue;
@@ -98,7 +97,11 @@ namespace The_Project.Networking
                             Debug.WriteLine("Connection Verified");
                             if (recipient.Connection.ConnectionVerified && !recipient.Connection.ConnectionAccepted)
                             {
-                                Debug.WriteLine("Connection is already verified (accepted is false)");
+                                if (connectionVerifiedPacket?.A ?? false)
+                                {
+                                    recipient.Connection.ConnectionAccepted = true;
+                                }
+                                Debug.WriteLine("Connection is already verified (accepted is false -> accepted made true)");
                                 break;
                             }
 
