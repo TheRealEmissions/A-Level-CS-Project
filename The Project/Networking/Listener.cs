@@ -46,7 +46,7 @@ namespace The_Project.Networking
 
             while (recipient.Connection.TcpClient?.Connected ?? false)
             {
-                byte[] bytesBuffer = new byte[1024];
+                byte[] bytesBuffer = new byte[16384];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
                 while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length) != 0)
                 {
