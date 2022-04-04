@@ -47,10 +47,10 @@ namespace The_Project.Networking
             {
                 byte[] bytesBuffer = new byte[1024];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
-                Debug.WriteLine("Bytes:");
-                Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-                while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length)) != 0)
+                while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length) != 0)
                 {
+                    Debug.WriteLine("Bytes:");
+                    Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
                     Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 1024});
                     Debug.WriteLine(packetBuffer?.Data);
                     if (packetBuffer is null)
