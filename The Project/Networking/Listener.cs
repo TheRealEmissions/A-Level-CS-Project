@@ -91,12 +91,14 @@ namespace The_Project.Networking
                             break;
                         case PacketIdentifier.Packet.ConnectionVerified:
                             ConnectionVerifiedPacket? connectionVerifiedPacket =
-                                packetBuffer.Data as ConnectionVerifiedPacket;
+                                JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
+                                /*packetBuffer.Data as ConnectionVerifiedPacket*/;
                                 /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
                                     .GetString());*/
                             Debug.WriteLine("Connection Verified");
                             if (recipient.Connection.ConnectionVerified && !recipient.Connection.ConnectionAccepted)
                             {
+                                Debug.WriteLine("connection verified but not accepted");
                                 if (connectionVerifiedPacket?.A ?? false)
                                 {
                                     Debug.WriteLine("Accepted connection");
