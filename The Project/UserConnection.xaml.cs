@@ -127,6 +127,7 @@ namespace The_Project
                 try
                 {
                     bool connected = await RecipientConnection.ConnectTo(new UserId(TxtinputUserid.Text));
+                    Debug.WriteLine($"FINAL -> Connected to client? {connected}");
                     if (!connected) return;
 
                     _mainWindow.Handler.Recipient = new Recipient(RecipientConnection);
@@ -134,6 +135,7 @@ namespace The_Project
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                         _mainWindow.Handler.Recipient, _mainWindow);
+                    _mainWindow.Content = messagePage;
                     try
                     {
                         await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,

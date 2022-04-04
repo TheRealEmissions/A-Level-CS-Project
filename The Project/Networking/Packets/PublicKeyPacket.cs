@@ -8,7 +8,7 @@ namespace The_Project.Networking.Packets
     public sealed class PublicKeyPacket : IPacket
     {
         public int T { get; set; } = 1;
-        public BigInteger N { get; set; }
-        public BigInteger E { get; set; }
+        public string N { get; set; }
+        public string E { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace The_Project.Accounts
                 .WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new Packet
                 {
                     Data = new PublicKeyPacket
-                    { E = publicKey.E, N = publicKey.N },
+                    { E = publicKey.E.ToString(), N = publicKey.N.ToString() },
                     T = (int)PacketIdentifier.Packet.PublicKey
                 }));
         }

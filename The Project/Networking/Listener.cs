@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Numerics;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -75,8 +76,8 @@ namespace The_Project.Networking
                             Debug.WriteLine("Received Public Key");
 
                             recipient.PublicKeyStored = true;
-                            recipient.PublicKey = new PublicKey(publicKeyPacket.N, publicKeyPacket.E);
-                            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet {Data = new PublicKeyPacket { E = userAccount.PublicKey.E, N = userAccount.PublicKey.N }, T = (int)PacketIdentifier.Packet.PublicKey}));
+                            recipient.PublicKey = new PublicKey(BigInteger.Parse(publicKeyPacket.N), BigInteger.Parse(publicKeyPacket.E));
+                            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet {Data = new PublicKeyPacket { E = userAccount.PublicKey.E.ToString(), N = userAccount.PublicKey.N.ToString() }, T = (int)PacketIdentifier.Packet.PublicKey}));
                             break;
                         case PacketIdentifier.Packet.Message:
                             Debug.WriteLine("Received Message");
