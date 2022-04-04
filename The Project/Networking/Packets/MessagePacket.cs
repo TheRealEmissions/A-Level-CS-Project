@@ -1,7 +1,9 @@
-﻿using The_Project.Networking.Packets.Interfaces;
+﻿using System;
+using The_Project.Networking.Packets.Interfaces;
 
 namespace The_Project.Networking.Packets
 {
+    [Serializable]
     public sealed class MessagePacket : IPacket
     {
         // packet type (2)

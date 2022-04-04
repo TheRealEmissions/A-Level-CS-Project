@@ -1,8 +1,10 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using The_Project.Networking.Packets.Interfaces;
 
 namespace The_Project.Networking.Packets
 {
+    [Serializable]
     public sealed class PublicKeyPacket : IPacket
     {
         public int T { get; set; } = 1;

@@ -47,6 +47,7 @@ namespace The_Project.Networking
             {
                 byte[] bytesBuffer = new byte[1024];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
+                Debug.WriteLine("Bytes:");
                 Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
                 while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length)) != 0)
                 {
@@ -159,6 +160,8 @@ namespace The_Project.Networking
                     NetworkStream networkStream = tcpClient.GetStream();
                     while (networkStream.CanRead && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
                     {
+                        Debug.WriteLine("Bytes (second):");
+                        Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
                         accountIdBuffer = JsonSerializer.Deserialize<AccountIdVerificationPacket>(bytesBuffer.ToList().Where(static x => x != 0).ToArray());
                         // verify account id
                         if (accountIdBuffer?.A == accountId)
