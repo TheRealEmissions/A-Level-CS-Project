@@ -64,7 +64,7 @@ namespace The_Project.Networking
                                 return;
                             }
 
-                            PublicKeyPacket? publicKeyPacket = packetBuffer.Data as PublicKeyPacket;
+                            PublicKeyPacket? publicKeyPacket = JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data.ToString());
                                 /*JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data);*/
                             Debug.WriteLine("\\/ Public Key \\/");
                             Debug.WriteLine(publicKeyPacket);
@@ -80,7 +80,7 @@ namespace The_Project.Networking
                             break;
                         case PacketIdentifier.Packet.Message:
                             Debug.WriteLine("Received Message");
-                            MessagePacket? messagePacket = packetBuffer.Data as MessagePacket;
+                            MessagePacket? messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString());
                                 /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
                                     .GetString());*/
                             Debug.WriteLine("\\/ Message Packet \\/");
