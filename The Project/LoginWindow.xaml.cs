@@ -121,9 +121,13 @@ namespace The_Project
             try
             {
                 Account userAccount = new(TxtinputUsername.Text, passwordHash, passwordHash, SqliteConnection, Tables);
+                
 
                 // register account to handler
                 Handler.UserAccount = userAccount;
+
+                Handler.UserAccount.SetPublicKey(EncryptionKeys.PublicKey);
+                Handler.UserAccount.SetPrivateKey(EncryptionKeys.PrivateKey);
             }
             catch (Exception exception)
             {
@@ -145,6 +149,8 @@ namespace The_Project
             {
                 Account account = new(TxtinputUsername.Text, passwordHash, SqliteConnection, Tables);
                 Handler.UserAccount = account;
+                Handler.UserAccount.SetPublicKey(EncryptionKeys.PublicKey);
+                Handler.UserAccount.SetPrivateKey(EncryptionKeys.PrivateKey);
             }
             catch (Exception exception)
             {
