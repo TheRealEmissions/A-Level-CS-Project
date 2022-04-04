@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -46,6 +47,7 @@ namespace The_Project.Networking
             {
                 byte[] bytesBuffer = new byte[1024];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
+                Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
                 while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length)) != 0)
                 {
                     Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 1024});
