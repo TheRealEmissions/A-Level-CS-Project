@@ -99,9 +99,13 @@ namespace The_Project.Networking
                             {
                                 if (connectionVerifiedPacket?.A ?? false)
                                 {
+                                    Debug.WriteLine("Accepted connection");
                                     recipient.Connection.ConnectionAccepted = true;
+
+                                    Debug.WriteLine("Sending public key");
+                                    await recipient.SendPublicKey(userAccount.PublicKey);
                                 }
-                                Debug.WriteLine("Connection is already verified (accepted is false -> accepted made true)");
+                                Debug.WriteLine("Connection is already verified");
                                 break;
                             }
 
