@@ -128,6 +128,8 @@ namespace The_Project.Networking
                             // handle exception based on exception type
                             break;
                     }
+
+                    bytesBuffer = new byte[1024];
                 }
             }
         }
