@@ -16,20 +16,21 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-        private static void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount,
+        private static void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient, Account userAccount,
             MessagePage messagePage)
         {
-            if (bytesBuffer.Length <= 0)
+            byte[] filteredBytes = bytesBuffer.ToList().Where(static x => x != 0).ToArray();
+            if (filteredBytes.Length <= 0)
             {
                 return;
             }
             Debug.WriteLine("Bytes Length:");
-            Debug.WriteLine(bytesBuffer.Length);
+            Debug.WriteLine(filteredBytes.Length);
             Debug.WriteLine("Bytes:");
-            Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(),
+            Debug.WriteLine(Encoding.UTF8.GetString(filteredBytes));
+            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(filteredBytes,
                 new JsonSerializerOptions
-                    {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length});
+                    {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = filteredBytes.Length});
 
             if (packetBuffer?.Data is null)
             {
