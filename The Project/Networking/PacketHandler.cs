@@ -10,22 +10,26 @@ using The_Project.Accounts;
 using The_Project.Networking.Packets;
 using The_Project.Cryptography;
 using The_Project.Events;
+using The_Project.Networking.Extensions;
 
 namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-
-        private static void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount, MessagePage messagePage)
+        private static void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount,
+            MessagePage messagePage)
         {
             Debug.WriteLine("Bytes:");
             Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer, new JsonSerializerOptions() { AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length });
+            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer,
+                new JsonSerializerOptions
+                    {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length});
             if (packetBuffer is null)
             {
                 return;
             }
-            switch ((PacketIdentifier.Packet)packetBuffer.T)
+
+            switch ((PacketIdentifier.Packet) packetBuffer.T)
             {
                 case PacketIdentifier.Packet.PublicKey:
                     HandlePublicKeyPacket(packetBuffer, recipient, userAccount);
@@ -44,6 +48,7 @@ namespace The_Project.Networking
                     break;
             }
         }
+
         private static void HandlePublicKeyPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
         {
             if (recipient.PublicKeyStored)
@@ -59,27 +64,35 @@ namespace The_Project.Networking
             {
                 return;
             }
+
             Debug.WriteLine("Received Public Key");
 
             recipient.PublicKeyStored = true;
-            recipient.PublicKey = new PublicKey(BigInteger.Parse(publicKeyPacket.N), BigInteger.Parse(publicKeyPacket.E));
-            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet { Data = new PublicKeyPacket { E = userAccount.PublicKey.E.ToString(), N = userAccount.PublicKey.N.ToString() }, T = (int)PacketIdentifier.Packet.PublicKey }));
+            recipient.PublicKey =
+                new PublicKey(BigInteger.Parse(publicKeyPacket.N), BigInteger.Parse(publicKeyPacket.E));
+            recipient.Connection.TcpClient?.GetStream().WriteData(new Packet
+            {
+                Data = new PublicKeyPacket
+                    {E = userAccount.PublicKey.E.ToString(), N = userAccount.PublicKey.N.ToString()},
+                T = (int) PacketIdentifier.Packet.PublicKey
+            });
         }
 
         private static void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage)
         {
             Debug.WriteLine("Received Message");
-            MessagePacket? messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString());
+            MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString());
             /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
                 .GetString());*/
             Debug.WriteLine("\\/ Message Packet \\/");
-            messagePage?.OnMessageReceived(new MessageReceivedEventArgs { Ciphertext = messagePacket?.M });
+            messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M});
         }
 
-        private static async void HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
+        private static async void HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
+            Account userAccount)
         {
             ConnectionVerifiedPacket connectionVerifiedPacket =
-            JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
+                JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
             /*packetBuffer.Data as ConnectionVerifiedPacket*/
             ;
             /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
@@ -96,6 +109,7 @@ namespace The_Project.Networking
                     Debug.WriteLine("Sending public key");
                     await recipient.SendPublicKey(userAccount.PublicKey);
                 }
+
                 Debug.WriteLine("Connection is already verified");
                 return;
             }
@@ -105,6 +119,7 @@ namespace The_Project.Networking
                 Debug.WriteLine("Connection is accepted & verified");
                 return;
             }
+
             Debug.WriteLine("verified connection");
             recipient.Connection.ConnectionVerified = true;
             if (connectionVerifiedPacket?.A ?? false)
@@ -115,11 +130,16 @@ namespace The_Project.Networking
 
             bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
             Debug.WriteLine("Returning connection verified packet");
-            recipient.Connection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet { Data = new ConnectionVerifiedPacket { A = connectionAccepted }, T = (int)PacketIdentifier.Packet.ConnectionVerified }));
+            recipient.Connection.TcpClient?.GetStream().WriteDataAsync(new Packet
+            {
+                Data = new ConnectionVerifiedPacket {A = connectionAccepted},
+                T = (int) PacketIdentifier.Packet.ConnectionVerified
+            });
             if (!connectionVerifiedPacket?.A ?? true)
             {
                 return;
             }
+
             Debug.WriteLine("Sending public key");
             await recipient.SendPublicKey(userAccount.PublicKey);
         }

@@ -20,7 +20,7 @@ namespace The_Project.Database
 
         public void CreateAccount(string username, UserId userId)
         {
-            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount table = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
             bool createdEntry = table.CreateAccountEntry(username, userId.AccountId, _userAccountInstance.AccountId);
             if (!createdEntry)
             {
@@ -30,7 +30,7 @@ namespace The_Project.Database
 
         public void CreateAccount(UserId userId)
         {
-            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount table = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
             bool createdEntry = table.CreateAccountEntry(userId.AccountId, _userAccountInstance.AccountId);
             if (!createdEntry)
             {
@@ -40,21 +40,23 @@ namespace The_Project.Database
 
         public Tables.RecipientAccount.Schema? GetAccount(string nickname)
         {
-            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
-            Tables.RecipientAccount.Schema? accountEntry = recipientAccount.GetAccountEntry(nickname, _userAccountInstance.ToUserId());
+            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount.Schema? accountEntry =
+                recipientAccount.GetAccountEntry(nickname, _userAccountInstance.ToUserId());
             return accountEntry;
         }
 
         public Tables.RecipientAccount.Schema? GetAccount(UserId userId)
         {
-            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
-            Tables.RecipientAccount.Schema? accountEntry = recipientAccount.GetAccountEntry(userId, _userAccountInstance.ToUserId());
+            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount.Schema? accountEntry =
+                recipientAccount.GetAccountEntry(userId, _userAccountInstance.ToUserId());
             return accountEntry;
         }
 
         public void UpdateNickname(string nickname, UserId userId)
         {
-            Tables.RecipientAccount table = (Tables.RecipientAccount)_tables.GetTable("RecipientAccount");
+            Tables.RecipientAccount table = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
             table.UpdateNickname(nickname, userId, _userAccountInstance.ToUserId());
         }
     }

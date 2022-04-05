@@ -49,8 +49,10 @@ namespace The_Project.Extensions
                             }
                         }
                     }
+
                     _ = subTasks.Remove(currentCompleted);
                 }
+
                 if (result is not null)
                 {
                     break;

@@ -45,9 +45,12 @@ namespace The_Project
             TxtinputConfpswd.PasswordChanged += Txtinput_confpswd_TextChanged;
 
             // add handler
-            TxtinputUsername.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
-            TxtinputPswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
-            TxtinputConfpswd.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
+            TxtinputUsername.AddHandler(MouseLeftButtonDownEvent,
+                new MouseButtonEventHandler(Txtinput_username_MouseLeftButtonDown), true);
+            TxtinputPswd.AddHandler(MouseLeftButtonDownEvent,
+                new MouseButtonEventHandler(Txtinput_pswd_MouseLeftButtonDown), true);
+            TxtinputConfpswd.AddHandler(MouseLeftButtonDownEvent,
+                new MouseButtonEventHandler(Txtinput_confpswd_MouseLeftButtonDown), true);
         }
 
         internal void Debug(string text)
@@ -62,6 +65,7 @@ namespace The_Project
                 DisableAllButtons();
                 return;
             }
+
             if (TxtinputPswd.Password.Length > 0 && TxtinputPswd.Password != "Password")
             {
                 BtnLogin.IsEnabled = true;
@@ -90,6 +94,7 @@ namespace The_Project
                 DisableAllButtons();
                 return;
             }
+
             if (TxtinputConfpswd.Password.ToLower() is "confirm password" or "password")
             {
                 return;
@@ -121,7 +126,7 @@ namespace The_Project
             try
             {
                 Account userAccount = new(TxtinputUsername.Text, passwordHash, passwordHash, SqliteConnection, Tables);
-                
+
 
                 // register account to handler
                 Handler.UserAccount = userAccount;
@@ -157,6 +162,7 @@ namespace The_Project
                 _ = new ErrorWindow().SetError(exception.Message).Initialize();
                 return;
             }
+
             Debug("FOUND ACCOUNT!");
 
             UserConnectionPage userConnectionPage = new(this);

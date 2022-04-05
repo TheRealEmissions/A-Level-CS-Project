@@ -43,7 +43,8 @@ namespace The_Project.Database.Tables
                             ON UPDATE CASCADE
                 )
             ";
-            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".recipientaccounts");
+            sqliteCommand.CommandText =
+                sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".recipientaccounts");
             //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".recipientaccounts");
             sqliteCommand.ExecuteNonQuery();
         }
@@ -51,7 +52,8 @@ namespace The_Project.Database.Tables
         internal bool CreateAccountEntry(string nickname, string accountId, string refAccountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
-            sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ($NICKNAME, $ACCOUNTID, $REFACCOUNTID)";
+            sqliteCommand.CommandText =
+                @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ($NICKNAME, $ACCOUNTID, $REFACCOUNTID)";
             sqliteCommand.Parameters.AddWithValue("$NICKNAME", nickname);
             sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
             sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refAccountId);
@@ -62,7 +64,8 @@ namespace The_Project.Database.Tables
         internal bool CreateAccountEntry(string accountId, string refAccountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
-            sqliteCommand.CommandText = @"INSERT INTO recipientaccounts (account_id, ref_account_id) VALUES ($ACCOUNTID, $REFACCOUNTID)";
+            sqliteCommand.CommandText =
+                @"INSERT INTO recipientaccounts (account_id, ref_account_id) VALUES ($ACCOUNTID, $REFACCOUNTID)";
             sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
             sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refAccountId);
             int rows = sqliteCommand.ExecuteNonQuery();

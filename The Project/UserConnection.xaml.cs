@@ -10,6 +10,7 @@ using The_Project.Accounts;
 using The_Project.Events;
 using The_Project.Exceptions;
 using The_Project.Networking;
+using The_Project.Networking.Extensions;
 using The_Project.Networking.Packets;
 
 namespace The_Project
@@ -53,22 +54,24 @@ namespace The_Project
         private void OnConnectionAccepted(object sender, ConnectionAcceptedEventArgs e)
         {
             Debug.WriteLine("Sending connection accepted packet!");
-            RecipientConnection.TcpClient?.GetStream().Write(JsonSerializer.SerializeToUtf8Bytes(new Packet
+            RecipientConnection.TcpClient?.GetStream().WriteData(new Packet
             {
-                Data = new ConnectionVerifiedPacket { A = true },
-                T = (int)PacketIdentifier.Packet.ConnectionVerified
-            }));
+                Data = new ConnectionVerifiedPacket {A = true},
+                T = (int) PacketIdentifier.Packet.ConnectionVerified
+            });
             Debug.WriteLine("Sent connection accepted packet");
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                 _mainWindow.Handler.Recipient, _mainWindow);
             Debug.WriteLine("Launching message page");
             _mainWindow.Content = messagePage;
-            if (_mainWindow.Handler.UserAccount is not null && _mainWindow.Handler.Recipient is not null)
+            if (_mainWindow.Handler.UserAccount is null || _mainWindow.Handler.Recipient is null)
             {
-                Debug.WriteLine("polling starting");
-                _ = Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient, messagePage);
+                return;
             }
+
+            Debug.WriteLine("polling starting");
+            Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient, messagePage);
         }
 
 #nullable enable
@@ -138,7 +141,7 @@ namespace The_Project
                     _mainWindow.Content = messagePage;
                     try
                     {
-                        await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                        Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
                             messagePage);
                     }
                     catch (Exception exception)

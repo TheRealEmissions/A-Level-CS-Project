@@ -17,7 +17,9 @@ namespace The_Project
         private readonly EventHandler<ConnectionAcceptedEventArgs> _connectionAccepted;
         private readonly EventHandler<ConnectionDeclinedEventArgs> _connectionDeclined;
 
-        internal ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress, EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler, EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
+        internal ConnectionAcceptWindow(UserConnectionPage userConnectionWindow, IPAddress? ipAddress,
+            EventHandler<ConnectionAcceptedEventArgs> connectionAcceptedEventHandler,
+            EventHandler<ConnectionDeclinedEventArgs> connectionDeclinedEventHandler)
         {
             /*if (ipAddress is null)
             {

@@ -15,6 +15,7 @@ namespace The_Project.Extensions
 
                 x++;
             }
+
             return x;
         }
 

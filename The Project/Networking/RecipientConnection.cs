@@ -15,7 +15,7 @@ using The_Project.Networking.Packets;
 
 namespace The_Project.Networking
 {
-    public sealed class RecipientConnection
+    internal sealed class RecipientConnection
     {
         internal TcpClient? TcpClient { get; set; }
         private LoggingWindow? LoggingWindow { get; }
@@ -94,7 +94,8 @@ namespace The_Project.Networking
                     return tcpClient is null;
                 }*/
 
-        private async Task<TcpClient?> CreateConnection(IPAddress ipAddress, int port, string accountId, Dispatcher dispatcher)
+        private async Task<TcpClient?> CreateConnection(IPAddress ipAddress, int port, string accountId,
+            Dispatcher dispatcher)
         {
             TcpClient tcpClient = new();
 
@@ -128,7 +129,8 @@ namespace The_Project.Networking
                 dispatcher.Invoke(() => LoggingWindow?.Debug("Connected to client!"));
                 Debug.WriteLine("Connected to client!");
                 dispatcher.Invoke(() => LoggingWindow?.Debug("Verifying account ID with connected client"));
-                await tcpClient.GetStream().WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new AccountIdVerificationPacket {A = accountId}));
+                await tcpClient.GetStream()
+                    .WriteAsync(JsonSerializer.SerializeToUtf8Bytes(new AccountIdVerificationPacket {A = accountId}));
                 return tcpClient;
             }
 

@@ -24,7 +24,6 @@ namespace The_Project.Cryptography
          * Parameter n represents N (two random prime numbers multiplied together)
          * Parameter e is the exponent which is default 65537 as standard in RSA PKCS
          */
-
         internal PublicKey(BigInteger n, BigInteger? e = null)
         {
             N = n;
@@ -46,7 +45,6 @@ namespace The_Project.Cryptography
          * Parameter n represents N (two random prime numbers multiplied together)
          * Parameter d represents the "secret exponent"
          */
-
         internal PrivateKey(BigInteger n, BigInteger d)
         {
             N = n;
@@ -57,7 +55,6 @@ namespace The_Project.Cryptography
     /**
      * Class used to add "Encrypt" and "Decrypt" extension methods to string
      */
-
     internal static class EncryptionExtensions
     {
         internal static string Encrypt(this string s, PublicKey key)
@@ -72,7 +69,8 @@ namespace The_Project.Cryptography
              * For each byte in the byte array (StringBytes) converted to an unsigned 32 bit integer, it will be raised to the power E and modulus with N
              * and converted to hexidecimal string
              */
-            IEnumerable<string> ciphered = stringBytes.AsParallel().AsOrdered().Select(x => BigInteger.ModPow((uint)x, key.E, key.N).ToString("X"));
+            IEnumerable<string> ciphered = stringBytes.AsParallel().AsOrdered()
+                .Select(x => BigInteger.ModPow((uint) x, key.E, key.N).ToString("X"));
             //string Cipher = Ciphered.ParallelJoin('-');
 
             // Each hexidecimal will then by joined by "-" and returned from the method as a string
@@ -90,7 +88,9 @@ namespace The_Project.Cryptography
              * Raised to the power D (secret exponent) and modulus with N
              * This number is then converted to a byte (the original byte before encryption)
              */
-            IEnumerable<byte> charBytes = s.Split('-').AsParallel().AsOrdered().Select(x => (byte)BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier), key.D, key.N));
+            IEnumerable<byte> charBytes = s.Split('-').AsParallel().AsOrdered().Select(x =>
+                (byte) BigInteger.ModPow(BigInteger.Parse(x, System.Globalization.NumberStyles.AllowHexSpecifier),
+                    key.D, key.N));
             // Using the same encoding UTF8, the byte array returned is converted to a string
             return Encoding.UTF8.GetString(charBytes.ToArray());
         }
@@ -102,7 +102,7 @@ namespace The_Project.Cryptography
 
         // find _eInteger such that _eInteger > 1, _eInteger < _phi
         // _eInteger is co-prime to _phi
-        private readonly BigInteger _eInteger = 65537;//new BigInteger(2).GetCoprime(_phi);
+        private readonly BigInteger _eInteger = 65537; //new BigInteger(2).GetCoprime(_phi);
 
         internal PublicKey PublicKey { get; }
         internal PrivateKey PrivateKey { get; }
@@ -134,6 +134,7 @@ namespace The_Project.Cryptography
                 d = (1 + (i + 1) * _phi) / _eInteger;
                 i++;
             }
+
             return d;
         }
 

@@ -54,7 +54,8 @@ namespace The_Project.Database.Tables
                 )
             ";
             //Command.CommandType = System.Data.CommandType.Text;
-            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
+            sqliteCommand.CommandText =
+                sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
             //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".messages");
             sqliteCommand.ExecuteNonQuery();
         }

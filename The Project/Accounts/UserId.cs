@@ -12,13 +12,18 @@ namespace The_Project.Accounts
         internal int MaxPort { get; }
         internal string AccountId { get; }
 
-        internal static Regex Regex { get; } = new(@"\A[A-J]{1,3}a[A-J]{1,3}b[A-J]{1,3}c[A-J]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}$");
+        internal static Regex Regex { get; } =
+            new(@"\A[A-J]{1,3}a[A-J]{1,3}b[A-J]{1,3}c[A-J]{1,3}ctpr[A-J]{10}[A-Z|a-z]{2,3}$");
 
         internal string Id { get; }
 
         internal UserId(IPAddress ip, int minPort, int maxPort, string accountId)
         {
-            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                'V', 'W', 'X', 'Y', 'Z'
+            };
 
             Ip = ip;
             MinPort = minPort;
@@ -67,7 +72,11 @@ namespace The_Project.Accounts
         {
             Id = userIdStr;
 
-            char[] alphabet = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+            char[] alphabet =
+            {
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+                'V', 'W', 'X', 'Y', 'Z'
+            };
 
             #region IPAddress
 
@@ -82,7 +91,11 @@ namespace The_Project.Accounts
             octetThree = string.Concat(octetThree.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
             octetFour = string.Concat(octetFour.ToCharArray().Select(x => Array.IndexOf(alphabet, x).ToString()));
 
-            byte[] octetBytes = { (byte)int.Parse(octetOne), (byte)int.Parse(octetTwo), (byte)int.Parse(octetThree), (byte)int.Parse(octetFour) };
+            byte[] octetBytes =
+            {
+                (byte) int.Parse(octetOne), (byte) int.Parse(octetTwo), (byte) int.Parse(octetThree),
+                (byte) int.Parse(octetFour)
+            };
 
             #endregion IPAddress
 

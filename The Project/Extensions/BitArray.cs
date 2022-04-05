@@ -27,6 +27,7 @@ namespace The_Project.Extensions
             {
                 arr[i] = tempArr[arr.Length - 1 - bits + i];
             }
+
             return arr;
         }
 
@@ -38,6 +39,7 @@ namespace The_Project.Extensions
             {
                 arr[arr.Length - 1 - bits + i] = tempArr[i];
             }
+
             return arr;
         }
 
@@ -59,7 +61,7 @@ namespace The_Project.Extensions
         {
             ulong i = bitArray1.ToUInt32();
             ulong j = bitArray2.ToUInt32();
-            uint k = (uint)((i + j) % 4294967296);
+            uint k = (uint) ((i + j) % 4294967296);
             byte[] bytes = BitConverter.GetBytes(k);
             BitArray array = new(bytes);
             return array;

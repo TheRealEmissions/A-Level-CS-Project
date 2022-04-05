@@ -7,7 +7,6 @@ using The_Project.Events;
 
 namespace The_Project
 {
-
     /// <summary>
     /// Interaction logic for MessagePage.xaml
     /// </summary>
@@ -19,7 +18,9 @@ namespace The_Project
         private readonly MainWindow _mainWindow;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
-        internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient, MainWindow mainWindow)
+
+        internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient,
+            MainWindow mainWindow)
         {
             _selfUserId = selfUserId;
             _recipientIpAddress = recipientIpAddress;
@@ -48,7 +49,6 @@ namespace The_Project
             };
             _ = ListboxMessages.Items.Add(listBoxItem);
         }
-
 
 
         private void BtnTerminateConnection_Click(object sender, System.Windows.RoutedEventArgs e)

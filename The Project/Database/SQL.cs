@@ -20,7 +20,8 @@ namespace The_Project.Database
 
         private static SqliteConnection Start()
         {
-            SqliteConnection sqliteConnection = new(new SqliteConnectionStringBuilder { DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate }.ToString());
+            SqliteConnection sqliteConnection = new(new SqliteConnectionStringBuilder
+                {DataSource = "database.db", ForeignKeys = true, Mode = SqliteOpenMode.ReadWriteCreate}.ToString());
             sqliteConnection.Open();
             return sqliteConnection;
         }

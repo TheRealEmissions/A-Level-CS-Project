@@ -25,7 +25,7 @@ namespace The_Project.Database
 
         public void CreateEntry(string username, string passwordHash, UserId userId)
         {
-            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            Tables.UserAccount userAccount = (Tables.UserAccount) _tables.GetTable("UserAccount");
             bool createdEntry = userAccount.CreateAccountEntry(username, passwordHash, userId.AccountId);
             if (!createdEntry)
             {
@@ -35,7 +35,7 @@ namespace The_Project.Database
 
         public Tables.UserAccount.Schema? GetAccount(string username)
         {
-            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            Tables.UserAccount userAccount = (Tables.UserAccount) _tables.GetTable("UserAccount");
             Tables.UserAccount.Schema? accountEntry = userAccount.GetAccountEntry(username);
             return accountEntry;
         }
@@ -48,7 +48,7 @@ namespace The_Project.Database
 
         public void SetPassword(Account account, string passwordHash)
         {
-            Tables.UserAccount userAccount = (Tables.UserAccount)_tables.GetTable("UserAccount");
+            Tables.UserAccount userAccount = (Tables.UserAccount) _tables.GetTable("UserAccount");
             bool updated = userAccount.UpdatePasswordInEntry(account.AccountId, passwordHash);
             if (!updated)
             {

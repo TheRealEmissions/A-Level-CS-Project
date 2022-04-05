@@ -30,7 +30,8 @@ namespace The_Project.Accounts
         }
 
         // register new account
-        internal Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection, Tables tables)
+        internal Account(string username, string passwordHash, string confPasswordHash, SqliteConnection connection,
+            Tables tables)
         {
             Username = username;
             _tables = tables;
@@ -39,6 +40,7 @@ namespace The_Project.Accounts
             {
                 throw new PasswordHashMismatchException();
             }
+
             Register(username, passwordHash, connection);
         }
 
@@ -54,7 +56,7 @@ namespace The_Project.Accounts
 
         private void Login(string username, string passwordHash, SqliteConnection connection)
         {
-            UserAccount userAccountTable = (UserAccount)_tables.GetTable("UserAccount");
+            UserAccount userAccountTable = (UserAccount) _tables.GetTable("UserAccount");
             Database.UserAccount userAccount = new(connection, _tables);
 
             UserAccount.Schema? accountEntry = userAccountTable.GetAccountEntry(username);
@@ -62,6 +64,7 @@ namespace The_Project.Accounts
             {
                 throw new AccountNotFoundException("UserAccount");
             }
+
             AccountId = accountEntry.Value.AccountId;
             MinPort = new Random().Next(20000, 20005);
             MaxPort = new Random().Next(20006, 20010);
@@ -77,7 +80,8 @@ namespace The_Project.Accounts
         {
             Database.UserAccount userAccount = new(connection, _tables);
             Random random = new();
-            UserId userId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500), random.Next(19900, 21000), GenerateAccountId());
+            UserId userId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500),
+                random.Next(19900, 21000), GenerateAccountId());
             MinPort = userId.MinPort;
             MaxPort = userId.MaxPort;
             AccountId = userId.AccountId;
@@ -90,12 +94,18 @@ namespace The_Project.Accounts
             Random random = new();
             string accountId = string.Empty;
 
-            string[] alphabet = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
+            string[] alphabet =
+            {
+                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+                "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+                "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
+            };
 
             for (int i = 0; i < 3; i++)
             {
                 accountId += alphabet[random.Next(1, 52) - 1];
             }
+
             return accountId;
         }
 

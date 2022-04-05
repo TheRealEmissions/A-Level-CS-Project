@@ -40,7 +40,8 @@ namespace The_Project.Database.Tables
                     account_id TEXT PRIMARY KEY
                 )
             ";
-            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".useraccounts");
+            sqliteCommand.CommandText =
+                sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".useraccounts");
             //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".useraccounts");
             sqliteCommand.ExecuteNonQuery();
         }
@@ -77,7 +78,8 @@ namespace The_Project.Database.Tables
         internal bool CreateAccountEntry(string username, string passwordHash, string accountId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
-            sqliteCommand.CommandText = @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
+            sqliteCommand.CommandText =
+                @"INSERT INTO useraccounts (username, password, account_id) VALUES ($USERNAME, $PASSWORD, $ACCOUNTID)";
             _ = sqliteCommand.Parameters.AddWithValue("$USERNAME", username);
             _ = sqliteCommand.Parameters.AddWithValue("$PASSWORD", passwordHash);
             _ = sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);

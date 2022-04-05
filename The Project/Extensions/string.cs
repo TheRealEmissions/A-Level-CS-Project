@@ -29,15 +29,15 @@ namespace The_Project.Extensions
 
             if (array.Count <= 1)
             {
-                return new List<IList<string>> { array };
+                return new List<IList<string>> {array};
             }
 
             List<IList<string>> newArr = new();
             for (int i = 0; i <= array.Count - 1; i += 2)
             {
                 newArr.Add(array.Count - 1 < i + 1
-                    ? new List<string> { array.ElementAt(i) }
-                    : new List<string> { array.ElementAt(i), array.ElementAt(i + 1) });
+                    ? new List<string> {array.ElementAt(i)}
+                    : new List<string> {array.ElementAt(i), array.ElementAt(i + 1)});
             }
 
             return newArr;
@@ -47,7 +47,7 @@ namespace The_Project.Extensions
         {
             List<IList<string>> listedArr = arr.ToList();
             List<List<string>> strings = listedArr.AsParallel().AsOrdered()
-                .Select(x => new List<string> { string.Join(separator, x) }).ToList();
+                .Select(x => new List<string> {string.Join(separator, x)}).ToList();
 
             int stringsCount = strings.Count;
             IList<string> stringElement0 = strings.ElementAt(0);
@@ -64,7 +64,7 @@ namespace The_Project.Extensions
             {
                 newStrings.Add(stringsCount - 1 < i + 1
                     ? stringElement0
-                    : new List<string> { strings.ElementAt(i).ElementAt(0), strings.ElementAt(i + 1).ElementAt(0) });
+                    : new List<string> {strings.ElementAt(i).ElementAt(0), strings.ElementAt(i + 1).ElementAt(0)});
             }
 
             return MergeString(newStrings, separator);

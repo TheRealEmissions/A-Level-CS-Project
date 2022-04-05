@@ -7,7 +7,8 @@ namespace The_Project.Networking
     {
         public static IPAddress GetLocalIpAddress()
         {
-            return Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(static x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+            return Dns.GetHostEntry(Dns.GetHostName()).AddressList.First(static x =>
+                x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
         }
     }
 }

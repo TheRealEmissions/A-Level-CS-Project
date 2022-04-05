@@ -11,7 +11,8 @@ namespace The_Project.Database.Tables
         internal Tables(SqliteConnection connection)
         {
             _allTables.Add(KeyValuePair.Create<string, ISqlTable>("Messages", new Messages(connection)));
-            _allTables.Add(KeyValuePair.Create<string, ISqlTable>("RecipientAccount", new RecipientAccount(connection)));
+            _allTables.Add(
+                KeyValuePair.Create<string, ISqlTable>("RecipientAccount", new RecipientAccount(connection)));
             _allTables.Add(KeyValuePair.Create<string, ISqlTable>("UserAccount", new UserAccount(connection)));
         }
 
