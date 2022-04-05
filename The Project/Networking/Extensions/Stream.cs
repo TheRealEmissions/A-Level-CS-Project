@@ -14,14 +14,14 @@ namespace The_Project.Networking.Extensions
         internal static void WriteData(this NetworkStream networkStream, IPacket packet)
         {
             List<byte> packetBytes = JsonSerializer.SerializeToUtf8Bytes(packet).ToList();
-            packetBytes.Insert(0, Encoding.UTF8.GetBytes("$")[0]);
+            packetBytes.Add(Encoding.UTF8.GetBytes("$")[0]);
             networkStream.Write(packetBytes.ToArray(), 0, packetBytes.Count);
         }
 
         internal static Task WriteDataAsync(this NetworkStream networkStream, IPacket packet)
         {
             List<byte> packetBytes = JsonSerializer.SerializeToUtf8Bytes(packet).ToList();
-            packetBytes.Insert(0, Encoding.UTF8.GetBytes("$")[0]);
+            packetBytes.Add(Encoding.UTF8.GetBytes("$")[0]);
             return networkStream.WriteAsync(packetBytes.ToArray(), 0, packetBytes.Count);
         }
     }
