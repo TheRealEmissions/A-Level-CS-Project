@@ -41,16 +41,25 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static void Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static async Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
 
             while (recipient.Connection.TcpClient?.Connected ?? false)
             {
-                byte[] bytesBuffer = new byte[2048];
+                int lastPosition = 0;
+                byte[] bytesBuffer = new byte[16384];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
-                while ((networkStream?.CanRead ?? false) && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
+                while (networkStream?.DataAvailable ?? false)
                 {
-                    byte[] clonedBytes = bytesBuffer.Clone() as byte[] ?? bytesBuffer;
+                    int bytesRead = await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length);
+                    if (bytesRead == 0)
+                    {
+                        continue;
+                    }
+                    lastPosition += bytesRead + 1;
+                    byte[] clonedBytes = bytesBuffer[lastPosition..bytesRead].Clone() as byte[] ?? bytesBuffer;
+                    bytesBuffer = new byte[16384];
+                    lastPosition = 0;
                     HandlePacket(clonedBytes, recipient, userAccount, messagePage);
                 }
             }
