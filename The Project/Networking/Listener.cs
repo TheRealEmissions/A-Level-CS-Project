@@ -41,41 +41,17 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static async Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static void Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
 
             while (recipient.Connection.TcpClient?.Connected ?? false)
             {
-                byte[] bytesBuffer = new byte[16384];
+                byte[] bytesBuffer = new byte[2048];
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
-                while ((networkStream?.CanRead ?? false) && await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length) != 0)
+                while ((networkStream?.CanRead ?? false) && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
                 {
-                    Debug.WriteLine("Bytes:");
-                    Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-                    Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 16384});
-                    bytesBuffer = new byte[16384];
-                    if (packetBuffer is null)
-                    {
-                        continue;
-                    }
-                    switch ((PacketIdentifier.Packet)packetBuffer.T)
-                    {
-                        case PacketIdentifier.Packet.PublicKey:
-                            HandlePublicKeyPacket(packetBuffer, recipient, userAccount);
-                            break;
-                        case PacketIdentifier.Packet.Message:
-                            HandleMessagePacket(packetBuffer, messagePage);
-                            break;
-                        case PacketIdentifier.Packet.AccountIdVerification:
-                            // no need to do anything here as connection handles this originally
-                            break;
-                        case PacketIdentifier.Packet.ConnectionVerified:
-                            HandleConnectionVerifiedPacket(packetBuffer, recipient, userAccount);
-                            break;
-                        case PacketIdentifier.Packet.Exception:
-                            // handle exception based on exception type
-                            break;
-                    }
+                    byte[] clonedBytes = bytesBuffer.Clone() as byte[] ?? bytesBuffer;
+                    HandlePacket(clonedBytes, recipient, userAccount, messagePage);
                 }
             }
         }

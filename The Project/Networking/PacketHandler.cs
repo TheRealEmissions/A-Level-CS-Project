@@ -15,6 +15,37 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
+
+        private static async void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount, MessagePage messagePage)
+        {
+            await Task.Delay(50);
+            Debug.WriteLine("Bytes:");
+            Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
+            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() { AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 16384 });
+            bytesBuffer = new byte[2048];
+            if (packetBuffer is null)
+            {
+                return;
+            }
+            switch ((PacketIdentifier.Packet)packetBuffer.T)
+            {
+                case PacketIdentifier.Packet.PublicKey:
+                    HandlePublicKeyPacket(packetBuffer, recipient, userAccount);
+                    break;
+                case PacketIdentifier.Packet.Message:
+                    HandleMessagePacket(packetBuffer, messagePage);
+                    break;
+                case PacketIdentifier.Packet.AccountIdVerification:
+                    // no need to do anything here as connection handles this originally
+                    break;
+                case PacketIdentifier.Packet.ConnectionVerified:
+                    HandleConnectionVerifiedPacket(packetBuffer, recipient, userAccount);
+                    break;
+                case PacketIdentifier.Packet.Exception:
+                    // handle exception based on exception type
+                    break;
+            }
+        }
         private static void HandlePublicKeyPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
         {
             if (recipient.PublicKeyStored)
@@ -50,7 +81,7 @@ namespace The_Project.Networking
         private static async void HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
         {
             ConnectionVerifiedPacket connectionVerifiedPacket =
-    JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
+            JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
             /*packetBuffer.Data as ConnectionVerifiedPacket*/
             ;
             /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
