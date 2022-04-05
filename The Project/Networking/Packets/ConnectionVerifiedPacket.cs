@@ -7,6 +7,6 @@ namespace The_Project.Networking.Packets
     public sealed class ConnectionVerifiedPacket : IPacket
     {
         public int T { get; set; } = 4;
-        public bool A { get; init; } = false;
+        public bool A { get; set; } = false;
     }
 }
