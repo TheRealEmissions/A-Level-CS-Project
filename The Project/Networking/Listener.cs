@@ -52,12 +52,15 @@ namespace The_Project.Networking
                 while (networkStream?.DataAvailable ?? false)
                 {
                     int bytesRead = await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length);
+                    Debug.WriteLine(lastPosition);
+                    Debug.WriteLine(bytesRead);
                     if (bytesRead == 0)
                     {
                         continue;
                     }
-                    lastPosition += bytesRead + 1;
-                    byte[] clonedBytes = bytesBuffer[lastPosition..bytesRead].Clone() as byte[] ?? bytesBuffer;
+                    lastPosition += bytesRead;
+                    Debug.WriteLine(lastPosition);
+                    byte[] clonedBytes = bytesBuffer[lastPosition..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
                     bytesBuffer = new byte[16384];
                     lastPosition = 0;
                     HandlePacket(clonedBytes, recipient, userAccount, messagePage);
