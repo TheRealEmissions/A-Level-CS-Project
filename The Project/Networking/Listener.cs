@@ -132,7 +132,7 @@ namespace The_Project.Networking
                                 _loggingWindow?.Debug("Verified account ID! Confirming connection..."));
                             networkStream.WriteData(new Packet
                             {
-                                Data = new ConnectionVerifiedPacket(),
+                                Data = new ConnectionVerifiedPacket {A = false},
                                 T = (int) PacketIdentifier.Packet.ConnectionVerified
                             });
                             recipientConnection = new RecipientConnection(tcpClient, _mainWindow, _loggingWindow);

@@ -24,7 +24,8 @@ namespace The_Project.Networking
             Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer,
                 new JsonSerializerOptions
                     {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length});
-            if (packetBuffer is null)
+
+            if (packetBuffer?.Data is null)
             {
                 return;
             }
