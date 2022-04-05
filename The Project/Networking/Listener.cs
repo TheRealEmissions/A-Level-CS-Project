@@ -52,7 +52,8 @@ namespace The_Project.Networking
                 {
                     Debug.WriteLine("Bytes:");
                     Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-                    Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 1024});
+                    Packet? packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 16384});
+                    bytesBuffer = new byte[16384];
                     if (packetBuffer is null)
                     {
                         continue;
@@ -138,8 +139,6 @@ namespace The_Project.Networking
                             // handle exception based on exception type
                             break;
                     }
-
-                    bytesBuffer = new byte[1024];
                 }
             }
         }
