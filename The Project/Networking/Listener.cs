@@ -51,7 +51,9 @@ namespace The_Project.Networking
                 NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
                 while (networkStream?.DataAvailable ?? false)
                 {
+                    Debug.WriteLine(bytesBuffer.Length);
                     int bytesRead = await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length);
+                    Debug.WriteLine(bytesBuffer.Length);
                     Debug.WriteLine(lastPosition);
                     Debug.WriteLine(bytesRead);
                     if (bytesRead == 0)
@@ -60,10 +62,11 @@ namespace The_Project.Networking
                     }
                     lastPosition += bytesRead;
                     Debug.WriteLine(lastPosition);
-                    byte[] clonedBytes = bytesBuffer[lastPosition..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
+                    byte[] clonedBytes = bytesBuffer[(lastPosition - bytesRead)..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
                     bytesBuffer = new byte[16384];
                     lastPosition = 0;
                     HandlePacket(clonedBytes, recipient, userAccount, messagePage);
+                    Debug.WriteLine("Handled packet!");
                 }
             }
         }
