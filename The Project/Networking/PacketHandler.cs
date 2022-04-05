@@ -19,9 +19,15 @@ namespace The_Project.Networking
         private static void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount,
             MessagePage messagePage)
         {
+            if (bytesBuffer.Length <= 0)
+            {
+                return;
+            }
+            Debug.WriteLine("Bytes Length:");
+            Debug.WriteLine(bytesBuffer.Length);
             Debug.WriteLine("Bytes:");
             Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer,
+            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(),
                 new JsonSerializerOptions
                     {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length});
 

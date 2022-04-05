@@ -14,6 +14,7 @@ namespace The_Project.Networking.Extensions
         internal static void WriteData(this NetworkStream networkStream, IPacket packet)
         {
             List<byte> packetBytes = JsonSerializer.SerializeToUtf8Bytes(packet).ToList();
+            /*packetBytes.InsertRange(0, Encoding.UTF8.GetBytes($"{packetBytes.Count}:"));*/
             packetBytes.Add(Encoding.UTF8.GetBytes("$")[0]);
             networkStream.Write(packetBytes.ToArray(), 0, packetBytes.Count);
         }
@@ -21,6 +22,7 @@ namespace The_Project.Networking.Extensions
         internal static Task WriteDataAsync(this NetworkStream networkStream, IPacket packet)
         {
             List<byte> packetBytes = JsonSerializer.SerializeToUtf8Bytes(packet).ToList();
+            /*packetBytes.InsertRange(0, Encoding.UTF8.GetBytes($"{packetBytes.Count}:"));*/
             packetBytes.Add(Encoding.UTF8.GetBytes("$")[0]);
             return networkStream.WriteAsync(packetBytes.ToArray(), 0, packetBytes.Count);
         }
