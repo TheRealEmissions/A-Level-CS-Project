@@ -116,7 +116,7 @@ namespace The_Project.Networking
 
                     // check account id
                     NetworkStream networkStream = tcpClient.GetStream();
-                    while (networkStream.DataAvailable && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
+                    while (networkStream.CanRead && networkStream.Read(bytesBuffer, 0, bytesBuffer.Length) != 0)
                     {
                         string[] splitByDelimiter = Encoding.UTF8.GetString(bytesBuffer).Split("$");
                         byte[] packetBytes = Encoding.UTF8.GetBytes(splitByDelimiter[0]);
