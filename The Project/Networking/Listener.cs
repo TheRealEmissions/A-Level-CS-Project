@@ -62,7 +62,7 @@ namespace The_Project.Networking
                     }
                     lastPosition += bytesRead;
                     Debug.WriteLine(lastPosition);
-                    byte[] clonedBytes = bytesBuffer[(lastPosition - bytesRead)..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
+                    byte[] clonedBytes = bytesBuffer[(lastPosition - bytesRead)..bytesRead].Clone() as byte[] ?? bytesBuffer;
                     bytesBuffer = new byte[16384];
                     lastPosition = 0;
                     HandlePacket(clonedBytes, recipient, userAccount, messagePage);

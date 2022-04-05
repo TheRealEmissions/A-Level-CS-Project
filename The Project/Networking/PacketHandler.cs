@@ -16,13 +16,11 @@ namespace The_Project.Networking
     internal sealed partial class Listener
     {
 
-        private static async void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount, MessagePage messagePage)
+        private static void HandlePacket(byte[] bytesBuffer, Recipient recipient, Account userAccount, MessagePage messagePage)
         {
-            await Task.Delay(50);
             Debug.WriteLine("Bytes:");
             Debug.WriteLine(Encoding.UTF8.GetString(bytesBuffer));
-            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer.ToList().Where(static x => x != 0).ToArray(), new JsonSerializerOptions() { AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = 16384 });
-            bytesBuffer = new byte[2048];
+            Packet packetBuffer = JsonSerializer.Deserialize<Packet>(bytesBuffer, new JsonSerializerOptions() { AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = bytesBuffer.Length });
             if (packetBuffer is null)
             {
                 return;
