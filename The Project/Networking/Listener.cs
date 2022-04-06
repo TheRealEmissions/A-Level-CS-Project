@@ -43,7 +43,7 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static void Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             return Task.Run<Task>(async () =>
