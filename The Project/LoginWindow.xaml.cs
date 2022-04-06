@@ -205,5 +205,21 @@ namespace The_Project
         {
             DebugWindow.Close();
         }
+
+        private void TxtinputPswd_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Btn_login_Click(sender, e);
+            }
+        }
+
+        private void TxtinputConfpswd_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Btn_register_Click(sender, e);
+            }
+        }
     }
 }
