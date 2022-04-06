@@ -56,7 +56,8 @@ namespace The_Project
         {
             _recipient.Connection.TcpClient?.Close();
             _recipient.Connection.TcpClient = null;
-            Content = new UserConnectionPage(_mainWindow).Content;
+
+            _mainWindow.Content = new UserConnectionPage(_mainWindow);
         }
 
         private void BtnSend_Click(object sender, System.Windows.RoutedEventArgs e)
