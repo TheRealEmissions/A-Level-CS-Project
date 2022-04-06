@@ -148,7 +148,7 @@ namespace The_Project
                     Debug.WriteLine("Set main window content with message page");
                     try
                     {
-                        _ = Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                        Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
                             messagePage);
                     }
                     catch (Exception exception)

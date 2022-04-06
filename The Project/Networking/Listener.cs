@@ -43,50 +43,54 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static async Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
-            while (recipient.Connection.TcpClient?.Connected ?? false)
+            return Task.Run(async () =>
             {
-                byte[] bytesBuffer = new byte[16384];
-                NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
-                while (networkStream?.DataAvailable ?? false)
+                while (recipient.Connection.TcpClient?.Connected ?? false)
                 {
-                    Debug.WriteLine(bytesBuffer.Length);
-                    int bytesRead = await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length));
-                    if (bytesRead == 0)
+                    byte[] bytesBuffer = new byte[16384];
+                    NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
+                    while (networkStream?.DataAvailable ?? false)
                     {
-                        continue;
-                    }
-
-                    string utf8String = Encoding.UTF8.GetString(bytesBuffer);
-                    bytesBuffer = new byte[16384];
-                    Debug.WriteLine(utf8String);
-                    string[] splitByDelimiter = utf8String.Split("$");
-                    List<byte[]> packetsList = splitByDelimiter.Select(static x => Encoding.UTF8.GetBytes(x)).ToList();
-                    foreach (byte[] bytes in packetsList)
-                    {
-                        if (bytes.Length <= 0)
+                        Debug.WriteLine(bytesBuffer.Length);
+                        int bytesRead = await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length));
+                        if (bytesRead == 0)
                         {
                             continue;
                         }
 
-                        Debug.WriteLine(Encoding.UTF8.GetString(bytes));
-                        HandlePacket(bytes, recipient, userAccount, messagePage);
-                        Debug.WriteLine("Handled packet!");
-                    }
+                        string utf8String = Encoding.UTF8.GetString(bytesBuffer);
+                        bytesBuffer = new byte[16384];
+                        Debug.WriteLine(utf8String);
+                        string[] splitByDelimiter = utf8String.Split("$");
+                        List<byte[]> packetsList =
+                            splitByDelimiter.Select(static x => Encoding.UTF8.GetBytes(x)).ToList();
+                        foreach (byte[] bytes in packetsList)
+                        {
+                            if (bytes.Length <= 0)
+                            {
+                                continue;
+                            }
 
-                    /*Debug.WriteLine(bytesBuffer.Length);
-                    Debug.WriteLine(lastPosition);
-                    Debug.WriteLine(bytesRead);
-                    lastPosition += bytesRead;
-                    Debug.WriteLine(lastPosition);
-                    byte[] clonedBytes = bytesBuffer[(lastPosition - bytesRead)..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
-                    bytesBuffer = new byte[16384];
-                    lastPosition = 0;
-                    HandlePacket(clonedBytes, recipient, userAccount, messagePage);
-                    Debug.WriteLine("Handled packet!");*/
+                            Debug.WriteLine(Encoding.UTF8.GetString(bytes));
+                            HandlePacket(bytes, recipient, userAccount, messagePage);
+                            Debug.WriteLine("Handled packet!");
+                        }
+
+                        /*Debug.WriteLine(bytesBuffer.Length);
+                        Debug.WriteLine(lastPosition);
+                        Debug.WriteLine(bytesRead);
+                        lastPosition += bytesRead;
+                        Debug.WriteLine(lastPosition);
+                        byte[] clonedBytes = bytesBuffer[(lastPosition - bytesRead)..(bytesRead - 1)].Clone() as byte[] ?? bytesBuffer;
+                        bytesBuffer = new byte[16384];
+                        lastPosition = 0;
+                        HandlePacket(clonedBytes, recipient, userAccount, messagePage);
+                        Debug.WriteLine("Handled packet!");*/
+                    }
                 }
-            }
+            });
         }
 
         public Task<RecipientConnection?> ListenAndConnect(string accountId)
