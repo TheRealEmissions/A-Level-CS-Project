@@ -96,7 +96,7 @@ namespace The_Project.Networking
             messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M});
         }
 
-        private static async void HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
+        private static async Task HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
             Account userAccount)
         {
             ConnectionVerifiedPacket connectionVerifiedPacket =
@@ -138,7 +138,7 @@ namespace The_Project.Networking
 
             bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
             Debug.WriteLine("Returning connection verified packet");
-            recipient.Connection.TcpClient?.GetStream().WriteDataAsync(new Packet
+            await recipient.Connection.TcpClient?.GetStream().WriteDataAsync(new Packet
             {
                 Data = new ConnectionVerifiedPacket {A = connectionAccepted},
                 T = (int) PacketIdentifier.Packet.ConnectionVerified

@@ -43,7 +43,7 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static async void Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static async Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
             while (recipient.Connection.TcpClient?.Connected ?? false)
             {
@@ -52,7 +52,7 @@ namespace The_Project.Networking
                 while (networkStream?.DataAvailable ?? false)
                 {
                     Debug.WriteLine(bytesBuffer.Length);
-                    int bytesRead = await networkStream.ReadAsync(bytesBuffer, 0, bytesBuffer.Length);
+                    int bytesRead = await networkStream.ReadAsync(bytesBuffer.AsMemory(0, bytesBuffer.Length));
                     if (bytesRead == 0)
                     {
                         continue;

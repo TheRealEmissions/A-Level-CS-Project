@@ -131,17 +131,24 @@ namespace The_Project
                 {
                     bool connected = await RecipientConnection.ConnectTo(new UserId(TxtinputUserid.Text));
                     Debug.WriteLine($"FINAL -> Connected to client? {connected}");
-                    if (!connected) return;
+                    if (!connected)
+                    {
+                        Debug.WriteLine("No connection!");
+                        return;
+                    }
 
                     _mainWindow.Handler.Recipient = new Recipient(RecipientConnection);
+                    Debug.WriteLine("Created new Recipient");
 
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
                         _mainWindow.Handler.Recipient, _mainWindow);
+                    Debug.WriteLine("Created new message page!");
                     _mainWindow.Content = messagePage;
+                    Debug.WriteLine("Set main window content with message page");
                     try
                     {
-                        Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                        _ = Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
                             messagePage);
                     }
                     catch (Exception exception)
