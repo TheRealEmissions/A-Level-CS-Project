@@ -6,6 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using The_Project.Accounts;
 using The_Project.Networking.Packets;
 using The_Project.Cryptography;
@@ -93,7 +94,8 @@ namespace The_Project.Networking
             /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
                 .GetString());*/
             Debug.WriteLine("\\/ Message Packet \\/");
-            messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M});
+            Dispatcher.CurrentDispatcher.Invoke(() =>
+                messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M}));
         }
 
         private static async Task HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
