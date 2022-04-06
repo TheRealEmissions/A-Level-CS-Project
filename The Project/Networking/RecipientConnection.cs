@@ -76,6 +76,7 @@ namespace The_Project.Networking
                         }*/
             Debug.WriteLine(tasks.Count);
             TcpClient = await tasks.FirstSuccessAsync();
+            Debug.WriteLine("TCP CLIENT ->");
             Debug.WriteLine(TcpClient);
 
             return TcpClient is not null;
