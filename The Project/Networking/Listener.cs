@@ -74,7 +74,16 @@ namespace The_Project.Networking
                             }
 
                             Debug.WriteLine(Encoding.UTF8.GetString(bytes));
-                            HandlePacket(bytes, recipient, userAccount, messagePage);
+                            try
+                            {
+                                HandlePacket(bytes, recipient, userAccount, messagePage);
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.WriteLine(e.Message);
+                                Debug.WriteLine(e.StackTrace);
+                            }
+
                             Debug.WriteLine("Handled packet!");
                         }
 
