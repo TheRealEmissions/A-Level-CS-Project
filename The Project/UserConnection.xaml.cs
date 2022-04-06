@@ -175,5 +175,13 @@ namespace The_Project
                 _mainWindow.Debug("Regex failed validation.");
             }
         }
+
+        private void TxtinputUserid_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Btn_connect_Click(sender, e);
+            }
+        }
     }
 }

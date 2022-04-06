@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Windows.Controls;
+using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
 using The_Project.Events;
@@ -72,6 +73,8 @@ namespace The_Project
 
             _recipient.Send(TxtMsgContent.Text);
             UpdateMessagesList(TxtMsgContent.Text, false);
+
+            TxtMsgContent.Text = string.Empty;
         }
 
         private void MessageReceivedFromRecipient(object sender, MessageReceivedEventArgs e)
@@ -79,6 +82,23 @@ namespace The_Project
             // update db
             // update message list
             UpdateMessagesList(e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey), true);
+        }
+
+        private void TxtMsgContent_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                BtnSend_Click(sender, e);
+            }
+        }
+
+        private void TxtMsgContent_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (TxtMsgContent.Text == "Message Content")
+            {
+                return;
+            }
+            TxtMsgContent.Text = string.Empty;
         }
     }
 }

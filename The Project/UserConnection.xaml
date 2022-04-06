@@ -8,7 +8,7 @@
       Title="UserConnection">
 
     <Grid Opacity="1" Background="White">
-        <TextBox Text="Input User ID" TextWrapping="Wrap" Name="TxtinputUserid" Margin="184,265,184,142" TextChanged="Txtinput_userid_TextChanged" />
+        <TextBox Text="Input User ID" TextWrapping="Wrap" Name="TxtinputUserid" Margin="184,265,184,142" TextChanged="Txtinput_userid_TextChanged" KeyDown="TxtinputUserid_OnKeyDown"/>
         <Button Content="Debug Window" Margin="10,10,689,414" Name="BtnDebugWindow" Click="Btn_debugWindow_Click" />
         <Button Content="Connect" Margin="360,329,360,88" Name="BtnConnect" Click="Btn_connect_Click" />
         <TextBlock Text="Your User ID:" TextWrapping="Wrap" TextAlignment="Center" Margin="196,69,196,355" FontSize="20px" />
