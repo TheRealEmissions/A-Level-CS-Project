@@ -43,9 +43,10 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public static void Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
-            return Task.Run(async () =>
+            Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
+            return Task.Run<Task>(async () =>
             {
                 while (recipient.Connection.TcpClient?.Connected ?? false)
                 {
@@ -76,7 +77,7 @@ namespace The_Project.Networking
                             Debug.WriteLine(Encoding.UTF8.GetString(bytes));
                             try
                             {
-                                HandlePacket(bytes, recipient, userAccount, messagePage);
+                                HandlePacket(bytes, recipient, userAccount, messagePage, dispatcher);
                             }
                             catch (Exception e)
                             {

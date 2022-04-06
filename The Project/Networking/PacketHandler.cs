@@ -18,7 +18,7 @@ namespace The_Project.Networking
     internal sealed partial class Listener
     {
         private static void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient, Account userAccount,
-            MessagePage messagePage)
+            MessagePage messagePage, Dispatcher mainThreadDispatcher)
         {
             byte[] filteredBytes = bytesBuffer.ToList().Where(static x => x != 0).ToArray();
             if (filteredBytes.Length <= 0)
@@ -44,7 +44,7 @@ namespace The_Project.Networking
                     HandlePublicKeyPacket(packetBuffer, recipient, userAccount);
                     break;
                 case PacketIdentifier.Packet.Message:
-                    HandleMessagePacket(packetBuffer, messagePage);
+                    HandleMessagePacket(packetBuffer, messagePage, mainThreadDispatcher);
                     break;
                 case PacketIdentifier.Packet.AccountIdVerification:
                     // no need to do anything here as connection handles this originally
@@ -87,14 +87,14 @@ namespace The_Project.Networking
             });
         }
 
-        private static void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage)
+        private static void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage, Dispatcher dispatcher)
         {
             Debug.WriteLine("Received Message");
             MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString());
             /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
                 .GetString());*/
             Debug.WriteLine("\\/ Message Packet \\/");
-            Dispatcher.CurrentDispatcher.Invoke(() =>
+            dispatcher.Invoke(() =>
                 messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M}));
         }
 
