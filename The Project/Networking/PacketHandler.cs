@@ -115,6 +115,7 @@ namespace The_Project.Networking
                 {
                     Debug.WriteLine("Accepted connection");
                     recipient.Connection.ConnectionAccepted = true;
+                    recipient.AccountId = connectionVerifiedPacket.ID;
 
                     Debug.WriteLine("Sending public key");
                     await recipient.SendPublicKey(userAccount.PublicKey);
@@ -136,13 +137,14 @@ namespace The_Project.Networking
             {
                 Debug.WriteLine("Connection accepted");
                 recipient.Connection.ConnectionAccepted = true;
+                recipient.AccountId = connectionVerifiedPacket.ID;
             }
 
             bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
             Debug.WriteLine("Returning connection verified packet");
             await recipient.Connection.TcpClient?.GetStream().WriteDataAsync(new Packet
             {
-                Data = new ConnectionVerifiedPacket {A = connectionAccepted},
+                Data = new ConnectionVerifiedPacket {A = connectionAccepted, ID = userAccount.AccountId},
                 T = (int) PacketIdentifier.Packet.ConnectionVerified
             });
             if (!connectionVerifiedPacket?.A ?? true)

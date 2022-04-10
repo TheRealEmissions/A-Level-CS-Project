@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using The_Project.Accounts;
+using The_Project.Database.Tables;
 using The_Project.Events;
 using The_Project.Exceptions;
 using The_Project.Networking;
@@ -23,13 +24,15 @@ namespace The_Project
         private readonly MainWindow _mainWindow;
         private Listener Listener { get; }
         private RecipientConnection RecipientConnection { get; set; }
+        private Tables Tables { get; init; }
 
         public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
         public event EventHandler<ConnectionDeclinedEventArgs> ConnectionDeclined;
 
-        internal UserConnectionPage(MainWindow mainWindow)
+        internal UserConnectionPage(MainWindow mainWindow, Tables tables)
         {
             _mainWindow = mainWindow;
+            Tables = tables;
             Listener = new Listener(mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), mainWindow,
                 mainWindow.DebugWindow);
 
@@ -56,13 +59,13 @@ namespace The_Project
             Debug.WriteLine("Sending connection accepted packet!");
             RecipientConnection.TcpClient?.GetStream().WriteData(new Packet
             {
-                Data = new ConnectionVerifiedPacket {A = true},
+                Data = new ConnectionVerifiedPacket {A = true, ID = _mainWindow.Handler.UserAccount?.AccountId},
                 T = (int) PacketIdentifier.Packet.ConnectionVerified
             });
             Debug.WriteLine("Sent connection accepted packet");
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                _mainWindow.Handler.Recipient, _mainWindow);
+                _mainWindow.Handler.Recipient, _mainWindow, Tables);
             Debug.WriteLine("Launching message page");
             _mainWindow.Content = messagePage;
             if (_mainWindow.Handler.UserAccount is null || _mainWindow.Handler.Recipient is null)
@@ -142,7 +145,7 @@ namespace The_Project
 
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                        _mainWindow.Handler.Recipient, _mainWindow);
+                        _mainWindow.Handler.Recipient, _mainWindow, Tables);
                     Debug.WriteLine("Created new message page!");
                     _mainWindow.Content = messagePage;
                     Debug.WriteLine("Set main window content with message page");

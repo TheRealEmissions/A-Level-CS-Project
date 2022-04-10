@@ -8,5 +8,6 @@ namespace The_Project.Networking.Packets
     {
         public int T { get; set; } = 4;
         public bool A { get; set; } = false;
+        public string ID { get; set; }
     }
 }

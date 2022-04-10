@@ -3,7 +3,7 @@
 namespace The_Project.Exceptions
 {
     [Serializable]
-    internal class AccountNotFoundException : Exception
+    internal class AccountNotFoundException : DatabaseException
     {
         public string Type { get; }
 

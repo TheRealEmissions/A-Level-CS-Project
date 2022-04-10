@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
+using The_Project.Accounts;
 using The_Project.Database.Tables.Interfaces;
 using The_Project.Extensions;
 
@@ -58,6 +59,22 @@ namespace The_Project.Database.Tables
                 sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
             //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".messages");
             sqliteCommand.ExecuteNonQuery();
+        }
+
+
+        internal bool CreateMessageEntry(string accountId, string refAccountId, DateTime timestamp, string message, bool received)
+        {
+            SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
+            sqliteCommand.CommandText =
+                @"INSERT INTO messages (user_account_id, recipient_account_id, timestamp, message, received) VALUES ($ACCOUNTID, $RECIPIENTID, $TIMESTAMP, $MESSAGE, $RECEIVED)";
+            _ = sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
+            _ = sqliteCommand.Parameters.AddWithValue("$RECIPIENTID", refAccountId);
+            _ = sqliteCommand.Parameters.AddWithValue("$TIMESTAMP",
+                (int)((DateTimeOffset)DateTime.SpecifyKind(timestamp, DateTimeKind.Local)).ToUnixTimeSeconds());
+            _ = sqliteCommand.Parameters.AddWithValue("$MESSAGE", message);
+            _ = sqliteCommand.Parameters.AddWithValue("$RECEIVED", received);
+            int rows = sqliteCommand.ExecuteNonQuery();
+            return rows > 0;
         }
     }
 }

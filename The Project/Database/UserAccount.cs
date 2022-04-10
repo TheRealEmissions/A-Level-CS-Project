@@ -55,5 +55,16 @@ namespace The_Project.Database
                 throw new PasswordUpdateException("Password not updated in entry");
             }
         }
+
+        public void AddMessage(Tables.Messages.Schema messageSchema)
+        {
+            Tables.Messages messages = (Tables.Messages) _tables.GetTable("Messages");
+            bool updated = messages.CreateMessageEntry(messageSchema.UserAccountId, messageSchema.RefAccountId,
+                messageSchema.Timestamp, messageSchema.Message, messageSchema.Received);
+            if (!updated)
+            {
+                throw new DatabaseException("Message not added to database!");
+            }
+        }
     }
 }

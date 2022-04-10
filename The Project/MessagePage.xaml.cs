@@ -2,8 +2,11 @@
 using System.Net;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using The_Project.Accounts;
 using The_Project.Cryptography;
+using The_Project.Database;
+using The_Project.Database.Tables;
 using The_Project.Events;
 
 namespace The_Project
@@ -21,7 +24,7 @@ namespace The_Project
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient,
-            MainWindow mainWindow)
+            MainWindow mainWindow, Tables tables)
         {
             _selfUserId = selfUserId;
             _recipientIpAddress = recipientIpAddress;
@@ -49,6 +52,11 @@ namespace The_Project
                     : $"{_recipient.Nickname ?? "Them"}: {text}"
             };
             _ = ListboxMessages.Items.Add(listBoxItem);
+        }
+
+        private void StoreMessageInDatabase(string text, bool received)
+        {
+            
         }
 
 

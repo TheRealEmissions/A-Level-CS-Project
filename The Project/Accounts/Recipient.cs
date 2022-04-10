@@ -15,6 +15,7 @@ namespace The_Project.Accounts
         internal PublicKey PublicKey { get; set; }
         internal bool PublicKeyStored { get; set; }
         internal string? Nickname { get; set; }
+        internal string AccountId { get; set; }
 
         public Recipient(RecipientConnection connection, PublicKey publicKey)
         {
