@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Text.Json;
+
 using System.Threading.Tasks;
 using The_Project.Cryptography;
 using The_Project.Networking;
@@ -11,21 +11,29 @@ namespace The_Project.Accounts
 {
     internal sealed class Recipient
     {
-        internal RecipientConnection Connection { get; }
+        internal RecipientConnection Connection { get; set; }
         internal PublicKey PublicKey { get; set; }
         internal bool PublicKeyStored { get; set; }
         internal string? Nickname { get; set; }
-        internal string AccountId { get; set; }
+        internal string? AccountId { get; set; }
 
-        public Recipient(RecipientConnection connection, PublicKey publicKey)
+
+        internal Recipient(RecipientConnection connection, PublicKey publicKey, string? accountId = null,
+            string? nickname = null)
         {
             Connection = connection;
             PublicKey = publicKey;
+            PublicKeyStored = true;
+            Nickname = nickname;
+            AccountId = accountId;
         }
 
-        internal Recipient(RecipientConnection connection)
+        internal Recipient(RecipientConnection connection, string? accountId = null, string? nickname = null)
         {
             Connection = connection;
+            PublicKeyStored = false;
+            Nickname = nickname;
+            AccountId = accountId;
         }
 
         /**

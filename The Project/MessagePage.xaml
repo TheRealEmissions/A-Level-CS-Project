@@ -9,11 +9,12 @@
 
     <Grid Background="White">
         <TextBox Text="Message Content" Name="TxtMsgContent"  TextWrapping="Wrap" Margin="22,393,112,10" KeyDown="TxtMsgContent_OnKeyDown" MouseDown="TxtMsgContent_OnMouseDown"/>
-        <Button Content="Send" Name="BtnSend" Margin="693,393,18,10" Click="BtnSend_Click"/>
-        <Button Content="Terminate Connection" Name="BtnTerminateConnection" Margin="656,2,18,421" Foreground="#FFFF0303" Click="BtnTerminateConnection_Click"/>
-        <Button Content="Set Nickname" x:Name="BtnSetNickname" Margin="520,2,154,421"/>
+        <Button Content="Send" Margin="693,393,18,10" Click="BtnSend_Click"/>
+        <Button Content="Terminate Connection" Margin="656,2,18,421" Foreground="#FFFF0303" Click="BtnTerminateConnection_Click"/>
+        <Button Content="Set Nickname" Margin="520,2,154,421" Click="BtnNickname_Click"/>
         <TextBlock Text="User" Name="TxtblockUser" TextWrapping="Wrap" Margin="34,8,622,417"/>
         <ListBox Name="ListboxMessages" Margin="22,38,18,78">
         </ListBox>
+        <TextBox Name="TxtNickname" TextWrapping="Wrap" Text="Nickname" Width="120" Margin="395,4,285,421"/>
     </Grid>
 </Page>

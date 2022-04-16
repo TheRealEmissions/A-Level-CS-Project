@@ -57,9 +57,9 @@ namespace The_Project.Accounts
         private void Login(string username, string passwordHash, SqliteConnection connection)
         {
             UserAccount userAccountTable = (UserAccount) _tables.GetTable("UserAccount");
-            Database.UserAccount userAccount = new(connection, _tables);
+            Database.UserAccount userAccount = new(_tables);
 
-            UserAccount.Schema? accountEntry = userAccountTable.GetAccountEntry(username);
+            UserAccount.UserAccountSchema? accountEntry = userAccountTable.GetAccountEntry(username);
             if (!accountEntry.HasValue)
             {
                 throw new AccountNotFoundException("UserAccount");
@@ -78,7 +78,7 @@ namespace The_Project.Accounts
 
         private void Register(string username, string passwordHash, SqliteConnection connection)
         {
-            Database.UserAccount userAccount = new(connection, _tables);
+            Database.UserAccount userAccount = new(_tables);
             Random random = new();
             UserId userId = new(Networking.Utils.GetLocalIpAddress(), random.Next(19000, 19500),
                 random.Next(19900, 21000), GenerateAccountId());

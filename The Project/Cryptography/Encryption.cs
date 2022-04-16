@@ -119,12 +119,6 @@ namespace The_Project.Cryptography
             PrivateKey = new PrivateKey(nInteger, dInteger);
         }
 
-        public Encryption(PublicKey publicKey, PrivateKey privateKey)
-        {
-            PublicKey = publicKey;
-            PrivateKey = privateKey;
-        }
-
         private BigInteger GetD()
         {
             BigInteger d = (1 + _phi) / _eInteger;

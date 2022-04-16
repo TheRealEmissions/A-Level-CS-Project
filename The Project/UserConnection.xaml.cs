@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
-using System.Text.Json;
+
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Data.Sqlite;
 using The_Project.Accounts;
 using The_Project.Database.Tables;
 using The_Project.Events;
@@ -24,17 +25,19 @@ namespace The_Project
         private readonly MainWindow _mainWindow;
         private Listener Listener { get; }
         private RecipientConnection RecipientConnection { get; set; }
-        private Tables Tables { get; init; }
+        private Tables Tables { get; }
+        private readonly SqliteConnection _connection;
 
         public event EventHandler<ConnectionAcceptedEventArgs> ConnectionAccepted;
         public event EventHandler<ConnectionDeclinedEventArgs> ConnectionDeclined;
 
-        internal UserConnectionPage(MainWindow mainWindow, Tables tables)
+        internal UserConnectionPage(MainWindow mainWindow, Tables tables, SqliteConnection connection)
         {
             _mainWindow = mainWindow;
             Tables = tables;
             Listener = new Listener(mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(), mainWindow,
                 mainWindow.DebugWindow);
+            _connection = connection;
 
             InitializeComponent();
 
@@ -65,7 +68,7 @@ namespace The_Project
             Debug.WriteLine("Sent connection accepted packet");
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                _mainWindow.Handler.Recipient, _mainWindow, Tables);
+                _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection);
             Debug.WriteLine("Launching message page");
             _mainWindow.Content = messagePage;
             if (_mainWindow.Handler.UserAccount is null || _mainWindow.Handler.Recipient is null)
@@ -102,7 +105,7 @@ namespace The_Project
         private void TerminateConnection()
         {
             RecipientConnection.TcpClient?.Close();
-            Content = new UserConnectionPage(_mainWindow);
+            Content = new UserConnectionPage(_mainWindow, Tables, _connection);
         }
 
         private void Txtinput_userid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -145,14 +148,17 @@ namespace The_Project
 
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                        _mainWindow.Handler.Recipient, _mainWindow, Tables);
+                        _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection);
                     Debug.WriteLine("Created new message page!");
                     _mainWindow.Content = messagePage;
                     Debug.WriteLine("Set main window content with message page");
                     try
                     {
-                        Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
-                            messagePage);
+                        if (_mainWindow.Handler.UserAccount is not null && _mainWindow.Handler.Recipient is not null)
+                        {
+                            await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                                messagePage);
+                        }
                     }
                     catch (Exception exception)
                     {

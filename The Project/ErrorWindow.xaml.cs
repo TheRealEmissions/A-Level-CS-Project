@@ -15,7 +15,7 @@
         internal ErrorWindow SetError(string error)
         {
             _error = error;
-            TxtblockError.Text = error;
+            TxtblockError.Text = _error;
             return this;
         }
 

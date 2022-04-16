@@ -15,13 +15,13 @@ namespace The_Project.Database.Tables
             //CreateTable();
         }
 
-        public struct Schema
+        public struct RecipientAccountSchema
         {
             private string Nickname { get; }
             private string AccountId { get; }
             private string RefAccountId { get; }
 
-            internal Schema(string nickname, string accountId, string refAccountId)
+            internal RecipientAccountSchema(string nickname, string accountId, string refAccountId)
             {
                 Nickname = nickname;
                 AccountId = accountId;
@@ -72,7 +72,7 @@ namespace The_Project.Database.Tables
             return rows > 0;
         }
 
-        internal Schema? GetAccountEntry(string nickname, UserId refUserId)
+        internal RecipientAccountSchema? GetAccountEntry(string nickname, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -98,11 +98,11 @@ namespace The_Project.Database.Tables
             object[] rowColumns = new object[3];
             _ = dataReader.GetValues(rowColumns);
 
-            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
-            return schema;
+            RecipientAccountSchema recipientAccountSchema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return recipientAccountSchema;
         }
 
-        internal Schema? GetAccountEntry(UserId userId, UserId refUserId)
+        internal RecipientAccountSchema? GetAccountEntry(UserId userId, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -128,11 +128,11 @@ namespace The_Project.Database.Tables
             object[] rowColumns = new object[3];
             dataReader.GetValues(rowColumns);
 
-            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
-            return schema;
+            RecipientAccountSchema recipientAccountSchema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return recipientAccountSchema;
         }
 
-        internal void UpdateNickname(string nickname, UserId userId, UserId refUserId)
+        internal void UpdateNickname(string nickname, string accountId, UserId refUserId)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -141,7 +141,7 @@ namespace The_Project.Database.Tables
                 WHERE account_id = $ACCOUNTID AND ref_account_id = $REFACCOUNTID
             ";
             sqliteCommand.Parameters.AddWithValue("$NICKNAME", nickname);
-            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", userId.AccountId);
+            sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
             sqliteCommand.Parameters.AddWithValue("$REFACCOUNTID", refUserId.AccountId);
 
             sqliteCommand.ExecuteNonQuery();

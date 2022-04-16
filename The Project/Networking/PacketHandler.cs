@@ -1,4 +1,4 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,7 +17,8 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-        private static void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient, Account userAccount,
+        private static void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient,
+            Account userAccount,
             MessagePage messagePage, Dispatcher mainThreadDispatcher)
         {
             byte[] filteredBytes = bytesBuffer.ToList().Where(static x => x != 0).ToArray();
@@ -25,6 +26,7 @@ namespace The_Project.Networking
             {
                 return;
             }
+
             Debug.WriteLine("Bytes Length:");
             Debug.WriteLine(filteredBytes.Length);
             Debug.WriteLine("Bytes:");
@@ -65,7 +67,7 @@ namespace The_Project.Networking
                 return;
             }
 
-            PublicKeyPacket publicKeyPacket = JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data.ToString());
+            PublicKeyPacket publicKeyPacket = JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data.ToString() ?? string.Empty);
             /*JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data);*/
             Debug.WriteLine("\\/ Public Key \\/");
             Debug.WriteLine(publicKeyPacket);
@@ -90,7 +92,7 @@ namespace The_Project.Networking
         private static void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage, Dispatcher dispatcher)
         {
             Debug.WriteLine("Received Message");
-            MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString());
+            MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString() ?? string.Empty);
             /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
                 .GetString());*/
             Debug.WriteLine("\\/ Message Packet \\/");
@@ -102,9 +104,10 @@ namespace The_Project.Networking
             Account userAccount)
         {
             ConnectionVerifiedPacket connectionVerifiedPacket =
-                JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString());
+                JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString() ?? string.Empty);
+            recipient.AccountId = connectionVerifiedPacket?.ID;
             /*packetBuffer.Data as ConnectionVerifiedPacket*/
-            ;
+
             /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
                 .GetString());*/
             Debug.WriteLine("Connection Verified");
@@ -142,11 +145,15 @@ namespace The_Project.Networking
 
             bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
             Debug.WriteLine("Returning connection verified packet");
-            await recipient.Connection.TcpClient?.GetStream().WriteDataAsync(new Packet
+            if (recipient.Connection.TcpClient is not null)
             {
-                Data = new ConnectionVerifiedPacket {A = connectionAccepted, ID = userAccount.AccountId},
-                T = (int) PacketIdentifier.Packet.ConnectionVerified
-            });
+                await recipient.Connection.TcpClient.GetStream().WriteDataAsync(new Packet
+                {
+                    Data = new ConnectionVerifiedPacket {A = connectionAccepted, ID = userAccount.AccountId},
+                    T = (int) PacketIdentifier.Packet.ConnectionVerified
+                });
+            }
+
             if (!connectionVerifiedPacket?.A ?? true)
             {
                 return;

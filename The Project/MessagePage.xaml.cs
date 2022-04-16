@@ -1,13 +1,17 @@
 ﻿using System;
+
 using System.Net;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+
+using Microsoft.Data.Sqlite;
 using The_Project.Accounts;
 using The_Project.Cryptography;
 using The_Project.Database;
 using The_Project.Database.Tables;
 using The_Project.Events;
+using The_Project.Networking;
 
 namespace The_Project
 {
@@ -20,22 +24,28 @@ namespace The_Project
         private IPAddress _recipientIpAddress;
         private readonly Recipient _recipient;
         private readonly MainWindow _mainWindow;
+        private readonly Tables _tables;
+        private readonly SqliteConnection _connection;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient,
-            MainWindow mainWindow, Tables tables)
+            MainWindow mainWindow, Tables tables, SqliteConnection connection)
         {
             _selfUserId = selfUserId;
             _recipientIpAddress = recipientIpAddress;
             _recipient = recipient;
             _mainWindow = mainWindow;
-
+            _tables = tables;
+            _connection = connection;
+            
             MessageReceived += MessageReceivedFromRecipient;
 
             InitializeComponent();
 
             TxtblockUser.Text = recipientIpAddress.ToString();
+
+            TxtMsgContent.AddHandler(MouseLeftButtonDownEvent, new MouseButtonEventHandler(TxtMsgContent_OnMouseDown));
         }
 
         internal void OnMessageReceived(MessageReceivedEventArgs e)
@@ -56,7 +66,11 @@ namespace The_Project
 
         private void StoreMessageInDatabase(string text, bool received)
         {
-            
+            Database.UserAccount userAccount = new(_tables);
+            userAccount.AddMessage(new Messages.MessageSchema(_mainWindow.Handler.UserAccount?.ToUserId().Id,
+                _recipient.AccountId,
+                (int) ((DateTimeOffset) DateTime.SpecifyKind(new DateTime(), DateTimeKind.Local)).ToUnixTimeSeconds(),
+                text, received));
         }
 
 
@@ -64,8 +78,13 @@ namespace The_Project
         {
             _recipient.Connection.TcpClient?.Close();
             _recipient.Connection.TcpClient = null;
+            _recipient.Nickname = null;
+            _recipient.PublicKeyStored = false;
+            _recipient.Connection = new RecipientConnection(_mainWindow, _mainWindow.DebugWindow);
+            _recipient.PublicKey = new PublicKey();
+            _recipient.AccountId = null;
 
-            _mainWindow.Content = new UserConnectionPage(_mainWindow);
+            _mainWindow.Content = new UserConnectionPage(_mainWindow, _tables, _connection);
         }
 
         private void BtnSend_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -82,15 +101,16 @@ namespace The_Project
 
             _recipient.Send(TxtMsgContent.Text);
             UpdateMessagesList(TxtMsgContent.Text, false);
+            StoreMessageInDatabase(TxtMsgContent.Text, false);
 
             TxtMsgContent.Text = string.Empty;
         }
 
         private void MessageReceivedFromRecipient(object sender, MessageReceivedEventArgs e)
         {
-            // update db
-            // update message list
-            UpdateMessagesList(e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey), true);
+            string text = e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey);
+            UpdateMessagesList(text, true);
+            StoreMessageInDatabase(text, true);
         }
 
         private void TxtMsgContent_OnKeyDown(object sender, KeyEventArgs e)
@@ -107,7 +127,26 @@ namespace The_Project
             {
                 return;
             }
+
             TxtMsgContent.Text = string.Empty;
+        }
+
+        private void BtnNickname_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtNickname.Text == "Nickname")
+            {
+                return;
+            }
+
+            _recipient.Nickname = TxtNickname.Text;
+            TxtblockUser.Text = TxtNickname.Text;
+
+            Database.RecipientAccount recipientAccount =
+                new(_connection, _mainWindow.Handler.UserAccount, _tables);
+            recipientAccount.UpdateNickname(TxtNickname.Text, _recipient.AccountId);
+
+            TxtNickname.Text = "Nickname";
+
         }
     }
 }

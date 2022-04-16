@@ -16,13 +16,13 @@ namespace The_Project.Database.Tables
             //CreateTable();
         }
 
-        public struct Schema
+        public struct UserAccountSchema
         {
             private string Username { get; }
             internal string Password { get; }
             internal string AccountId { get; }
 
-            internal Schema(string username, string password, string accountId)
+            internal UserAccountSchema(string username, string password, string accountId)
             {
                 Username = username;
                 Password = password;
@@ -46,7 +46,7 @@ namespace The_Project.Database.Tables
             sqliteCommand.ExecuteNonQuery();
         }
 
-        internal Schema? GetAccountEntry(string username)
+        internal UserAccountSchema? GetAccountEntry(string username)
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
@@ -71,8 +71,8 @@ namespace The_Project.Database.Tables
             object[] rowColumns = new object[3];
             _ = dataReader.GetValues(rowColumns);
 
-            Schema schema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
-            return schema;
+            UserAccountSchema userAccountSchema = new(rowColumns[0].ToString(), rowColumns[1].ToString(), rowColumns[2].ToString());
+            return userAccountSchema;
         }
 
         internal bool CreateAccountEntry(string username, string passwordHash, string accountId)

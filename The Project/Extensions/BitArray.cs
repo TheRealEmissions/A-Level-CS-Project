@@ -31,18 +31,6 @@ namespace The_Project.Extensions
             return arr;
         }
 
-        public static BitArray SafeLeftRotate(this BitArray bitArray, int bits)
-        {
-            BitArray tempArr = new(bitArray);
-            BitArray arr = bitArray.SafeLeftShift(bits);
-            for (int i = 0; i < bits; i++)
-            {
-                arr[arr.Length - 1 - bits + i] = tempArr[i];
-            }
-
-            return arr;
-        }
-
         public static BitArray SafeXor(this BitArray bitArray1, BitArray bitArray2)
         {
             BitArray tempArr = new(bitArray1);
@@ -79,13 +67,6 @@ namespace The_Project.Extensions
             BitArray tempArr = new(bitArray1);
             BitArray arr = tempArr.Not();
             return arr;
-        }
-
-        public static byte[] ToByteArray(this BitArray bitArray)
-        {
-            byte[] bytes = new byte[bitArray.Length / 8];
-            bitArray.CopyTo(bytes, 0);
-            return bytes;
         }
     }
 }

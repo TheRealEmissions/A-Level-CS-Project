@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
 using System.Windows;
-using System.Windows.Controls;
+
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
@@ -40,7 +40,6 @@ namespace The_Project
             // register events
             BtnLogin.Click += Btn_login_Click;
             BtnRegister.Click += Btn_register_Click;
-            TxtinputUsername.TextChanged += Txtinput_username_TextChanged;
             TxtinputPswd.PasswordChanged += Txtinput_pswd_TextChanged;
             TxtinputConfpswd.PasswordChanged += Txtinput_confpswd_TextChanged;
 
@@ -104,13 +103,9 @@ namespace The_Project
             Debug("Enabled register button");
         }
 
-        private void Txtinput_username_TextChanged(object sender, TextChangedEventArgs e)
-        {
-        }
-
         private void Btn_register_Click(object sender, RoutedEventArgs e)
         {
-            if (new Database.UserAccount(SqliteConnection, Tables).GetAccount(TxtinputUsername.Text) is not null)
+            if (new Database.UserAccount(Tables).GetAccount(TxtinputUsername.Text) is not null)
             {
                 _ = new ErrorWindow().SetError("This account already exists!").Initialize();
                 return;
@@ -139,7 +134,7 @@ namespace The_Project
                 _ = new ErrorWindow().SetError(exception.Message).Initialize();
             }
 
-            Content = new UserConnectionPage(this);
+            Content = new UserConnectionPage(this, Tables, SqliteConnection);
         }
 
         private void Btn_login_Click(object sender, RoutedEventArgs e)
@@ -165,7 +160,7 @@ namespace The_Project
 
             Debug("FOUND ACCOUNT!");
 
-            UserConnectionPage userConnectionPage = new(this);
+            UserConnectionPage userConnectionPage = new(this, Tables, SqliteConnection);
             Content = userConnectionPage;
         }
 

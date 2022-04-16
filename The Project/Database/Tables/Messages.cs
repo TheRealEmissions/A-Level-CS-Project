@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
-using The_Project.Accounts;
+
 using The_Project.Database.Tables.Interfaces;
 using The_Project.Extensions;
 
@@ -16,7 +16,7 @@ namespace The_Project.Database.Tables
             //CreateTable();
         }
 
-        public struct Schema
+        public struct MessageSchema
         {
             public string UserAccountId { get; }
             public string RefAccountId { get; }
@@ -24,7 +24,7 @@ namespace The_Project.Database.Tables
             public string Message { get; }
             public bool Received { get; }
 
-            public Schema(string userAccountId, string refAccountId, int timestamp, string message, bool received)
+            public MessageSchema(string userAccountId, string refAccountId, int timestamp, string message, bool received)
             {
                 UserAccountId = userAccountId;
                 RefAccountId = refAccountId;

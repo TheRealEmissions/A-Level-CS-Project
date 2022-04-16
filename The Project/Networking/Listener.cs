@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
-using System.Numerics;
+
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using The_Project.Accounts;
-using The_Project.Cryptography;
-using The_Project.Events;
+
 using The_Project.Networking.Extensions;
 using The_Project.Networking.Packets;
 
@@ -50,7 +49,7 @@ namespace The_Project.Networking
             {
                 while (recipient.Connection.TcpClient?.Connected ?? false)
                 {
-                    byte[] bytesBuffer = new byte[16384];
+                    byte[] bytesBuffer = new byte[65536];
                     NetworkStream? networkStream = recipient.Connection.TcpClient?.GetStream();
                     while (networkStream?.DataAvailable ?? false)
                     {
@@ -62,7 +61,7 @@ namespace The_Project.Networking
                         }
 
                         string utf8String = Encoding.UTF8.GetString(bytesBuffer);
-                        bytesBuffer = new byte[16384];
+                        bytesBuffer = new byte[65536];
                         Debug.WriteLine(utf8String);
                         string[] splitByDelimiter = utf8String.Split("$");
                         List<byte[]> packetsList =
@@ -150,6 +149,7 @@ namespace The_Project.Networking
                                 T = (int) PacketIdentifier.Packet.ConnectionVerified
                             });
                             recipientConnection = new RecipientConnection(tcpClient, _mainWindow, _loggingWindow);
+                            new Database.RecipientAccount(_mainWindow.Handler.Connection, _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables).CreateAccount(accountIdBuffer.A);
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Connection established!"));
                             Server.Stop();
                             break;

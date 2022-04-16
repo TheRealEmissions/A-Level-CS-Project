@@ -9,12 +9,10 @@ namespace The_Project.Database
 {
     internal sealed class UserAccount : IDatabaseUserAccount
     {
-        private readonly SqliteConnection _sqliteConnection;
         private readonly Tables.Tables _tables;
 
-        internal UserAccount(SqliteConnection sqliteConnection, Tables.Tables tables)
+        internal UserAccount(Tables.Tables tables)
         {
-            _sqliteConnection = sqliteConnection;
             _tables = tables;
         }
 
@@ -33,16 +31,16 @@ namespace The_Project.Database
             }
         }
 
-        public Tables.UserAccount.Schema? GetAccount(string username)
+        public Tables.UserAccount.UserAccountSchema? GetAccount(string username)
         {
             Tables.UserAccount userAccount = (Tables.UserAccount) _tables.GetTable("UserAccount");
-            Tables.UserAccount.Schema? accountEntry = userAccount.GetAccountEntry(username);
+            Tables.UserAccount.UserAccountSchema? accountEntry = userAccount.GetAccountEntry(username);
             return accountEntry;
         }
 
         public string? GetPassword(Account account)
         {
-            Tables.UserAccount.Schema? entry = GetAccount(account.Username);
+            Tables.UserAccount.UserAccountSchema? entry = GetAccount(account.Username);
             return entry?.Password;
         }
 
@@ -56,11 +54,11 @@ namespace The_Project.Database
             }
         }
 
-        public void AddMessage(Tables.Messages.Schema messageSchema)
+        public void AddMessage(Tables.Messages.MessageSchema messageMessageSchema)
         {
             Tables.Messages messages = (Tables.Messages) _tables.GetTable("Messages");
-            bool updated = messages.CreateMessageEntry(messageSchema.UserAccountId, messageSchema.RefAccountId,
-                messageSchema.Timestamp, messageSchema.Message, messageSchema.Received);
+            bool updated = messages.CreateMessageEntry(messageMessageSchema.UserAccountId, messageMessageSchema.RefAccountId,
+                messageMessageSchema.Timestamp, messageMessageSchema.Message, messageMessageSchema.Received);
             if (!updated)
             {
                 throw new DatabaseException("Message not added to database!");
