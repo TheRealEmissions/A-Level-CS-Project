@@ -63,7 +63,7 @@ namespace The_Project.Networking
             }
         }
 
-        private void HandleAccountIdPacket(Packet packetBuffer, Recipient recipient)
+        private async void HandleAccountIdPacket(Packet packetBuffer, Recipient recipient)
         {
             AccountIdPacket accountPacket =
                 JsonSerializer.Deserialize<AccountIdPacket>(packetBuffer.Data.ToString() ?? string.Empty);
@@ -75,6 +75,8 @@ namespace The_Project.Networking
             {
                 recipientAccount.CreateAccount(accountPacket?.A);
             }
+
+            await recipient.SendAccountId(_mainWindow.Handler.UserAccount.AccountId);
         }
 
         private void HandlePublicKeyPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
