@@ -162,7 +162,7 @@ namespace The_Project
             }
             catch (Exception exception)
             {
-                _ = new ErrorWindow().SetError(exception.Message).Initialize();
+                _ = new ErrorWindow().SetError(exception.Message + exception.StackTrace).Initialize();
                 return;
             }
 

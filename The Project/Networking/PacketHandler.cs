@@ -17,7 +17,7 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-        private static void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient,
+        private void HandlePacket(IReadOnlyCollection<byte> bytesBuffer, Recipient recipient,
             Account userAccount,
             MessagePage messagePage, Dispatcher mainThreadDispatcher)
         {
@@ -60,7 +60,7 @@ namespace The_Project.Networking
             }
         }
 
-        private static void HandlePublicKeyPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
+        private void HandlePublicKeyPacket(Packet packetBuffer, Recipient recipient, Account userAccount)
         {
             if (recipient.PublicKeyStored)
             {
@@ -89,7 +89,7 @@ namespace The_Project.Networking
             });
         }
 
-        private static void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage, Dispatcher dispatcher)
+        private void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage, Dispatcher dispatcher)
         {
             Debug.WriteLine("Received Message");
             MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString() ?? string.Empty);
@@ -100,7 +100,7 @@ namespace The_Project.Networking
                 messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M}));
         }
 
-        private static async Task HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
+        private async Task HandleConnectionVerifiedPacket(Packet packetBuffer, Recipient recipient,
             Account userAccount)
         {
             ConnectionVerifiedPacket connectionVerifiedPacket =
@@ -119,6 +119,13 @@ namespace The_Project.Networking
                     Debug.WriteLine("Accepted connection");
                     recipient.Connection.ConnectionAccepted = true;
                     recipient.AccountId = connectionVerifiedPacket.ID;
+
+                    Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
+                        _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
+                    if (!recipientAccountDatabase.HasAccount(connectionVerifiedPacket.ID))
+                    {
+                        recipientAccountDatabase.CreateAccount(connectionVerifiedPacket.ID);
+                    }
 
                     Debug.WriteLine("Sending public key");
                     await recipient.SendPublicKey(userAccount.PublicKey);

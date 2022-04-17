@@ -38,20 +38,18 @@ namespace The_Project.Database
             }
         }
 
-        public Tables.RecipientAccount.RecipientAccountSchema? GetAccount(string nickname)
+        public Tables.RecipientAccount.RecipientAccountSchema? GetAccount(string nicknameOrAccountId, bool usingNickname = false)
         {
             Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
             Tables.RecipientAccount.RecipientAccountSchema? accountEntry =
-                recipientAccount.GetAccountEntry(nickname, _userAccountInstance.ToUserId());
+                recipientAccount.GetAccountEntry(nicknameOrAccountId, _userAccountInstance.ToUserId(), usingNickname);
             return accountEntry;
         }
 
-        public Tables.RecipientAccount.RecipientAccountSchema? GetAccount(UserId userId)
+        public bool HasAccount(string nicknameOrAccountId, bool usingNickname = false)
         {
-            Tables.RecipientAccount recipientAccount = (Tables.RecipientAccount) _tables.GetTable("RecipientAccount");
-            Tables.RecipientAccount.RecipientAccountSchema? accountEntry =
-                recipientAccount.GetAccountEntry(userId, _userAccountInstance.ToUserId());
-            return accountEntry;
+            Tables.RecipientAccount.RecipientAccountSchema? account = GetAccount(nicknameOrAccountId, usingNickname);
+            return account is not null;
         }
 
         public void UpdateNickname(string nickname, string accountId)

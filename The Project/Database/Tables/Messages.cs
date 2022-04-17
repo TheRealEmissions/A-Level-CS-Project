@@ -44,12 +44,13 @@ namespace The_Project.Database.Tables
                     timestamp INTEGER NOT NULL,
                     message TEXT,
                     received BOOL NOT NULL,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     FOREIGN KEY (user_account_id)
                         REFERENCES useraccounts (account_id)
                             ON DELETE CASCADE
                             ON UPDATE CASCADE,
-                    FOREIGN KEY (recipient_account_id)
-                        REFERENCES recipientaccounts (account_id)
+                    FOREIGN KEY (user_account_id, recipient_account_id)
+                        REFERENCES recipientaccounts (ref_account_id, account_id)
                             ON DELETE CASCADE
                             ON UPDATE CASCADE
                 )
@@ -57,7 +58,7 @@ namespace The_Project.Database.Tables
             //Command.CommandType = System.Data.CommandType.Text;
             sqliteCommand.CommandText =
                 sqliteCommand.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
-            //Command.Parameters.AddWithValue("$database", _sqliteConnection.Database + ".messages");
+            //Command.CommandText.Replace("$database", _sqliteConnection.Database + ".messages");
             sqliteCommand.ExecuteNonQuery();
         }
 
@@ -66,13 +67,12 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText =
-                @"INSERT INTO messages (user_account_id, recipient_account_id, timestamp, message, received) VALUES ($ACCOUNTID, $RECIPIENTID, $TIMESTAMP, $MESSAGE, $RECEIVED)";
-            _ = sqliteCommand.Parameters.AddWithValue("$ACCOUNTID", accountId);
-            _ = sqliteCommand.Parameters.AddWithValue("$RECIPIENTID", refAccountId);
-            _ = sqliteCommand.Parameters.AddWithValue("$TIMESTAMP",
-                (int)((DateTimeOffset)DateTime.SpecifyKind(timestamp, DateTimeKind.Local)).ToUnixTimeSeconds());
-            _ = sqliteCommand.Parameters.AddWithValue("$MESSAGE", message);
-            _ = sqliteCommand.Parameters.AddWithValue("$RECEIVED", received);
+                @"INSERT INTO messages (user_account_id, recipient_account_id, timestamp, message, received) VALUES ('$ACCOUNTID', '$RECIPIENTID', $TIMESTAMP, '$MESSAGE', $RECEIVED)";
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$ACCOUNTID", accountId);
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$RECIPIENTID", refAccountId);
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$TIMESTAMP", DateTimeOffset.Now.ToUnixTimeSeconds().ToString());
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$MESSAGE", message);
+            sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$RECEIVED", received.ToString().ToLower(), true, null);
             int rows = sqliteCommand.ExecuteNonQuery();
             return rows > 0;
         }

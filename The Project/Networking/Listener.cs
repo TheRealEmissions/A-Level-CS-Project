@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 using System.Windows.Threading;
 using The_Project.Accounts;
 
@@ -19,7 +20,7 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-        private TcpListener Server { get; }
+        private TcpListener? Server { get; }
         internal int Port { get; }
         private readonly LoggingWindow? _loggingWindow;
         private readonly MainWindow _mainWindow;
@@ -42,7 +43,7 @@ namespace The_Project.Networking
             return new Random().Next(min, max);
         }
 
-        public static Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
+        public Task Poll(Account userAccount, Recipient recipient, MessagePage? messagePage = null)
         {
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             return Task.Run<Task>(async () =>
@@ -149,7 +150,23 @@ namespace The_Project.Networking
                                 T = (int) PacketIdentifier.Packet.ConnectionVerified
                             });
                             recipientConnection = new RecipientConnection(tcpClient, _mainWindow, _loggingWindow);
-                            new Database.RecipientAccount(_mainWindow.Handler.Connection, _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables).CreateAccount(accountIdBuffer.A);
+                            Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
+                                _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
+                            if (recipientAccountDatabase.HasAccount(accountIdBuffer?.A))
+                            {
+                                Debug.WriteLine("Got recipient account!");
+                                Database.Tables.RecipientAccount.RecipientAccountSchema? schema = recipientAccountDatabase.GetAccount(accountIdBuffer?.A);
+                                Debug.WriteLine($"{schema}");
+                                _mainWindow.Handler.Recipient = new Recipient(recipientConnection, schema?.AccountId);
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Creating new recipient account");
+                                Debug.WriteLine($"{_mainWindow.Handler.UserAccount?.AccountId}");
+                                recipientAccountDatabase.CreateAccount(accountIdBuffer?.A);
+                                _mainWindow.Handler.Recipient = new Recipient(recipientConnection, accountIdBuffer?.A);
+                            }
+
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Connection established!"));
                             Server.Stop();
                             break;

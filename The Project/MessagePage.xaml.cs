@@ -67,9 +67,9 @@ namespace The_Project
         private void StoreMessageInDatabase(string text, bool received)
         {
             Database.UserAccount userAccount = new(_tables);
-            userAccount.AddMessage(new Messages.MessageSchema(_mainWindow.Handler.UserAccount?.ToUserId().Id,
+            userAccount.AddMessage(new Messages.MessageSchema(_mainWindow.Handler.UserAccount?.AccountId,
                 _recipient.AccountId,
-                (int) ((DateTimeOffset) DateTime.SpecifyKind(new DateTime(), DateTimeKind.Local)).ToUnixTimeSeconds(),
+                (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 text, received));
         }
 
