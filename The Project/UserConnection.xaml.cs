@@ -135,7 +135,13 @@ namespace The_Project
                 RecipientConnection = new RecipientConnection(_mainWindow, _mainWindow.DebugWindow);
                 try
                 {
-                    bool connected = await RecipientConnection.ConnectTo(new UserId(TxtinputUserid.Text));
+                    UserId recipientUserId = new(TxtinputUserid.Text);
+                    _mainWindow.Debug("Recipient User ID:");
+                    _mainWindow.Debug($"IP: {recipientUserId.Ip}");
+                    _mainWindow.Debug($"Min Port: {recipientUserId.MinPort}");
+                    _mainWindow.Debug($"Max Port: {recipientUserId.MaxPort}");
+                    _mainWindow.Debug($"Account ID: {recipientUserId.AccountId}");
+                    bool connected = await RecipientConnection.ConnectTo(recipientUserId);
                     Debug.WriteLine($"FINAL -> Connected to client? {connected}");
                     if (!connected)
                     {
