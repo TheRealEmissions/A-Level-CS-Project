@@ -99,6 +99,12 @@ namespace The_Project
                 return;
             }
 
+            _mainWindow.Debug("--- SENDING MESSAGE ---");
+            _mainWindow.Debug("Original Message:");
+            _mainWindow.Debug(TxtMsgContent.Text);
+            _mainWindow.Debug("Encrypted message:");
+            _mainWindow.Debug(TxtMsgContent.Text.Encrypt(_recipient.PublicKey));
+
             _recipient.Send(TxtMsgContent.Text);
             UpdateMessagesList(TxtMsgContent.Text, false);
             StoreMessageInDatabase(TxtMsgContent.Text, false);
@@ -108,6 +114,12 @@ namespace The_Project
 
         private void MessageReceivedFromRecipient(object sender, MessageReceivedEventArgs e)
         {
+            _mainWindow.Debug("--- RECEIVED MESSAGE ---");
+            _mainWindow.Debug("Encrypted message:");
+            _mainWindow.Debug(e.Ciphertext);
+            _mainWindow.Debug("Original message:");
+            _mainWindow.Debug(e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey));
+
             string text = e.Ciphertext.Decrypt(_mainWindow.EncryptionKeys.PrivateKey);
             UpdateMessagesList(text, true);
             StoreMessageInDatabase(text, true);
