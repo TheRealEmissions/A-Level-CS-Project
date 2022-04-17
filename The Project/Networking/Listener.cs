@@ -20,7 +20,7 @@ namespace The_Project.Networking
 {
     internal sealed partial class Listener
     {
-        private TcpListener? Server { get; }
+        internal TcpListener? Server { get; }
         internal int Port { get; }
         private readonly LoggingWindow? _loggingWindow;
         private readonly MainWindow _mainWindow;

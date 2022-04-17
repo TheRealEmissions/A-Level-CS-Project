@@ -107,16 +107,37 @@ namespace The_Project.Cryptography
         internal PublicKey PublicKey { get; }
         internal PrivateKey PrivateKey { get; }
 
-        internal Encryption()
+        internal Encryption(MainWindow mainWindow)
         {
+            mainWindow.Debug("Creating public & private keys!");
+
             BigInteger xInteger = GeneratePrime();
+            mainWindow.Debug("x:");
+            mainWindow.Debug(xInteger.ToString());
+
             BigInteger yInteger = GeneratePrime();
+            mainWindow.Debug("y:");
+            mainWindow.Debug(yInteger.ToString());
+
             BigInteger nInteger = xInteger * yInteger;
+            mainWindow.Debug("n:");
+            mainWindow.Debug(nInteger.ToString());
+
             _phi = (xInteger - 1) * (yInteger - 1);
+            mainWindow.Debug("phi:");
+            mainWindow.Debug(_phi.ToString());
+
             BigInteger dInteger = GetD();
+            mainWindow.Debug("d:");
+            mainWindow.Debug(dInteger.ToString());
 
             PublicKey = new PublicKey(nInteger, _eInteger);
+            mainWindow.Debug("PUBLIC KEY ->");
+            mainWindow.Debug($"({PublicKey.N}, {PublicKey.E})");
+
             PrivateKey = new PrivateKey(nInteger, dInteger);
+            mainWindow.Debug("PRIVATE KEY ->");
+            mainWindow.Debug($"({PrivateKey.N}, {PrivateKey.D})");
         }
 
         private BigInteger GetD()

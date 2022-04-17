@@ -22,13 +22,15 @@ namespace The_Project
         private SqliteConnection? SqliteConnection { get; }
         private Database.Tables.Tables Tables { get; }
 
-        internal Encryption EncryptionKeys { get; } = new();
+        internal Encryption EncryptionKeys { get; }
 
         public MainWindow()
         {
             Handler = new MessagingHandler();
             SqliteConnection = Handler.Connection;
             Tables = Handler.Tables;
+
+            EncryptionKeys = new Encryption(this);
 
             Handler.UserAccount?.SetPublicKey(EncryptionKeys.PublicKey);
             Handler.UserAccount?.SetPrivateKey(EncryptionKeys.PrivateKey);

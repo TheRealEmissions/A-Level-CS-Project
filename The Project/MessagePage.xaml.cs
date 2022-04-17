@@ -26,11 +26,12 @@ namespace The_Project
         private readonly MainWindow _mainWindow;
         private readonly Tables _tables;
         private readonly SqliteConnection _connection;
+        private readonly Listener _listener;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
         internal MessagePage(UserId selfUserId, IPAddress recipientIpAddress, Recipient recipient,
-            MainWindow mainWindow, Tables tables, SqliteConnection connection)
+            MainWindow mainWindow, Tables tables, SqliteConnection connection, Listener listener)
         {
             _selfUserId = selfUserId;
             _recipientIpAddress = recipientIpAddress;
@@ -38,6 +39,7 @@ namespace The_Project
             _mainWindow = mainWindow;
             _tables = tables;
             _connection = connection;
+            _listener = listener;
             
             MessageReceived += MessageReceivedFromRecipient;
 
@@ -76,6 +78,8 @@ namespace The_Project
 
         private void BtnTerminateConnection_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            _listener.Server?.Stop();
+
             _recipient.Connection.TcpClient?.Close();
             _recipient.Connection.TcpClient = null;
             _recipient.Nickname = null;

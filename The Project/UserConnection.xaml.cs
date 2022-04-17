@@ -68,7 +68,7 @@ namespace The_Project
             Debug.WriteLine("Sent connection accepted packet");
             MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                 (RecipientConnection?.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection);
+                _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection, Listener);
             Debug.WriteLine("Launching message page");
             _mainWindow.Content = messagePage;
             if (_mainWindow.Handler.UserAccount is null || _mainWindow.Handler.Recipient is null)
@@ -154,7 +154,7 @@ namespace The_Project
 
                     MessagePage messagePage = new(_mainWindow.Handler.UserAccount?.ToUserId() ?? new UserId(),
                         (RecipientConnection.TcpClient?.GetStream().Socket.RemoteEndPoint as IPEndPoint)?.Address,
-                        _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection);
+                        _mainWindow.Handler.Recipient, _mainWindow, Tables, _connection, Listener);
                     Debug.WriteLine("Created new message page!");
                     _mainWindow.Content = messagePage;
                     Debug.WriteLine("Set main window content with message page");
