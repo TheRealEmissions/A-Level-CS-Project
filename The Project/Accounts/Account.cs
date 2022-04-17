@@ -72,7 +72,7 @@ namespace The_Project.Accounts
             bool passwordIsCorrect = userAccount.ComparePassword(this, passwordHash);
             if (!passwordIsCorrect)
             {
-                throw new WrongPasswordException();
+                throw new WrongPasswordException(userAccount.GetPassword(this));
             }
         }
 

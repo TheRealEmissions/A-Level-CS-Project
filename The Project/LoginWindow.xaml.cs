@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using The_Project.Accounts;
 using The_Project.Cryptography;
+using The_Project.Database;
 
 #nullable enable
 
@@ -143,11 +144,18 @@ namespace The_Project
 
             Debug("Registered LOGIN CLICK - Finding account");
             string passwordHash = hash.Hash(TxtinputPswd.Password);
+            
             Debug($"Password hash: {passwordHash}");
             Debug($"Hash length: {passwordHash.Length}");
+
+
             try
             {
                 Account account = new(TxtinputUsername.Text, passwordHash, SqliteConnection, Tables);
+                Database.UserAccount userAccount = new(Tables);
+                string? hashInDatabase = userAccount.GetPassword(account);
+                Debug($"Password hash in database: {hashInDatabase}");
+                Debug($"Password hash equal? {userAccount.ComparePassword(account, passwordHash)}");
                 Handler.UserAccount = account;
                 Handler.UserAccount.SetPublicKey(EncryptionKeys.PublicKey);
                 Handler.UserAccount.SetPrivateKey(EncryptionKeys.PrivateKey);

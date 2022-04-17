@@ -8,5 +8,7 @@ namespace The_Project.Exceptions
         public WrongPasswordException() : base("WRONG PASSWORD")
         {
         }
+
+        public WrongPasswordException(string hash) : base($"{hash} : WRONG PASSWORD") {}
     }
 }
