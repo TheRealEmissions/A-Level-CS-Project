@@ -154,11 +154,14 @@ namespace The_Project
                     Debug.WriteLine("Set main window content with message page");
                     try
                     {
-                        if (_mainWindow.Handler.UserAccount is not null && _mainWindow.Handler.Recipient is not null)
+                        if (_mainWindow.Handler.UserAccount is null || _mainWindow.Handler.Recipient is null)
                         {
-                            await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
-                                messagePage);
+                            return;
                         }
+
+                        _mainWindow.Handler.Recipient?.SendAccountId(_mainWindow.Handler.UserAccount.AccountId);
+                        await Listener.Poll(_mainWindow.Handler.UserAccount, _mainWindow.Handler.Recipient,
+                            messagePage);
                     }
                     catch (Exception exception)
                     {

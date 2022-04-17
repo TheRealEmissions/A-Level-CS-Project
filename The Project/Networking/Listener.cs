@@ -150,7 +150,7 @@ namespace The_Project.Networking
                                 T = (int) PacketIdentifier.Packet.ConnectionVerified
                             });
                             recipientConnection = new RecipientConnection(tcpClient, _mainWindow, _loggingWindow);
-                            Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
+                            /*Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
                                 _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
                             if (recipientAccountDatabase.HasAccount(accountIdBuffer?.A))
                             {
@@ -165,7 +165,7 @@ namespace The_Project.Networking
                                 Debug.WriteLine($"{_mainWindow.Handler.UserAccount?.AccountId}");
                                 recipientAccountDatabase.CreateAccount(accountIdBuffer?.A);
                                 _mainWindow.Handler.Recipient = new Recipient(recipientConnection, accountIdBuffer?.A);
-                            }
+                            }*/
 
                             currentDispatcher.Invoke(() => _loggingWindow?.Debug("Connection established!"));
                             Server.Stop();

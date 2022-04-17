@@ -8,7 +8,8 @@
             PublicKey,
             Message,
             Exception,
-            ConnectionVerified
+            ConnectionVerified,
+            AccountId
         }
 
         public enum Exceptions

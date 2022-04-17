@@ -62,5 +62,23 @@ namespace The_Project.Accounts
                 T = (int) PacketIdentifier.Packet.PublicKey
             });
         }
+
+        internal async Task SendAccountId(string accountId)
+        {
+            if (Connection.TcpClient is null)
+            {
+                return;
+            }
+
+            Debug.WriteLine("Sending account ID");
+            await Connection.TcpClient.GetStream().WriteDataAsync(new Packet
+            {
+                Data = new AccountIdPacket
+                {
+                    A = accountId
+                },
+                T = (int) PacketIdentifier.Packet.AccountId
+            });
+        }
     }
 }

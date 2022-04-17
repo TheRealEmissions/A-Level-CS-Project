@@ -57,6 +57,23 @@ namespace The_Project.Networking
                 case PacketIdentifier.Packet.Exception:
                     // handle exception based on exception type
                     break;
+                case PacketIdentifier.Packet.AccountId:
+                    HandleAccountIdPacket(packetBuffer, recipient);
+                    break;
+            }
+        }
+
+        private void HandleAccountIdPacket(Packet packetBuffer, Recipient recipient)
+        {
+            AccountIdPacket accountPacket =
+                JsonSerializer.Deserialize<AccountIdPacket>(packetBuffer.Data.ToString() ?? string.Empty);
+
+            Database.RecipientAccount recipientAccount = new(_mainWindow.Handler.Connection,
+                _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
+            recipient.AccountId = accountPacket?.A;
+            if (!recipientAccount.HasAccount(accountPacket?.A))
+            {
+                recipientAccount.CreateAccount(accountPacket?.A);
             }
         }
 
@@ -120,15 +137,16 @@ namespace The_Project.Networking
                     recipient.Connection.ConnectionAccepted = true;
                     recipient.AccountId = connectionVerifiedPacket.ID;
 
-                    Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
+                    /*Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
                         _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
                     if (!recipientAccountDatabase.HasAccount(connectionVerifiedPacket.ID))
                     {
                         recipientAccountDatabase.CreateAccount(connectionVerifiedPacket.ID);
-                    }
+                    }*/
 
                     Debug.WriteLine("Sending public key");
                     await recipient.SendPublicKey(userAccount.PublicKey);
+                    await recipient.SendAccountId(_mainWindow.Handler.UserAccount.AccountId);
                 }
 
                 Debug.WriteLine("Connection is already verified");
