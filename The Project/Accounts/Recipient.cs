@@ -16,6 +16,8 @@ namespace The_Project.Accounts
         internal bool PublicKeyStored { get; set; }
         internal string? Nickname { get; set; }
         internal string? AccountId { get; set; }
+        internal bool AccountIdStored { get; set; }
+        internal bool AccountIdSent { get; set; }
 
 
         internal Recipient(RecipientConnection connection, PublicKey publicKey, string? accountId = null,
