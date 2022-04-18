@@ -22,6 +22,7 @@ namespace The_Project.Cryptography
             _mainWindow = window;
         }
 
+        // prime hashes as defined by SHA-256
         private uint _primeHash0 = 0x6a09e667;
         private uint _primeHash1 = 0xbb67ae85;
         private uint _primeHash2 = 0x3c6ef372;
@@ -31,6 +32,7 @@ namespace The_Project.Cryptography
         private uint _primeHash6 = 0x1f83d9ab;
         private uint _primeHash7 = 0x5be0cd19;
 
+        // round constants as defined by SHA-256
         private readonly uint[] _roundConstants =
         {
             0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -77,6 +79,7 @@ namespace The_Project.Cryptography
                 for (int j = 16; j < 64; j++)
                 {
                     // logical bitwise operations on temporary variables for extension
+                    // all operations follow SHA-256 standard
                     BitArray s0 = chunk32Bit[j - 15].SafeRightRotate(7)
                         .SafeXor(chunk32Bit[j - 15].SafeRightRotate(18))
                         .SafeXor(chunk32Bit[j - 15].SafeRightShift(3));
@@ -89,6 +92,7 @@ namespace The_Project.Cryptography
                         .Add(s1);
                 }
 
+                // temporary variables for each prime hash to mutate
                 BitArray primeHash0Bits = new(BitConverter.GetBytes(_primeHash0));
                 BitArray primeHash1Bits = new(BitConverter.GetBytes(_primeHash1));
                 BitArray primeHash2Bits = new(BitConverter.GetBytes(_primeHash2));
@@ -100,6 +104,9 @@ namespace The_Project.Cryptography
 
                 for (int j = 0; j < 64; j++)
                 {
+
+                    // all the following operations follow the SHA-256 standard
+                    // poorly named variables such as "s1" "ch" are chosen that way as it best represents the SHA-256 algorithm
                     BitArray s1 = primeHash4Bits.SafeRightRotate(6)
                         .SafeXor(primeHash4Bits.SafeRightRotate(11))
                         .SafeXor(primeHash4Bits.SafeRightRotate(25));
@@ -117,6 +124,7 @@ namespace The_Project.Cryptography
                         .SafeXor(primeHash1Bits.SafeAnd(primeHash2Bits));
                     BitArray temp2 = s0.Add(maj);
 
+                    // reassignment to temporary variables as per SHA-256 algorithm
                     primeHash7Bits = primeHash6Bits;
                     primeHash6Bits = primeHash5Bits;
                     primeHash5Bits = primeHash4Bits;
@@ -127,6 +135,7 @@ namespace The_Project.Cryptography
                     primeHash0Bits = temp1.Add(temp2);
                 }
 
+                // bitwise adds the original prime hashs with the mutated prime hashes (as per SHA-256 algorithm)
                 BitArray temph0 = new BitArray(BitConverter.GetBytes(_primeHash0)).Add(primeHash0Bits);
                 BitArray temph1 = new BitArray(BitConverter.GetBytes(_primeHash1)).Add(primeHash1Bits);
                 BitArray temph2 = new BitArray(BitConverter.GetBytes(_primeHash2)).Add(primeHash2Bits);
@@ -136,6 +145,7 @@ namespace The_Project.Cryptography
                 BitArray temph6 = new BitArray(BitConverter.GetBytes(_primeHash6)).Add(primeHash6Bits);
                 BitArray temph7 = new BitArray(BitConverter.GetBytes(_primeHash7)).Add(primeHash7Bits);
 
+                // reassigns prime hashes, prime hashes are now mutated
                 _primeHash0 = temph0.ToUInt32();
                 _primeHash1 = temph1.ToUInt32();
                 _primeHash2 = temph2.ToUInt32();
@@ -146,6 +156,7 @@ namespace The_Project.Cryptography
                 _primeHash7 = temph7.ToUInt32();
             }
 
+            // for each prime hash, it will map each prime hash to its hexadecimal string in a parallelised, ordered way to improve efficiency (using PLINQ)
             return string.Concat(new[]
                 {
                     _primeHash0, _primeHash1, _primeHash2, _primeHash3, _primeHash4, _primeHash5, _primeHash6,
@@ -158,6 +169,8 @@ namespace The_Project.Cryptography
 
         private static List<BitArray> SplitIntoChunks(BitArray arr, int bits = 512)
         {
+            // arr attribute stands for "array"
+            // creates new byte array with correct length as specified by bits attribute
             byte[] buffer = new byte[arr.Length / 8];
             arr.CopyTo(buffer, 0);
 
@@ -166,10 +179,12 @@ namespace The_Project.Cryptography
             int originalLength = arr.Length / 8;
             for (int i = 0; i < originalLength; i += bits / 8)
             {
+                // creates a new bit array with the range from i to (i + bits/8)
                 BitArray bitArray = new(buffer[i..(i + (bits / 8))]);
                 bitArrayList.Add(bitArray);
             }
 
+            // returns the list of bit arrays
             return bitArrayList;
         }
 
@@ -177,25 +192,33 @@ namespace The_Project.Cryptography
         {
             int originalLength = arr.Length;
 
+            
             arr.Length += 1;
+            // as per SHA-256 standard, the first bit of padding is set to true
             arr.Set(arr.Length - 1, true);
 
             int i = 0;
+            // continues until originalLength of array + 1 + i + 64 = 0 (mod 512) as per SHA-256 standard
             while ((originalLength + 1 + i + 64) % 512 != 0)
             {
                 arr.Length += 1;
+                // sets all bits after the first bit to false as per SHA-256 standard
                 arr.Set(arr.Length - 1, false);
                 i++;
             }
 
+            // converts the length of the original array to an unsigned 64 bit integer and then to bytes thereafter
             byte[] int64Bytes = BitConverter.GetBytes(Convert.ToUInt64(originalLength));
+            // reveres the array if the system is little edian (number is required to be big edian as per SHA-256 standard)
             if (BitConverter.IsLittleEndian)
             {
                 Array.Reverse(int64Bytes);
             }
 
+            
             BitArray messageLengthArr = new(int64Bytes);
 
+            // appends each bit in the converted array of the 64-bit big-edian unsigned integer representing the length of the original array to the array requiring to be padded
             foreach (bool b in messageLengthArr)
             {
                 arr.Length += 1;

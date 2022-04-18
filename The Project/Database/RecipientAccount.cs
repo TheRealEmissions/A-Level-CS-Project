@@ -7,13 +7,11 @@ namespace The_Project.Database
 {
     public class RecipientAccount : IDatabaseAccount
     {
-        private readonly SqliteConnection _sqliteConnection;
         private readonly Account _userAccountInstance;
         private readonly Tables.Tables _tables;
 
-        public RecipientAccount(SqliteConnection sqliteConnection, Account account, Tables.Tables tables)
+        public RecipientAccount(Account account, Tables.Tables tables)
         {
-            _sqliteConnection = sqliteConnection;
             _userAccountInstance = account;
             _tables = tables;
         }

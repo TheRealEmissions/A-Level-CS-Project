@@ -54,7 +54,7 @@ namespace The_Project.Database.Tables
         {
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText =
-                @"INSERT INTO recipientaccounts (nicknameOrAccountId, account_id, ref_account_id) VALUES ('$NICKNAME', '$ACCOUNTID', '$REFACCOUNTID')";
+                @"INSERT INTO recipientaccounts (nickname, account_id, ref_account_id) VALUES ('$NICKNAME', '$ACCOUNTID', '$REFACCOUNTID')";
             sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$NICKNAME", nickname);
             sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$ACCOUNTID", accountId);
             sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$REFACCOUNTID", refAccountId);
@@ -117,7 +117,7 @@ namespace The_Project.Database.Tables
             SqliteCommand sqliteCommand = _sqliteConnection.CreateCommand();
             sqliteCommand.CommandText = @"
                 UPDATE recipientaccounts
-                SET nicknameOrAccountId = '$NICKNAME'
+                SET nickname = '$NICKNAME'
                 WHERE account_id = '$ACCOUNTID' AND ref_account_id = '$REFACCOUNTID'
             ";
             sqliteCommand.CommandText = sqliteCommand.CommandText.Replace("$NICKNAME", nickname);

@@ -144,6 +144,7 @@ namespace The_Project.Cryptography
         {
             BigInteger d = (1 + _phi) / _eInteger;
             int i = 1;
+            // finding when e * d = 1 (mod phi) as per RSA encryption algorithm
             while (_eInteger * d % _phi != 1 % _phi)
             {
                 d = (1 + (i + 1) * _phi) / _eInteger;
@@ -155,13 +156,21 @@ namespace The_Project.Cryptography
 
         private static BigInteger GeneratePrime(int bits = 1024)
         {
+            // creating bytes buffer to store correct number of bytes in reference to bits attribute
             byte[] buffer = new byte[bits / 8];
+            // generating random bytes in the buffer
             new Random().NextBytes(buffer);
+            // converting byte array into a bit array (so we can modify individual bits)
             BitArray bitArray = new(buffer);
+            // number is unsigned so setting the first bit to true will not make the number negative, but will instead make the number take up all the bits specified
             bitArray.Set(0, true);
+            // making the number odd, increasing chances of getting a prime number
             bitArray.Set(bits - 1, true);
+            // converting back to byte array and storing it in the buffer
             bitArray.CopyTo(buffer, 0);
+            // converting byte buffer to a BigInteger
             BigInteger prime = new(buffer, true);
+            // checking if the number is "probably prime" based on probabilities, if it isn't, recursively generates another potentially prime number
             return prime.IsProbablyPrime() ? prime : GeneratePrime(bits);
         }
     }

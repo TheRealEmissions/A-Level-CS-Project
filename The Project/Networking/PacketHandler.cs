@@ -21,16 +21,14 @@ namespace The_Project.Networking
             Account userAccount,
             MessagePage messagePage, Dispatcher mainThreadDispatcher)
         {
+            // gets rid of "junk" data in the buffer, as buffer can be bigger than packet size
+            // if packet size is 20 bytes and buffer is 100 bytes, 80 bytes will be 0x00 which breaks deserialization
             byte[] filteredBytes = bytesBuffer.ToList().Where(static x => x != 0).ToArray();
             if (filteredBytes.Length <= 0)
             {
                 return;
             }
 
-            Debug.WriteLine("Bytes Length:");
-            Debug.WriteLine(filteredBytes.Length);
-            Debug.WriteLine("Bytes:");
-            Debug.WriteLine(Encoding.UTF8.GetString(filteredBytes));
             Packet packetBuffer = JsonSerializer.Deserialize<Packet>(filteredBytes,
                 new JsonSerializerOptions
                     {AllowTrailingCommas = true, IgnoreNullValues = true, DefaultBufferSize = filteredBytes.Length});
@@ -40,6 +38,7 @@ namespace The_Project.Networking
                 return;
             }
 
+            // casts T (the type of the packet) to the enum specific counterpart
             switch ((PacketIdentifier.Packet) packetBuffer.T)
             {
                 case PacketIdentifier.Packet.PublicKey:
@@ -73,7 +72,7 @@ namespace The_Project.Networking
             AccountIdPacket accountPacket =
                 JsonSerializer.Deserialize<AccountIdPacket>(packetBuffer.Data.ToString() ?? string.Empty);
 
-            Database.RecipientAccount recipientAccount = new(_mainWindow.Handler.Connection,
+            Database.RecipientAccount recipientAccount = new(
                 _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
             recipient.AccountId = accountPacket?.A;
             if (!recipientAccount.HasAccount(accountPacket?.A))
@@ -98,19 +97,19 @@ namespace The_Project.Networking
             }
 
             PublicKeyPacket publicKeyPacket = JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data.ToString() ?? string.Empty);
-            /*JsonSerializer.Deserialize<PublicKeyPacket>(packetBuffer.Data);*/
-            Debug.WriteLine("\\/ Public Key \\/");
-            Debug.WriteLine(publicKeyPacket);
+
             if (publicKeyPacket is null)
             {
                 return;
             }
 
-            Debug.WriteLine("Received Public Key");
+            // successfully received recipient's public key at this point
 
             recipient.PublicKeyStored = true;
             recipient.PublicKey =
                 new PublicKey(BigInteger.Parse(publicKeyPacket.N), BigInteger.Parse(publicKeyPacket.E));
+
+            // sends back current user's public key to be used by the recipient
             recipient.Connection.TcpClient?.GetStream().WriteData(new Packet
             {
                 Data = new PublicKeyPacket
@@ -121,11 +120,10 @@ namespace The_Project.Networking
 
         private void HandleMessagePacket(Packet packetBuffer, MessagePage messagePage, Dispatcher dispatcher)
         {
-            Debug.WriteLine("Received Message");
+            // received a message, deserializes the stream data to a MessagePacket
             MessagePacket messagePacket = JsonSerializer.Deserialize<MessagePacket>(packetBuffer.Data.ToString() ?? string.Empty);
-            /*JsonSerializer.Deserialize<MessagePacket>(((JsonElement) packetBuffer.Data)
-                .GetString());*/
-            Debug.WriteLine("\\/ Message Packet \\/");
+
+            // sends an event to the main thread which handles message receiving
             dispatcher.Invoke(() =>
                 messagePage?.OnMessageReceived(new MessageReceivedEventArgs {Ciphertext = messagePacket?.M}));
         }
@@ -136,53 +134,44 @@ namespace The_Project.Networking
             ConnectionVerifiedPacket connectionVerifiedPacket =
                 JsonSerializer.Deserialize<ConnectionVerifiedPacket>(packetBuffer.Data.ToString() ?? string.Empty);
             recipient.AccountId = connectionVerifiedPacket?.ID;
-            /*packetBuffer.Data as ConnectionVerifiedPacket*/
-
-            /*JsonSerializer.Deserialize<ConnectionVerifiedPacket>(((JsonElement) packetBuffer.Data)
-                .GetString());*/
-            Debug.WriteLine("Connection Verified");
+            
+            // if the connection is verified (account id that the recipient sent has been checked to be correct) BUT the connection is not yet accepted
             if (recipient.Connection.ConnectionVerified && !recipient.Connection.ConnectionAccepted)
             {
-                Debug.WriteLine("connection verified but not accepted");
+                // if the packet has A = true, which means the recipient has accepted the connection
                 if (connectionVerifiedPacket?.A ?? false)
                 {
-                    Debug.WriteLine("Accepted connection");
+
                     recipient.Connection.ConnectionAccepted = true;
                     recipient.AccountId = connectionVerifiedPacket.ID;
 
-                    /*Database.RecipientAccount recipientAccountDatabase = new(_mainWindow.Handler.Connection,
-                        _mainWindow.Handler.UserAccount, _mainWindow.Handler.Tables);
-                    if (!recipientAccountDatabase.HasAccount(connectionVerifiedPacket.ID))
-                    {
-                        recipientAccountDatabase.CreateAccount(connectionVerifiedPacket.ID);
-                    }*/
-
-                    Debug.WriteLine("Sending public key");
+                    // sends public key to the recipient
                     await recipient.SendPublicKey(userAccount.PublicKey);
+                    // sends user's account id to the recipient
                     await recipient.SendAccountId(_mainWindow.Handler.UserAccount.AccountId);
                 }
 
-                Debug.WriteLine("Connection is already verified");
+                // otherwise ignore
                 return;
             }
 
+            // if connection is accepted & verified, no need to do anything, ignore packet
             if (recipient.Connection.ConnectionAccepted && recipient.Connection.ConnectionVerified)
             {
-                Debug.WriteLine("Connection is accepted & verified");
                 return;
             }
 
-            Debug.WriteLine("verified connection");
+            
             recipient.Connection.ConnectionVerified = true;
+            // if the connection has been accepted by the recipient
             if (connectionVerifiedPacket?.A ?? false)
             {
-                Debug.WriteLine("Connection accepted");
                 recipient.Connection.ConnectionAccepted = true;
                 recipient.AccountId = connectionVerifiedPacket.ID;
             }
 
             bool connectionAccepted = connectionVerifiedPacket?.A ?? false;
-            Debug.WriteLine("Returning connection verified packet");
+            // returning connection verified packet providing TcpClient is not null (still connected to the recipient)
             if (recipient.Connection.TcpClient is not null)
             {
                 await recipient.Connection.TcpClient.GetStream().WriteDataAsync(new Packet
@@ -192,12 +181,13 @@ namespace The_Project.Networking
                 });
             }
 
+            // if the connection hasn't been accepted, do nothing
             if (!connectionVerifiedPacket?.A ?? true)
             {
                 return;
             }
 
-            Debug.WriteLine("Sending public key");
+            // otherwise send user's public key to the recipient
             await recipient.SendPublicKey(userAccount.PublicKey);
         }
     }

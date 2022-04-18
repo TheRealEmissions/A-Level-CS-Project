@@ -158,7 +158,7 @@ namespace The_Project
             TxtblockUser.Text = TxtNickname.Text;
 
             Database.RecipientAccount recipientAccount =
-                new(_connection, _mainWindow.Handler.UserAccount, _tables);
+                new(_mainWindow.Handler.UserAccount, _tables);
             recipientAccount.UpdateNickname(TxtNickname.Text, _recipient.AccountId);
 
             TxtNickname.Text = "Nickname";

@@ -116,10 +116,6 @@ namespace The_Project
             }
         }
 
-        private void Txtinput_userid_TextChanged(object sender, TextChangedEventArgs e)
-        {
-        }
-
         private void Btn_debugWindow_Click(object sender, RoutedEventArgs e)
         {
             _mainWindow.Btn_DebugWindow_Click(sender, e);
